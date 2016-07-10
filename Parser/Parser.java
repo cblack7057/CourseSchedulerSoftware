@@ -216,97 +216,94 @@ public class Parser
 
 		String dayAndTimeSuperString[] = line[8].split("`");
 
-		if(dayAndTimeSuperString.length < 6)
+		for(String dayAndTime : dayAndTimeSuperString)
 		{
-			for(String dayAndTime : dayAndTimeSuperString)
+			String dayAndTimeString[] = dayAndTime.split("[ ]{1,}");
+
+			/*
+			 * Add Type, Days, Time,
+			 */
+			//Break down the days and times and stores them 
+			//If Days are grouped together, I.E. MW then separate them into M and W.
+			//the counter is the number of spaces left to finish out empty time slots
+			if(dayAndTimeString.length == 6)
 			{
-				String dayAndTimeString[] = dayAndTime.split("[ ]{1,}");
+				String dayString[] = dayAndTimeString[0].split("");
 
-				/*
-				 * Add Type, Days, Time,
-				 */
-				//Break down the days and times and stores them 
-				//If Days are grouped together, I.E. MW then separate them into M and W.
-				//the counter is the number of spaces left to finish out empty time slots
-				if(dayAndTimeString.length == 6)
+				//Now loop through the dayString and create days and times for each day.
+				for(String day : dayString)
 				{
-					String dayString[] = dayAndTimeString[0].split("");
+					//Add the Type to the String
+					formatedString += "," + dayAndTimeString[5];
 
-					//Now loop through the dayString and create days and times for each day.
-					for(String day : dayString)
-					{
-						//Add the Type to the String
-						formatedString += "," + dayAndTimeString[5];
+					//Add the Days to the String
+					formatedString += "," + day;
 
-						//Add the Days to the String
-						formatedString += "," + day;
+					//Add the Time to the String
+					formatedString += "," + dayAndTimeString[1] + " to " + dayAndTimeString[2];
 
-						//Add the Time to the String
-						formatedString += "," + dayAndTimeString[1] + " to " + dayAndTimeString[2];
+					//Add the Building and Room to the String
+					formatedString += "," + dayAndTimeString[3] + " " + dayAndTimeString[4];
 
-						//Add the Building and Room to the String
-						formatedString += "," + dayAndTimeString[3] + " " + dayAndTimeString[4];
-
-						counter = counter - 4;
-					}
-
+					counter = counter - 4;
 				}
-				else if(dayAndTimeString.length == 4)
-				{
-					String dayString[] = dayAndTimeString[0].split("");
 
-					//Now loop through the dayString and create days and times for each day.
-					for(String day : dayString)
-					{
-						//Add the Type to the String
-						formatedString += "," + dayAndTimeString[3];
-
-						//Add the Days to the String
-						formatedString += "," + day;
-
-						//Add the Time to the String
-						formatedString += "," + dayAndTimeString[1] + " to " + dayAndTimeString[2];
-
-						//Add the Building and Room to the String
-						formatedString += ",";
-
-						counter = counter - 4;
-					}
-
-
-				}
 			}
-
-			//Counter takes care of length == 0 case.
-			while(counter > 0)
+			else if(dayAndTimeString.length == 4)
 			{
-				formatedString += ",";
-				counter --;
+				String dayString[] = dayAndTimeString[0].split("");
+
+				//Now loop through the dayString and create days and times for each day.
+				for(String day : dayString)
+				{
+					//Add the Type to the String
+					formatedString += "," + dayAndTimeString[3];
+
+					//Add the Days to the String
+					formatedString += "," + day;
+
+					//Add the Time to the String
+					formatedString += "," + dayAndTimeString[1] + " to " + dayAndTimeString[2];
+
+					//Add the Building and Room to the String
+					formatedString += ",";
+
+					counter = counter - 4;
+				}
+
+
 			}
-
-
-			//Add the Dates to the String
-			formatedString += "," + line[5];
-
-			//Add the CRN to the String
-			formatedString += "," + line[0];
-
-			//Add the Title to the String
-			formatedString += "," + line[6];
-
-			//Add the Professor to the String
-			formatedString += "," + line[7].replaceAll("[ ]{2,}", " ");
-
-			//Add the Campus to the String
-			formatedString += "," + line[9];
-
-			//Add the Credit Hours to the String
-			formatedString += "," + line[11] + "\n";
-
-
-			writer.write(formatedString);
-			writer.flush();
 		}
-	}
 
+		//Counter takes care of length == 0 case.
+		while(counter > 0)
+		{
+			formatedString += ",";
+			counter --;
+		}
+
+
+		//Add the Dates to the String
+		formatedString += "," + line[5];
+
+		//Add the CRN to the String
+		formatedString += "," + line[0];
+
+		//Add the Title to the String
+		formatedString += "," + line[6];
+
+		//Add the Professor to the String
+		formatedString += "," + line[7].replaceAll("[ ]{2,}", " ");
+
+		//Add the Campus to the String
+		formatedString += "," + line[9];
+
+		//Add the Credit Hours to the String
+		formatedString += "," + line[11] + "\n";
+
+
+		writer.write(formatedString);
+		writer.flush();
+	}
 }
+
