@@ -9,7 +9,6 @@ import java.io.IOException;
 /**
  * NOTE* Before Feeding in the CSV file you must make sure there are NO new line characters within a cell and no commas within a cell.
  * NOTE* When you remove the new line characters replace them with a '`'
- * NOTE* Any class with more than 5 time slots will be excluded.
  *
  */
 public class Parser 
@@ -106,19 +105,19 @@ public class Parser
 		/*
 		 * Add Type, Days, Time,
 		 */
-		for(int i = 0; i < 5; i++)
+		for(int i = 0; i < 11; i++)
 		{
 			//Add the Type to the String
-			formatedString += "," + dayAndTimeString[5];
+			formatedString += "," + dayAndTimeString[5] + " " + i;
 
 			//Add the Days to the String
-			formatedString += "," + dayAndTimeString[0];
+			formatedString += "," + dayAndTimeString[0]+ " " + i;
 
 			//Add the Time to the String
-			formatedString += ",Times";
+			formatedString += ",Times " + i;
 
 			//Add the building and room to the String
-			formatedString += ", Building and Room";
+			formatedString += ", Building and Room" + i;
 		}
 
 		//Add the Dates to the String
@@ -203,7 +202,7 @@ public class Parser
 		 * 5 Type
 		 * Possible Repeat
 		 */
-		int counter = 20;
+		int counter = 44;
 
 		//Add the Subject to the String
 		formatedString = line[1];
