@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title> Course Lookup Test </title>
+	
+	<!-- CSS -->
+	<!-- load bootstrap and our stylesheet -->
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/\
+css/bootstrap.min.css">
+	<style>
+		body { padding-top:50px; }
+	</style>
+
+	<!-- JS -->
+	<!-- load angular and our custom application -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+	<!--script src="js/app.js"></script-->
+	<script src="js/app.js"></script>
+</head>
+
+<body class="container" ng-app="firstApp" ng-controller="mainController as main"> 
+
+	<h1> Please Enter Course Info! </h1>
+
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<td>Subject</td>
+				<td>Course</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="computer in main.computers">
+			<td>{{ computer.subject }}</td>
+			<td>{{ computer.course }}</td>
+		</tr>
+		</tbody>
+	</table>
+	
+	<!-- form to add computer to the list -->
+	<form class="form-inline" ng-submit="main.viewCourse()">
+	
+		<input type="text" class="form-control" placeholder="Subject: ACC" ng-model="main.computerData.subject">
+		<input type="text" class="form-control" placeholder="Course: 3210" ng-model="main.computerData.course">
+		
+		<button type="submit" class="btn btn-success">Add</button>
+	</form>
+
+</body>
+
+</html>
