@@ -12,8 +12,14 @@ var util = require('util');
 
 var course;
 var subject;
+var monday;
+var tuesday;
+var wednesday;
+var thursday;
+var friday;
 var query1 = {};
 var query2 = {};
+var query3 = {};
 
 //We need to work with "MongoClient" interface in order to connect to a mongodb server.
 var MongoClient = mongodb.MongoClient;
@@ -104,16 +110,29 @@ function lookupCourses(req,res) {
             'content-type': 'text/plain'
         });
 		
-		subject = fields.pop(); //pop off the subject
-		course = fields.pop(); //pop off the course
+		course = fields[0]; //pop off the course
+		subject = fields[1]; //pop off the subject
+		monday = fields[2];
+		tuesday = fields[3];
+		wednesday = fields[4];
+		thursday = fields[5];
+		friday = fields[6];
+		
 		query1['Subj'] = subject;
 		query2['Crse'] = parseInt(course);
+		query3['Day 0'] = monday;
 	
         console.log('received the data:');
 		console.log('course: ', course);
 		console.log('subject: ', subject);
+		console.log('monday: ', monday);
+		console.log('tuesday: ', tuesday);
+		console.log('wednesday: ', wednesday);
+		console.log('thursday: ', thursday);
+		console.log('friday: ', friday);
 		console.log('query: ', query1);
 		console.log('query: ', query2);
+		console.log('query: ', query3);
         //res.end(util.inspect({
             //fields: fields
         //}));
@@ -135,14 +154,16 @@ function lookupCourses(req,res) {
 	
 	// Look up the courses
 	
-    collection.find({"$and":[query1,query2]}).toArray(function (err, result) {
+    collection.find({"$and":[query1,query2,query3]}).toArray(function (err, result) {
       if (err) {
         console.log(err);
       } else if (result.length) {
         console.log('Found:', result);
-		app.get('/', function(req, res) {
-		//res.sendFile(path.join(__dirname + '/index.html'));
-	});
+		//app.get('/', function(req, res) {
+		res.end(util.inspect({
+			result: result
+		}));
+	//});
       } else {
         console.log('No document(s) found with defined "find" criteria!');
       }
