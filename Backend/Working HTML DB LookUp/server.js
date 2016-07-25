@@ -19,7 +19,7 @@ var thursday;
 var friday;
 var query1 = {};
 var query2 = {};
-var query3 = {};
+var query3 = [];
 
 //We need to work with "MongoClient" interface in order to connect to a mongodb server.
 var MongoClient = mongodb.MongoClient;
@@ -31,8 +31,6 @@ var server = http.createServer(function (req, res) {
     if (req.method.toLowerCase() == 'get') {
         displayForm(res);
     } else if (req.method.toLowerCase() == 'post') {
-        //processAllFieldsOfTheForm(req, res);
-        //processFormFieldsIndividual(req, res);
 		lookupCourses(req,res);
     }
 });
@@ -48,50 +46,6 @@ function displayForm(res) {
     });
 }
 
-function processAllFieldsOfTheForm(req, res) {
-    var form = new formidable.IncomingForm();
-
-    form.parse(req, function (err, fields, files) {
-        //Store the data from the fields in your data store.
-        //The data store could be a file or database or any other store based
-        //on your application.
-        res.writeHead(200, {
-            'content-type': 'text/plain'
-        });
-        res.write('received the data:\n\n');
-        res.end(util.inspect({
-            fields: fields,
-            files: files
-        }));
-    });
-}
-
-function processFormFieldsIndividual(req, res) {
-    //Store the data from the fields in your data store.
-    //The data store could be a file or database or any other store based
-    //on your application.
-    var fields = [];
-    var form = new formidable.IncomingForm();
-    form.on('field', function (field, value) {
-        console.log(field);
-        console.log(value);
-        fields[field] = value;
-    });
-
-    form.on('end', function () {
-        res.writeHead(200, {
-            'content-type': 'text/plain'
-        });
-        res.write('received the data:\n\n');
-		res.write('course: ', fields[0]);
-		res.write('subject: ', fields[1]);
-        //res.end(util.inspect({
-            //fields: fields
-        //}));
-    });
-    form.parse(req);
-}
-
 function lookupCourses(req,res) {
 	//Store the data from the fields in your data store.
     //The data store could be a file or database or any other store based
@@ -99,8 +53,8 @@ function lookupCourses(req,res) {
     var fields = [];
     var form = new formidable.IncomingForm();
     form.on('field', function (field, value) {
-        console.log('console.log1: ', field);
-        console.log('console.log2: ', value);
+        //console.log('console.log1: ', field);
+        //console.log('console.log2: ', value);
         fields[field] = value;
     });
 
@@ -110,32 +64,40 @@ function lookupCourses(req,res) {
             'content-type': 'text/plain'
         });
 		
-		course = fields[0]; //pop off the course
-		subject = fields[1]; //pop off the subject
-		monday = fields[2];
-		tuesday = fields[3];
-		wednesday = fields[4];
-		thursday = fields[5];
-		friday = fields[6];
+		course = fields["course"]; 
+		subject = fields["subject"]; 
+		monday = fields["monday"];
+		tuesday = fields["tuesday"];
+		wednesday = fields["wednesday"];
+		thursday = fields["thursday"];
+		friday = fields["friday"];
 		
 		query1['Subj'] = subject;
-		query2['Crse'] = parseInt(course);
-		query3['Day 0'] = monday;
+		query2['Crse'] = course;
+		query3 = [];
+		
+		if(monday != 'M')
+			query3.push('M');
+		if(tuesday != 'T')
+			query3.push('T');
+		if(wednesday != 'W')
+			query3.push('W');
+		if(thursday != 'R')
+			query3.push('R');
+		if(friday != 'F')
+			query3.push('F');
 	
         console.log('received the data:');
 		console.log('course: ', course);
 		console.log('subject: ', subject);
-		console.log('monday: ', monday);
-		console.log('tuesday: ', tuesday);
-		console.log('wednesday: ', wednesday);
-		console.log('thursday: ', thursday);
-		console.log('friday: ', friday);
+		//console.log('monday: ', monday);
+		//console.log('tuesday: ', tuesday);
+		//console.log('wednesday: ', wednesday);
+		//console.log('thursday: ', thursday);
+		//console.log('friday: ', friday);
 		console.log('query: ', query1);
 		console.log('query: ', query2);
 		console.log('query: ', query3);
-        //res.end(util.inspect({
-            //fields: fields
-        //}));
     });
     form.parse(req);
 	
@@ -150,26 +112,24 @@ function lookupCourses(req,res) {
     console.log('Connection established to', url);
 
 	// Get the documents collection
-    var collection = db.collection('Courses');
+    var collection = db.collection('DaveCourses');
 	
 	// Look up the courses
-	
-    collection.find({"$and":[query1,query2,query3]}).toArray(function (err, result) {
-      if (err) {
+    collection.find({"$and":[query1,query2, {'Meetings.Day' : {$nin: query3}}]}).toArray(function (err, result) {	
+
+	  if (err) {
         console.log(err);
       } else if (result.length) {
         console.log('Found:', result);
-		//app.get('/', function(req, res) {
 		res.end(util.inspect({
 			result: result
 		}));
-	//});
       } else {
         console.log('No document(s) found with defined "find" criteria!');
       }
 
     //Close connection
-    //db.close();
+    db.close();
 	});
 	}
 });
@@ -177,5 +137,5 @@ function lookupCourses(req,res) {
 }
 
 
-server.listen(1185);
+server.listen(port);
 console.log("server listening on 1185");

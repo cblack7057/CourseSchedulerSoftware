@@ -1,0 +1,32 @@
+{
+"Subj" : "ACC",
+"Crse" : "3210",
+"Sect" : "1",
+"Meetings":[
+	{"Day": "M", "StartTime": 1700, "EndTime": 1815, "BuildingRoom": "BUNCE 109"},
+	{"Day": "W", "StartTime": 1700, "EndTime": 1815, "BuildingRoom": "BUNCE 109"}
+], 
+"Session": "Day", 
+"CRN": 42791, 
+"Title": "PRINCIPLES OF ACCTG I", 
+"Prof": "Fabrico-Basile Tracey",
+"Campus" : "Main",
+"Hrs" : 3
+}
+{
+"Subj" : "ART",
+"Crse" : "2240",
+"Sect" : "1",
+"Meetings":[
+	{"Day": "M", "StartTime": 1100, "EndTime": 1215, "BuildingRoom": "WESTBY 109"},
+	{"Day": "W", "StartTime": 1100, "EndTime": 1215, "BuildingRoom": "WESTBY 109"},
+	{"Day": "T", "StartTime": 1230, "EndTime": 1345, "BuildingRoom": "WESTBY 109"},
+	{"Day": "W", "StartTime": 1230, "EndTime": 1345, "BuildingRoom": "WESTBY 109"}
+], 
+"Session": "Day", 
+"CRN": 41976, 
+"Title": "INTRODUCTION TO SCULPTURE/3-D", 
+"Prof": "Kaylor Scot",
+"Campus" : "Main",
+"Hrs" : 3
+}
