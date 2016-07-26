@@ -9,10 +9,9 @@ import java.io.IOException;
 /**
  * NOTE* Before Feeding in the CSV file you must make sure there are NO new line characters within a cell and no commas within a cell.
  * NOTE* When you remove the new line characters replace them with a '`'
- * NOTE* Any class with more than 5 time slots will be excluded.
  *
  */
-public class Parser 
+public class CSV_Parser 
 {
 	static BufferedReader reader;
 	static BufferedWriter writer;

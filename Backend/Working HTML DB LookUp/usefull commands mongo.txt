@@ -15,4 +15,5 @@ mongodb://carlind0:123456@ds015334.mlab.com:15334/db_name
 
 //import a .json file while in the irectory
 mongoimport --db test --collection restaurants --drop --file ~/downloads/primer-dataset.json
+mongoimport -h ds015334.mlab.com:15334 -d db_name -c DaveCourses -u carlind0 -p 123456 --drop --file Section_Tally_FORMAT.json
 mongoimport -h ds015334.mlab.com:15334 -d db_name -c DaveCourses -u carlind0 -p 123456 --drop --file DB_Import_7_25_2016.json
