@@ -12,14 +12,51 @@ var util = require('util');
 
 var course;
 var subject;
+
+//Day of the week variables
 var monday;
 var tuesday;
 var wednesday;
 var thursday;
 var friday;
+
+//Day of the week times (monday)
+var mStartTime1;
+var mEndTime1;
+var mStartTime2;
+var mEndTime2;
+
+//Day of the week times (tuesday)
+var tStartTime1;
+var tEndTime1;
+var tStartTime2;
+var tEndTime2;
+
+//Day of the week times (wednesday)
+var wStartTime1;
+var wEndTime1;
+var wStartTime2;
+var wEndTime2;
+
+//Day of the week times (thursday)
+var rStartTime1;
+var rEndTime1;
+var rStartTime2;
+var rEndTime2;
+
+//Day of the week times (friday)
+var fStartTime1;
+var fEndTime1;
+var fStartTime2;
+var fEndTime2;
+
+//query1 and query2 are course and subject for lookup respectively
+//query3 is for day of the week lookup
 var query1 = {};
 var query2 = {};
 var query3 = [];
+
+var lookupResults;
 
 //We need to work with "MongoClient" interface in order to connect to a mongodb server.
 var MongoClient = mongodb.MongoClient;
@@ -53,8 +90,8 @@ function lookupCourses(req,res) {
     var fields = [];
     var form = new formidable.IncomingForm();
     form.on('field', function (field, value) {
-        //console.log('console.log1: ', field);
-        //console.log('console.log2: ', value);
+        console.log('console.log1: ', field);
+        console.log('console.log2: ', value);
         fields[field] = value;
     });
 
@@ -65,12 +102,38 @@ function lookupCourses(req,res) {
         });
 		
 		course = fields["course"]; 
-		subject = fields["subject"]; 
+		subject = fields["subject"];
+		
 		monday = fields["monday"];
 		tuesday = fields["tuesday"];
 		wednesday = fields["wednesday"];
 		thursday = fields["thursday"];
 		friday = fields["friday"];
+		
+		mStartTime1 = fields["mondayStartTimeDropDown1"];
+		mEndTime1 = fields["mondayEndTimeDropDown1"];
+		mStartTime2 = fields["mondayStartTimeDropDown2"];
+		mEndTime2 = fields["mondayEndTimeDropDown2"];
+		
+		tStartTime1 = fields["tuesdayStartTimeDropDown1"];
+		tEndTime1 = fields["tuesdayEndTimeDropDown1"];
+		tStartTime1 = fields["tuesdayStartTimeDropDown2"];
+		tEndTime1 = fields["tuesdayEndTimeDropDown2"];
+		
+		wStartTime1 = fields["wednesdayStartTimeDropDown1"];
+		wEndTime1 = fields["wednesdayEndSTimeDropDown1"];
+		wStartTime2 = fields["wednesdayStartTimeDropDown2"];
+		wEndTime2 = fields["wednesdayEndSTimeDropDown2"];
+		
+		rStartTime1 = fields["thursdayStartTimeDropDown1"];
+		rEndTime1 = fields["thursdayEndTimeDropDown1"];
+		rStartTime2 = fields["thursdayStartTimeDropDown2"];
+		rEndTime2 = fields["thursdayEndTimeDropDown2"];
+		
+		fStartTime1 = fields["fridayStartTimeDropDown1"];
+		fEndTime1 = fields["fridayEndTimeDropDown1"];
+		fStartTime2 = fields["fridayStartTimeDropDown2"];
+		fEndTime2 = fields["fridayEndTimeDropDown2"];
 		
 		query1['Subj'] = subject;
 		query2['Crse'] = course;
@@ -90,6 +153,8 @@ function lookupCourses(req,res) {
         console.log('received the data:');
 		console.log('course: ', course);
 		console.log('subject: ', subject);
+		
+		
 		//console.log('monday: ', monday);
 		//console.log('tuesday: ', tuesday);
 		//console.log('wednesday: ', wednesday);
@@ -114,16 +179,25 @@ function lookupCourses(req,res) {
 	// Get the documents collection
     var collection = db.collection('DaveCourses');
 	
-	// Look up the courses
-    collection.find({"$and":[query1,query2, {'Meetings.Day' : {$nin: query3}}]}).toArray(function (err, result) {	
-
+    collection.find({"$and":
+	[
+		query1,
+		query2, 
+		{'Meetings.Day' : {$nin: query3}},  
+	]},
+			{"_id": 0, 
+			 "Subj": 1, 
+			 "Crse": 1, 
+			 "Meetings": 1, 
+			 "Meetings.Day": 1, 
+			 "Meetings.StartTime": 1, 
+			 "Meetings.EndTime":1}).toArray(function (err, result) 
+	{	
 	  if (err) {
         console.log(err);
       } else if (result.length) {
         console.log('Found:', result);
-		res.end(util.inspect({
-			result: result
-		}));
+		res.end(util.inspect({result: result}, {showHidden: false, depth: null}));
       } else {
         console.log('No document(s) found with defined "find" criteria!');
       }
@@ -131,11 +205,12 @@ function lookupCourses(req,res) {
     //Close connection
     db.close();
 	});
-	}
+	
+  }
 });
 
 }
 
 
 server.listen(port);
-console.log("server listening on 1185");
+console.log("server listening on " + port);
