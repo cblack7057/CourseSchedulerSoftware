@@ -75,7 +75,7 @@ var server = http.createServer(function (req, res) {
 		lookupCourses(req,res);
 		setTimeout(function(){
 			res.end(util.inspect({queryArray: queryArray}, {showHidden: false, depth: null}));
-		}, 500);
+		}, 2000);
 		
     }
 });
@@ -152,6 +152,8 @@ function verifyAndRemoveCoursesByTime(course, courseList, index){
 function lookupCourses(req,res) {
 	//Store the data from the fields in your data store.
     var fields = [];
+	courses = [];
+	subjects = [];
     var form = new formidable.IncomingForm();
     form.on('field', function (field, value) {
         fields[field] = value;
