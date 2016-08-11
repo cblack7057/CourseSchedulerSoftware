@@ -1,0 +1,161 @@
+"Schedule":[
+[
+	{
+	"Subj" : "BIOL",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	},
+	{
+	"Subj" : "BIOL",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	},
+	{
+	"Subj" : "BIOL",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	}
+],
+[
+	{
+	"Subj" : "BIOL",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	},
+	{
+	"Subj" : "BIOL",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	},
+	{
+	"Subj" : "BIOL",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	}
+],
+[
+	{
+	"Subj" : "BIOL",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	},
+	{
+	"Subj" : "BIOL",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	},
+	{
+	"Subj" : "BIOL",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	}
+]
+]
