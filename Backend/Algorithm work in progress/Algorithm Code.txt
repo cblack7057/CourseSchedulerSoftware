@@ -1,0 +1,95 @@
+//Algorithm Code Ex:
+
+for( i=0; i<gA.length-1; i++){
+	for( j = i+1; j< gA.length; j++){
+		for( m = 0; m < gA[i].length; m++){
+			for( n = 0; n< gA[j].length; n++){
+				 k =0;
+				 l = 0;
+				boolean checking = true;
+				while(checking)
+				{
+					if(qA[i][m].Meetings[k].Day < qA[j][n].Meetings[l].Day)
+					{
+						if(k == qA[i][m].Meetings.leng-1)
+						{
+							checking = false;
+							saveCombo(....);
+						}
+						else
+						{
+							k++;
+						}
+					}
+					else if (qA[i][m].Meetings[k].Day == qA[j][n].Meetings[l].Day)
+					{
+						checking = noTimeConflict(qA[i][m].Meetings[k].StartTime, qA[i][m].Meetings[k].EndTime, qA[j][n].Meetings[l].StartTime, qA[j][n].Meetings[l].EndTime);
+						if(checking && (l == qA[j][n].Meetings.length-1))
+						{
+							if(k == qA[i][m].Meetings.length-1)
+							{
+								saveCombo(....);
+								checking = false;
+							}
+							else
+							{
+								l = 0;
+							}
+						}
+						else
+						{
+							l++;
+						}
+					}
+					else
+					{
+						if(l == qA[j][n].Meetings.length - 1 )
+						{
+							if(k == qA[i][m].Meetings.length - 1)
+							{
+								checking = false;
+								saveCombo(....);
+							}
+							else
+							{
+								l = 0;
+								k++;
+							}
+						}
+						else
+						{
+							l++;
+						}
+					}
+					
+				}
+			}
+		}
+	}
+	
+	
+	//noTimeConflict Code
+	
+	noTimeConflict(ST1, ET1, ST2, ET2){
+		if(ST1 < ST2 && ET1 < ST2){
+			return true;
+		}
+		if(ST1 > ST2 && ET2 < ST1){
+			return true;
+		)
+		return false;
+	}
+	
+	//saveCombo Code
+	coursePairs = [][];
+	saveCombo(i,m,j,n){
+		sum = 0;
+		for(k = 1; k < i; k++){
+			sum += totalCourses - k - 1;
+			
+		}
+		index = j - 2 + sum;
+		coursePairs[index].push([i,m,j,n]);
+	}
+	
+	j-2 * (summation from n = 1 to i-1) * #courses - n - 1

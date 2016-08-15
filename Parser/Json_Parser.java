@@ -5,16 +5,21 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.TreeMap;
+import java.util.List;
 
 /**
  * NOTE* Before Feeding in the CSV file you must make sure there are NO new line characters within a cell and no commas within a cell.
- * NOTE* When you remove the new line characters replace them with a '`'
+ * NOTE* When you remove the new line characters replace them with a '`' (New Line is Ctrl + J)
  *
  */
 public class Json_Parser 
 {
 	static BufferedReader reader;
 	static BufferedWriter writer;
+	static final int MAX_DAY_OF_WEEK = 6;
 
 	public static void main(String[] args) throws IOException
 	{
@@ -74,7 +79,19 @@ public class Json_Parser
 		 * Room Cap
 		 */
 		//String to be written at the end
-		String formatedString = "";
+		String formattedString = "";
+		
+		//String used for sorting the meeting days
+		String meetingRowString = "";
+		
+		//List and TreeMap are used for sorting the meeting days
+		List<TreeMap<Integer, String>> sortedMeetings = new ArrayList<TreeMap<Integer,String>>(MAX_DAY_OF_WEEK);
+		
+		//initialize the TreeMaps in the ArrayList
+		for(int i = 0; i < MAX_DAY_OF_WEEK; i++)
+		{
+			sortedMeetings.add(new TreeMap<Integer, String>());
+		}
 
 		String[] line = readLine.split(",");
 		if(line.length == 0)
@@ -95,18 +112,18 @@ public class Json_Parser
 		 */
 
 		//Start the string with a '{'
-		formatedString = "{\n";
+		formattedString = "{\n";
 		//Add the Subject to the String
-		formatedString += "\"Subj\" : \"" + line[1] + "\",\n";
+		formattedString += "\"Subj\" : \"" + line[1] + "\",\n";
 
 		//Add the Course to the String
-		formatedString += "\"Crse\" : \"" + line[2] + "\",\n";
+		formattedString += "\"Crse\" : \"" + line[2] + "\",\n";
 
 		//Add the Section to the String
-		formatedString += "\"Sect\" : \"" + line[3].trim() + "\",\n";
+		formattedString += "\"Sect\" : \"" + line[3].trim() + "\",\n";
 
 		//Add the Meetings to the String
-		formatedString += "\"Meetings\" : [\n";
+		formattedString += "\"Meetings\" : [\n  ";
 
 		String dayAndTimeSuperString[] = line[8].split("`");
 
@@ -127,28 +144,49 @@ public class Json_Parser
 				//Now loop through the dayString and create days and times for each day.
 				for(int i = 0; i < dayString.length; i++)
 				{
+					int intDay = 0;
+					meetingRowString = "";
+					
+					//Turn days into integers
+					//M - 0
+					//T - 1
+					//W - 2
+					//R - 3
+					//F - 4
+					//S - 5
+					switch(dayString[i])
+					{
+						case "M" : intDay = 0;
+						break;
+						case "T" : intDay = 1;
+						break;
+						case "W" : intDay = 2;
+						break;
+						case "R" : intDay = 3;
+						break;
+						case "F" : intDay = 4;
+						break;
+						case "S" : intDay = 5;
+						break;
+					}
+					
 					//Add the Type to the String
-					formatedString += "\t{\"Type\" : \"" + dayAndTimeString[5] + "\",";
+					meetingRowString += "\t{\"Type\" : \"" + dayAndTimeString[5] + "\",";
 
 					//Add the Days to the String
-					formatedString += "\"Day\" : \"" + dayString[i] + "\",";
+					meetingRowString += "\"Day\" : " + intDay + ",";
 
 					//Add the Start Time to the String
-					formatedString += "\"StartTime\" : " + Integer.parseInt(dayAndTimeString[1]) + ",";
+					meetingRowString += "\"StartTime\" : " + Integer.parseInt(dayAndTimeString[1]) + ",";
 
 					//Add the End Time to the String
-					formatedString += "\"EndTime\" : " +  Integer.parseInt(dayAndTimeString[2]) + ",";
+					meetingRowString += "\"EndTime\" : " +  Integer.parseInt(dayAndTimeString[2]) + ",";
 
-					if(i == dayString.length - 1 && j == dayAndTimeSuperString.length - 1 )
-					{
-						//Add the Building and Room to the String but remove the trailing ','
-						formatedString += "\"BuildingRoom\" : \"" + dayAndTimeString[3] + " " + dayAndTimeString[4] + "\"}\n";
-					}
-					else
-					{
-						//Add the Building and Room to the String
-						formatedString += "\"BuildingRoom\" : \"" + dayAndTimeString[3] + " " + dayAndTimeString[4] + "\"},\n";
-					}
+					//Add the Building and Room to the String but remove the trailing ','
+					meetingRowString += "\"BuildingRoom\" : \"" + dayAndTimeString[3] + " " + dayAndTimeString[4] + "\"}";
+	
+					//add the meetingRowString to the sortedMeetings TreeMap to be sorted in time order
+					sortedMeetings.get(intDay).put(Integer.parseInt(dayAndTimeString[1]), meetingRowString);
 				}
 
 			}
@@ -159,25 +197,46 @@ public class Json_Parser
 				//Now loop through the dayString and create days and times for each day.
 				for(int i = 0; i < dayString.length; i++)
 				{
+					int intDay = 0;
+					meetingRowString = "";
+					
+					//Turn days into integers
+					//M - 0
+					//T - 1
+					//W - 2
+					//R - 3
+					//F - 4
+					//S - 5
+					switch(dayString[i])
+					{
+						case "M" : intDay = 0;
+						break;
+						case "T" : intDay = 1;
+						break;
+						case "W" : intDay = 2;
+						break;
+						case "R" : intDay = 3;
+						break;
+						case "F" : intDay = 4;
+						break;
+						case "S" : intDay = 5;
+						break;
+					}
 					//Add the Type to the String
-					formatedString += "\t{\"Type\" : \"" + dayAndTimeString[3] + "\",";
+					meetingRowString += "\t{\"Type\" : \"" + dayAndTimeString[3] + "\",";
 
 					//Add the Days to the String
-					formatedString += "\"Day\" : \"" + dayString[i] + "\",";
+					meetingRowString += "\"Day\" : " + intDay + ",";
 
 					//Add the Start Time to the String
-					formatedString += "\"StartTime\" : " + Integer.parseInt(dayAndTimeString[1]) + ",";
+					meetingRowString += "\"StartTime\" : " + Integer.parseInt(dayAndTimeString[1]) + ",";
 
-					if(i == dayString.length - 1 && j == dayAndTimeSuperString.length - 1)
-					{
-						//Add the End Time to the String but remove the ',' at the end
-						formatedString += "\"EndTime\" : " +  Integer.parseInt(dayAndTimeString[2]) + "}\n";
-					}
-					else
-					{
-						//Add the End Time to the String
-						formatedString += "\"EndTime\" : " +  Integer.parseInt(dayAndTimeString[2]) + "},\n";
-					}
+					//Add the End Time to the String but remove the ',' at the end
+					meetingRowString += "\"EndTime\" : " +  Integer.parseInt(dayAndTimeString[2]) + "}";
+
+					
+					//add the meetingRowString to the sortedMeetings TreeMap to be sorted in time order
+					sortedMeetings.get(intDay).put(Integer.parseInt(dayAndTimeString[1]), meetingRowString);
 				}
 			}
 
@@ -188,50 +247,83 @@ public class Json_Parser
 				//Now loop through the dayString and create days and times for each day.
 				for(int i = 0; i < dayString.length; i++)
 				{
+					int intDay = 0;
+					meetingRowString = "";
+					
+					//Turn days into integers
+					//M - 0
+					//T - 1
+					//W - 2
+					//R - 3
+					//F - 4
+					//S - 5
+					switch(dayString[i])
+					{
+						case "M" : intDay = 0;
+						break;
+						case "T" : intDay = 1;
+						break;
+						case "W" : intDay = 2;
+						break;
+						case "R" : intDay = 3;
+						break;
+						case "F" : intDay = 4;
+						break;
+						case "S" : intDay = 5;
+						break;
+					}
 					//Add the Days to the String
-					formatedString += "\t{\"Day\" : \"" + dayString[i] + "\",";
+					meetingRowString += "\t{\"Day\" : " + intDay + ",";
 
-					if(i == dayString.length - 1 && j == dayAndTimeSuperString.length - 1 )
-					{
-						//Add the Building and Room to the String but remove the trailing ','
-						formatedString += "\"BuildingRoom\" : \"" + dayAndTimeString[1] + " " + dayAndTimeString[2] + "\"}\n";
-					}
-					else
-					{
-						//Add the Building and Room to the String
-						formatedString += "\"BuildingRoom\" : \"" + dayAndTimeString[1] + " " + dayAndTimeString[2] + "\"},\n";
-					}
+					//Add the Building and Room to the String but remove the trailing ','
+					meetingRowString += "\"BuildingRoom\" : \"" + dayAndTimeString[1] + " " + dayAndTimeString[2] + "\"}";
+					
+					//This type of scenario does not offer times for the classes. We use a 0 as a flag value.
+					sortedMeetings.get(intDay).put(0, meetingRowString);
 				}
 			}
 		}
-
+		
+		for(int i = 0; i < sortedMeetings.size(); i++)
+		{
+			Iterator<Integer> itty = sortedMeetings.get(i).keySet().iterator();
+			while(itty.hasNext())
+			{
+				formattedString += sortedMeetings.get(i).get(itty.next()) + ",\n";
+			}
+		}
+		
+		//Remove the extra comma added above
+		formattedString = formattedString.substring(0,formattedString.length() - 2);
+		
 		//Finish off Meetings with a ']'
-		formatedString += "],\n";
+		formattedString += "\n],\n";
 
 		//Add the Session to the String
-		formatedString += "\"Session\" : \"" + line[5] + "\",\n";
+		formattedString += "\"Session\" : \"" + line[5] + "\",\n";
 
 		//Add the CRN to the String
-		formatedString += "\"CRN\" : " + line[0] + ",\n";
+		formattedString += "\"CRN\" : " + line[0] + ",\n";
 
 		//Add the Title to the String
-		formatedString += "\"Title\" : \"" + line[6] + "\",\n";
+		formattedString += "\"Title\" : \"" + line[6] + "\",\n";
 
 		//Add the Professor to the String
-		formatedString += "\"Prof\" : \"" + line[7].replaceAll("[ ]{2,}", " ") + "\",\n";
+		formattedString += "\"Prof\" : \"" + line[7].replaceAll("[ ]{2,}", " ") + "\",\n";
 
 		//Add the Campus to the String
-		formatedString += "\"Campus\" : \"" + line[9] + "\",\n";
+		formattedString += "\"Campus\" : \"" + line[9] + "\",\n";
 
 		//Add the Credit Hours to the String
-		formatedString += "\"Hrs\" : " + line[11] + "\n";
+		formattedString += "\"Hrs\" : " + line[11] + "\n";
 
 		//End the string with a '}'
-		formatedString += "}\n";
+		formattedString += "}\n";
 
 
-		writer.write(formatedString);
+		writer.write(formattedString);
 		writer.flush();
 	}
+
 }
 
