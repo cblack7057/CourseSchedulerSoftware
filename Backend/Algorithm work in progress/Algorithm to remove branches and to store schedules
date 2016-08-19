@@ -1,0 +1,85 @@
+function removeBranches(tree, i, m, j, n){
+	if(i == 1)
+	{
+		removeBranchesHelper(tree[m], i, m, j, n); 
+	}
+	else
+	{
+		for(var k = 0; k < tree.length; k++)
+		{
+			removeBranchesHelper(tree[k]);
+		}
+	}
+}
+
+function removeBranchesHelper(node, i, m, j, n)
+{
+	if(node[1] == false)
+	{
+		return;
+	}
+	if(node[0][0] == i)
+	{
+		if(node[0][1] == m)
+		{
+			for(var k = 0; k < node[3].length; k++)
+			{
+				removeBranchesHelper2(node[3][k], j, n);
+			}
+		}
+	}
+	else{
+		for(var k = 0; k < node[3].length; k++)
+		{
+			removeBranchesHelper(node[3][k], i, m, j, n);
+		}
+	}
+}
+
+function removeBranchesHelper2(node, j, n) {
+	//base cases
+	if(node[1] == false)
+	{
+		return;
+	}
+	if(node[0][0] == j && node[0][1] == n)
+	{
+		node[1] = false;
+		return; 
+	}
+	for(var k = 0; k < node[3].length; k++)
+	{
+		removeBranchesHelper2(node[3][k], j, n);
+	}
+}
+
+
+scheduleArray = []; //one temporary schedule
+schedules = []; //list of all possible schedules
+function generateScheduleList(tree) {
+	for(var i = 0; i < tree.length; i++)
+	{
+		generateScheduleListHelper(tree[i]);
+	}
+}
+
+function generateScheduleListHelper(node) {
+	if(node[1] == false)
+	{
+		return;
+	}
+	scheduleArray.push(queryArray[node[0][0] - 1][node[0][1] - 1]);
+	if(node[0][0] == queryArray.length)
+	{
+		schedules.push(scheduleArray.clone()); //pass the array of class sections by value
+		var index = scheduleArray.indexOf(queryArray[node[0][0] - 1][node[0][1] - 1]);
+	}
+	else
+	{
+		for(var i = 0; i < node[3].length; i++)
+		{
+			generateScheduleListHelper(node[3][i]);
+		}
+	}
+	scheduleArray.splice(index, 1);
+}
