@@ -75,11 +75,25 @@ var MongoClient = mongodb.MongoClient;
 // Connection URL. This is where your mongodb server is running.
 var url = 'mongodb://carlind0:123456@ds015334.mlab.com:15334/db_name';
 
+var tree = [];
+var coursePairs = [];
+
 var server = http.createServer(function (req, res) {
     if (req.method.toLowerCase() == 'get') {
         displayForm(res);
     } else if (req.method.toLowerCase() == 'post') {
 		lookupCourses(req,res);
+		setTimeout(function(){
+			tree.push(treeMaker(1));
+			createPairs();
+			//console.log(coursePairs);
+			console.log(tree[0]);
+		}, 2000);
+		setTimeout(function(){
+			generatePairs();
+			//console.log(coursePairs);
+		}, 5000);
+		
 		setTimeout(function(){
 			res.end(util.inspect({queryArray: queryArray}, {showHidden: false, depth: null}));
 		}, 2000);
@@ -164,6 +178,199 @@ function verifyAndRemoveCoursesByTime(course, courseList, index){
 			}
 }
 
+function treeMaker(level) {
+	//base cases
+	var row = [];
+	if(queryArray.length == 0)
+	{
+		return row;
+	}
+	if(level == queryArray.length)
+	{
+		for(var i = 0; i < queryArray[level-1].length; i++)
+		{
+			row.push([[level, i + 1], true]);	
+		}
+		return row;
+	}
+
+
+	for(var i = 0; i < queryArray[level-1].length; i++)
+	{	
+		row.push([[level, i + 1], true, treeMaker(level + 1)]);
+	}
+		return row;
+}
+
+function editTree(tree, i, m, j, n) {
+	if(i == 1)
+	{
+		navigateTree(tree[m], i, m, j, n); 
+	}
+	else
+	{
+		for(k = 0; k < tree.length; k++)
+		{
+			navigateTree(tree[k]);
+		}
+	}
+}
+
+function navigateTree(node, i, m, j, n) {
+	if(node[1] == false)
+	{
+		return
+	}
+	if(node[0][0] == i && node[0][1] == m) 
+		{
+			for(k = 0; k < node[3].length; k++)
+			{
+				recursiveTreeChange(node[3][k], j, n);
+			}
+		}
+	for(k = 0; k < node[3].length; k++)
+	{
+		navigateTree(node[3][k], i, m, j, n);
+	}
+}
+
+function recursiveTreeChange(node, j, n) {
+	//base cases
+	if(node[1] == false)
+	{
+		return;
+	}
+	if(node[0][0] == j && node[0][1] == n)
+	{
+		node[1] = false;
+		return; 
+	}
+	for(k = 0; k < node[3].length; k++)
+	{
+		recursiveTreeChange(node[3][k], j, n);
+	}
+}
+
+function createPairs(){
+	for(i = 0; i < totalCourses - 1; i++)
+	{
+		for(j = i + 1; j < totalCourses; j++)
+		{
+			for(k = 0; k < queryArray[i].length; k++)
+			{
+				for(l = 0; l < queryArray[j].length; l++)
+				{
+					coursePairs.push([i+1,k+1,j+1,l+1])
+				}
+			}
+		}
+	}
+}
+
+function generatePairs(){
+	for( i=0; i<queryArray.length-1; i++){
+		for( j = i+1; j< queryArray.length; j++){
+			for( m = 0; m < queryArray[i].length; m++){
+				for( n = 0; n< queryArray[j].length; n++){
+					k =0;
+					l = 0;
+					var checking = true;
+					while(checking)
+					{
+						if(queryArray[i][m].Meetings.length == 0 || queryArray[j][n].length == 0)
+						{
+							checking = false;
+							removePairs(i,m,j,n);
+						}
+						else if(queryArray[i][m].Meetings[k].Day < queryArray[j][n].Meetings[l].Day)
+						{
+							if(k == queryArray[i][m].Meetings.length-1)
+							{
+								checking = false;
+								removePairs(i,m,j,n);
+							}
+							else
+							{
+								k++;
+							}
+						}
+						else if (queryArray[i][m].Meetings[k].Day == queryArray[j][n].Meetings[l].Day)
+						{
+
+							checking = noTimeConflict(queryArray[i][m].Meetings[k].StartTime, queryArray[i][m].Meetings[k].EndTime, queryArray[j][n].Meetings[l].StartTime, queryArray[j][n].Meetings[l].EndTime);
+							if(checking && (l == queryArray[j][n].Meetings.length-1))
+							{
+								if(k == queryArray[i][m].Meetings.length-1)
+								{
+									checking = false;
+									removePairs(i,m,j,n);
+								}
+								else
+								{
+									k++;
+									l = 0;
+								}
+							}
+							else
+							{
+								l++;
+							}
+						}
+						else
+						{
+							if(l == queryArray[j][n].Meetings.length - 1 )
+							{
+								checking = false;
+								removePairs(i,m,j,n);
+							}
+							else
+							{
+								l++;
+							}
+						}
+
+					}
+				}
+			}
+		}
+	}
+}
+
+function removePairs(i,m,j,n){
+	for(k = 0; k < coursePairs.length; k++)
+	{
+		if(coursePairs[k][0] == i+1)
+		{
+			if(coursePairs[k][1] == m+1)
+			{
+				if(coursePairs[k][2] == j+1)
+				{
+					if(coursePairs[k][3] == n+1)
+					{
+						coursePairs.splice(k,1);
+						return
+					}
+				}
+			}
+		}
+	}
+}
+
+function noTimeConflict(st1, et1, st2, et2){
+	
+	//console.log('in noTimeConflict');
+	if(st1 < st2 && et1 < st2)
+	{
+		return true;
+	}
+	if(st1 > st2 && et2 < st1)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
 function lookupCourses(req,res) {
 	//Store the data from the fields in your data store.
     var fields = [];
@@ -187,8 +394,8 @@ function lookupCourses(req,res) {
 			courses.push(fields['course' + i]);
 			subjects.push(fields['subject' + i]);
 			
-			console.log(courses);
-			console.log(subjects);
+			//console.log(courses);
+			//console.log(subjects);
 		}
 		
 		//assigns the day of the week fields. 
@@ -312,7 +519,7 @@ function lookupCourses(req,res) {
 				//If there is a result found
 				} else if (result.length) 
 				{
-					console.log('Found:', result);
+					//console.log('Found:', result);
 					
 					//Will check each timeslot and see if it matches the input criteria
 					//If it does NOT match, it will REMOVE from the array
