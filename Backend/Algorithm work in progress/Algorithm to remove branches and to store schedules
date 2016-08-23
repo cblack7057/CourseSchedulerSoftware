@@ -1,13 +1,13 @@
 function removeBranches(tree, i, m, j, n){
 	if(i == 1)
 	{
-		removeBranchesHelper(tree[m], i, m, j, n); 
+		removeBranchesHelper(tree[m-1], i, m, j, n); 
 	}
 	else
 	{
 		for(var k = 0; k < tree.length; k++)
 		{
-			removeBranchesHelper(tree[k]);
+			removeBranchesHelper(tree[k], i, m, j, n);
 		}
 	}
 }
@@ -69,10 +69,10 @@ function generateScheduleListHelper(node) {
 		return;
 	}
 	scheduleArray.push(queryArray[node[0][0] - 1][node[0][1] - 1]);
+	var index = scheduleArray.indexOf(queryArray[node[0][0] - 1][node[0][1] - 1]);
 	if(node[0][0] == queryArray.length)
 	{
 		schedules.push(scheduleArray.clone()); //pass the array of class sections by value
-		var index = scheduleArray.indexOf(queryArray[node[0][0] - 1][node[0][1] - 1]);
 	}
 	else
 	{

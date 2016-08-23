@@ -75,8 +75,10 @@ var MongoClient = mongodb.MongoClient;
 // Connection URL. This is where your mongodb server is running.
 var url = 'mongodb://carlind0:123456@ds015334.mlab.com:15334/db_name';
 
-var tree = [];
+var courseTree = [];
 var coursePairs = [];
+var scheduleArray = []; //one temporary schedule
+var schedules = []; //list of all possible schedules
 
 var server = http.createServer(function (req, res) {
     if (req.method.toLowerCase() == 'get') {
@@ -84,19 +86,23 @@ var server = http.createServer(function (req, res) {
     } else if (req.method.toLowerCase() == 'post') {
 		lookupCourses(req,res);
 		setTimeout(function(){
-			tree.push(treeMaker(1));
+			courseTree.push(treeMaker(1));
 			createPairs();
 			//console.log(coursePairs);
-			console.log(tree[0]);
+			//console.log(courseTree[0]);
 		}, 2000);
 		setTimeout(function(){
 			generatePairs();
+			updateTree();
+			generateScheduleList(courseTree);
+			res.end(util.inspect({schedules: schedules}, {showHidden: false, depth: null}));
+			//console.log(schedules);
 			//console.log(coursePairs);
 		}, 5000);
 		
-		setTimeout(function(){
-			res.end(util.inspect({queryArray: queryArray}, {showHidden: false, depth: null}));
-		}, 2000);
+		//setTimeout(function(){
+			//res.end(util.inspect({schedules: schedules}, {showHidden: false, depth: null}));
+		//}, 2000);
 		
     }
 });
@@ -202,53 +208,100 @@ function treeMaker(level) {
 		return row;
 }
 
-function editTree(tree, i, m, j, n) {
+function removeBranches(tree, i, m, j, n){
 	if(i == 1)
 	{
-		navigateTree(tree[m], i, m, j, n); 
+		removeBranchesHelper2(tree[0][m-1], j, n); 
+		
 	}
 	else
 	{
-		for(k = 0; k < tree.length; k++)
+		for(var k = 0; k < tree[0].length; k++)
 		{
-			navigateTree(tree[k]);
+			removeBranchesHelper(tree[0][k], i, m, j, n);
 		}
 	}
 }
 
-function navigateTree(node, i, m, j, n) {
+function removeBranchesHelper(node, i, m, j, n){
 	if(node[1] == false)
 	{
-		return
+		return;
 	}
-	if(node[0][0] == i && node[0][1] == m) 
+	if(node[0][0] == i)
+	{
+		if(node[0][1] == m)
 		{
-			for(k = 0; k < node[3].length; k++)
+			for(var k = 0; k < node[2].length; k++)
 			{
-				recursiveTreeChange(node[3][k], j, n);
+				removeBranchesHelper2(node[2][k], j, n);
 			}
 		}
-	for(k = 0; k < node[3].length; k++)
-	{
-		navigateTree(node[3][k], i, m, j, n);
+	}
+	else{
+		for(var k = 0; k < node[2].length; k++)
+		{
+			removeBranchesHelper(node[2][k], i, m, j, n);
+		}
 	}
 }
 
-function recursiveTreeChange(node, j, n) {
+function removeBranchesHelper2(node, j, n) {
 	//base cases
 	if(node[1] == false)
 	{
 		return;
 	}
-	if(node[0][0] == j && node[0][1] == n)
+	if(node[0][0] == j)
 	{
-		node[1] = false;
-		return; 
+		if(node[0][1] == n)
+		{
+			node[1] = false; 
+		}
+		
+		return;
 	}
-	for(k = 0; k < node[3].length; k++)
+	for(var k = 0; k < node[2].length; k++)
 	{
-		recursiveTreeChange(node[3][k], j, n);
+		removeBranchesHelper2(node[2][k], j, n);
 	}
+}
+
+function generateScheduleList(tree) {
+	for(var i = 0; i < tree[0].length; i++)
+	{
+		generateScheduleListHelper(tree[0][i]);
+	}
+}
+
+function generateScheduleListHelper(node) {
+	if(node[1] == false)
+	{
+		return;
+	}
+	scheduleArray.push(queryArray[node[0][0] - 1][node[0][1] - 1]);
+	var index = scheduleArray.indexOf(queryArray[node[0][0] - 1][node[0][1] - 1]);
+	if(node[0][0] == queryArray.length)
+	{
+		schedules.push(scheduleArray.slice(0)); //pass the array of class sections by value
+	}
+	else
+	{
+		for(var i = 0; i < node[2].length; i++)
+		{
+			generateScheduleListHelper(node[2][i]);
+		}
+	}
+	scheduleArray.splice(index, 1);
+}
+
+function updateTree(){
+	for(var i = 0; i < coursePairs.length; i++)
+	{
+		removeBranches(courseTree, coursePairs[i][0],coursePairs[i][1],coursePairs[i][2],coursePairs[i][3] )
+	}
+		
+	
 }
 
 function createPairs(){
@@ -277,7 +330,7 @@ function generatePairs(){
 					var checking = true;
 					while(checking)
 					{
-						if(queryArray[i][m].Meetings.length == 0 || queryArray[j][n].length == 0)
+						if(queryArray[i][m].Meetings.length == 0 || queryArray[j][n].Meetings.length == 0)
 						{
 							checking = false;
 							removePairs(i,m,j,n);
@@ -509,6 +562,7 @@ function lookupCourses(req,res) {
 					 "Subj": 1, 
 					 "Crse": 1, 
 					 "Session": 1,
+					 "Sect":1,
 					 "Meetings": 1, 
 					 "Meetings.Day": 1, 
 					 "Meetings.StartTime": 1, 
