@@ -12,6 +12,7 @@ var util = require('util');
 //Arrays used to store all the courses and subjects entered.
 var courses = [];
 var subjects = [];
+var badDoc = false;
 
 //Array used to store all the results after .find() has been ran for each course and subject.
 //This is NOT the final array to be printed.
@@ -84,21 +85,17 @@ var server = http.createServer(function (req, res) {
     if (req.method.toLowerCase() == 'get') {
         displayForm(res);
     } else if (req.method.toLowerCase() == 'post') {
-		lookupCourses(req,res);
+		start(req,res);
+		//setTimeout(function(){
+			//courseTree.push(treeMaker(1));
+			//createPairs();
+		//}, 2000);
 		setTimeout(function(){
-			courseTree.push(treeMaker(1));
-			createPairs();
-			//console.log(coursePairs);
-			//console.log(courseTree[0]);
-		}, 2000);
-		setTimeout(function(){
-			generatePairs();
-			updateTree();
-			generateScheduleList(courseTree);
+			//generatePairs();
+			//updateTree();
+			//generateScheduleList(courseTree);
 			res.end(util.inspect({schedules: schedules}, {showHidden: false, depth: null}));
-			//console.log(schedules);
-			//console.log(coursePairs);
-		}, 5000);
+		}, 4000);
 		
 		//setTimeout(function(){
 			//res.end(util.inspect({schedules: schedules}, {showHidden: false, depth: null}));
@@ -268,10 +265,15 @@ function removeBranchesHelper2(node, j, n) {
 }
 
 function generateScheduleList(tree) {
+	schedule = [];
+	scheduleArray = [];
+	
 	for(var i = 0; i < tree[0].length; i++)
 	{
 		generateScheduleListHelper(tree[0][i]);
 	}
+	
+	console.log(schedule);
 }
 
 function generateScheduleListHelper(node) {
@@ -296,6 +298,10 @@ function generateScheduleListHelper(node) {
 }
 
 function updateTree(){
+	if(queryArray.length == 0)
+	{
+		return;
+	}
 	for(var i = 0; i < coursePairs.length; i++)
 	{
 		removeBranches(courseTree, coursePairs[i][0],coursePairs[i][1],coursePairs[i][2],coursePairs[i][3] )
@@ -410,8 +416,6 @@ function removePairs(i,m,j,n){
 }
 
 function noTimeConflict(st1, et1, st2, et2){
-	
-	//console.log('in noTimeConflict');
 	if(st1 < st2 && et1 < st2)
 	{
 		return true;
@@ -422,6 +426,43 @@ function noTimeConflict(st1, et1, st2, et2){
 	}
 	
 	return false;
+}
+
+function start(req,res){
+	//when we hit submit, we want to reinitialize our variables for a clean search
+	courseTree = [];
+	coursePairs = [];
+	scheduleArray = []; //one temporary schedule
+	schedules = []; //list of all possible schedules
+	query1 = {};
+	query2 = {};
+	query3 = [];
+	badDoc = false;
+
+
+	console.log('lookupCourses');
+	lookupCourses(req,res);
+	
+	setTimeout(function(){
+	if(!badDoc)
+	{
+		setTimeout(function(){
+			console.log('courseTree');
+			courseTree.push(treeMaker(1))
+			console.log('createPairs');
+			createPairs();
+			console.log('generatePairs');
+			generatePairs();	
+			},1000);
+		setTimeout(function(){
+			console.log('updateTree');
+			updateTree();
+			console.log('generateScheduleList');
+			generateScheduleList(courseTree);
+		},2000);
+	}
+	},1000);
+
 }
 
 function lookupCourses(req,res) {
@@ -529,71 +570,77 @@ function lookupCourses(req,res) {
 		
 		//resets the queryArray incase the page has been reloaded
 		queryArray = [];
-		
-		//querys the database one time for every course entered.
-		for(i = 0; i < totalCourses; i++){
-			//the subject and course names
-			query1['Subj'] = subjects[i];
-			query2['Crse'] = courses[i];
+		badDoc = false;
 
-			//Querys the database based on the following parameters:
-				//the course name
-				//the subject name
-				//the meeting days equivalent to what has been selected
-			//Projects the follow fields of the result:
-				//Subject
-				//Course
-				//Session
-				//Meeting Days
-				//Meeting Times
-			collection.find({"$and":
-			[
-				query1,
-				query2, 
-				{$or:
-					[
-						{'Meetings.Day' : {$nin: query3}},
-						{'Session' : 'Online'}
-					]
-				}
-					
-			]},
-					{"_id": 0, 
-					 "Subj": 1, 
-					 "Crse": 1, 
-					 "Session": 1,
-					 "Sect":1,
-					 "Meetings": 1, 
-					 "Meetings.Day": 1, 
-					 "Meetings.StartTime": 1, 
-					 "Meetings.EndTime":1}).toArray(function (err, result) 
-			{	
-				if (err) {
-					console.log(err);
-				//If there is a result found
-				} else if (result.length) 
-				{
-					//console.log('Found:', result);
-					
-					//Will check each timeslot and see if it matches the input criteria
-					//If it does NOT match, it will REMOVE from the array
-					for(i = result.length - 1; i >= 0; i--)
-					{
-						verifyAndRemoveCoursesByTime(result[i], result, i);
+		//querys the database one time for every course entered.
+		for(var i = 0; i < totalCourses; i++)
+		{
+				//the subject and course names
+				query1['Subj'] = subjects[i];
+				query2['Crse'] = courses[i];
+
+				//Querys the database based on the following parameters:
+					//the course name
+					//the subject name
+					//the meeting days equivalent to what has been selected
+				//Projects the follow fields of the result:
+					//Subject
+					//Course
+					//Session
+					//Meeting Days
+					//Meeting Times
+				collection.find({"$and":
+				[
+					query1,
+					query2, 
+					{$or:
+						[
+							{'Meetings.Day' : {$nin: query3}},
+							{'Session' : 'Online'}
+						]
 					}
-					
-					//add the results to the queryArray
-					queryArray.push(result);
-					
-				} else {
-					console.log('No document(s) found with defined "find" criteria!');
-				}
+						
+				]},
+						{"_id": 0, 
+						 "Subj": 1, 
+						 "Crse": 1, 
+						 "Session": 1,
+						 "Sect":1,
+						 "Meetings": 1, 
+						 "Meetings.Day": 1, 
+						 "Meetings.StartTime": 1, 
+						 "Meetings.EndTime":1}).toArray(function (err, result) 
+				{	
+					if (err) {
+						console.log(err);
+					//If there is a result found
+					} else if (result.length) 
+					{
+						//console.log('Found:', result);
+						
+						//Will check each timeslot and see if it matches the input criteria
+						//If it does NOT match, it will REMOVE from the array
+						for(i = result.length - 1; i >= 0; i--)
+						{
+							verifyAndRemoveCoursesByTime(result[i], result, i);
+						}
+						
+						//add the results to the queryArray
+						queryArray.push(result);
+						
+					} else {
+						console.log('No document(s) found with defined "find" criteria!');
+						badDoc = true;
+					}
+				
+				});
+				
+				if(badDoc)
+					break;
+			}
 			
-			});
-		}
-		
-		//Close connection
-		db.close();
+			//Close connection
+			db.close();
 
 		
 		}
