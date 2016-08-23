@@ -51,32 +51,38 @@
     <div class="form-inline">
         <div class="radio">
             <label>
-                <input type="radio" value="Monday" ng-model="value" ng-change='main.newDay(value)'>
+                <input type="radio" value="0" ng-model="value" ng-change='main.newDay(value)'>
                 Monday
             </label>
         </div>
         <div class="radio">
             <label>
-                <input type="radio" value="Tuesday" ng-model="value" ng-change='main.newDay(value)'>
+                <input type="radio" value="1" ng-model="value" ng-change='main.newDay(value)'>
                 Tuesday
             </label>
         </div>
 		<div class="radio">
             <label>
-                <input type="radio" value="Wednesday" ng-model="value" ng-change='main.newDay(value)'>
+                <input type="radio" value="2" ng-model="value" ng-change='main.newDay(value)'>
                 Wednesday
             </label>
         </div>
         <div class="radio">
             <label>
-               <input type="radio" value="Thursday" ng-model="value" ng-change='main.newDay(value)'>
+               <input type="radio" value="3" ng-model="value" ng-change='main.newDay(value)'>
                 Thursday
             </label>
         </div>
 		<div class="radio">
             <label>
-               <input type="radio" value="Friday" ng-model="value" ng-change='main.newDay(value)'>
+               <input type="radio" value="4" ng-model="value" ng-change='main.newDay(value)'>
                 Friday
+            </label>
+        </div>
+		<div class="radio">
+            <label>
+               <input type="radio" value="5" ng-model="value" ng-change='main.newDay(value)'>
+                Saturday
             </label>
         </div>
     </div>
@@ -94,23 +100,27 @@
  <button type="submit" class="btn btn-success" ng-disabled="main.day == null">Add</button>
  </div>
  <h6 font color="red"> {{ main.errorMessage }}<h6>
- <!------ Table ----->
+ 
+ 
+ <!------ Table  date:"hh:mm a" ----->
  <div>
- <h3> These are the times you've chosen for {{ main.day }}</h3>
- <table class="table table-bordered">
+ <h3> These are the times you've chosen for the week.</h3>
+ <table class="table table-bordered" ng-repeat="day in main.week" >
 	<thead>
 		<tr>
-			<td>Start</td>
-			<td>End</td>
+			<th>Start</th>
+			<th>End</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="time in main.availableTimes">
-			<td>{{ time.startTime |  date:"hh:mm a" }}</td>
-			<td>{{ time.endTime |  date:"hh:mm a"}}</td>
+		<tr  ng-repeat="time in day">
+			<td>{{ time.startTime }}</td>
+			<td>{{ time.endTime }}</td>
 		</tr>
 	</tbody>
 </table>
+
+
 </div>
  </form>
 </div>
