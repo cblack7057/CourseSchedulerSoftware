@@ -16,7 +16,7 @@ var badDoc = false;
 
 var apiRouter = express.Router();
 var week;
-var tempCourses;
+var courses;
 
 // APP CONFIGURATION ==================
 // ====================================
@@ -62,45 +62,6 @@ app.route('/process')
 //This is NOT the final array to be printed.
 var queryArray = [];
 
-//The number of courses the user would like to enter.
-var totalCourses;
-
-//Day of the week times (monday)
-var mStartTime1;
-var mEndTime1;
-var mStartTime2;
-var mEndTime2;
-
-//Day of the week times (tuesday)
-var tStartTime1;
-var tEndTime1;
-var tStartTime2;
-var tEndTime2;
-
-//Day of the week times (wednesday)
-var wStartTime1;
-var wEndTime1;
-var wStartTime2;
-var wEndTime2;
-
-//Day of the week times (thursday)
-var rStartTime1;
-var rEndTime1;
-var rStartTime2;
-var rEndTime2;
-
-//Day of the week times (friday)
-var fStartTime1;
-var fEndTime1;
-var fStartTime2;
-var fEndTime2;
-
-//Day of the week times (saturday)
-var sStartTime1;
-var sEndTime1;
-var sStartTime2;
-var sEndTime2;
-
 //query1 and query2 are course and subject for lookup respectively
 //query3 is for day of the week lookup
 var query1 = {};
@@ -121,66 +82,86 @@ var schedules = []; //list of all possible schedules
 //Verify that the user has entered the correct data by verifying that the time entered is valid.
 //If the day of week is unchecked, we do not even look at the times.
 //Takes in the orignial query and will delete any courses that do not meet the time criteria.
-function verifyAndRemoveCoursesByTime(course, courseList, index){
-	var queriedCourses = course.Meetings;
+function verifyAndRemoveCoursesByTime(section, sectionList, index){
+	var queriedSectionMeetings = section.Meetings;
 	
-	for(j = 0; j < queriedCourses.length; j++)
-			{
-				if(queriedCourses[j].StartTime == null)
-					return;
-				
-				switch(queriedCourses[j].Day)
+	for(var i = 0; i < queriedSectionMeetings.length; i++)
+	{
+		//check if the class has a meeting time for this day
+		if(queriedSectionMeetings[i].StartTime == null)
+			return;
+		
+		switch(queriedSectionMeetings[i].Day)
+		{
+			case 0:
+				for(var j = 0; j < week[0].length; j++)
 				{
-					case 0:
-						if(!((mStartTime1 <= queriedCourses[j].StartTime && mEndTime1 >= queriedCourses[j].EndTime) || 
-							(mStartTime2 != "none" && mEndTime2 != "none" && (mStartTime2 <= queriedCourses[j].StartTime && mEndTime2 >= queriedCourses[j].EndTime))))
-						{
-							courseList.splice(index, 1);
-							return;
-						}
-						break;
-					case 1:
-						if(!((tStartTime1 <= queriedCourses[j].StartTime && tEndTime1 >= queriedCourses[j].EndTime) || 
-							(tStartTime2 != "none" && tEndTime2 != "none" && (tStartTime2 <= queriedCourses[j].StartTime && tEndTime2 >= queriedCourses[j].EndTime))))
-						{
-							courseList.splice(index, 1);
-							return;
-						}
-						break;
-					case 2:
-						if(!((wStartTime1 <= queriedCourses[j].StartTime && wEndTime1 >= queriedCourses[j].EndTime) || 
-							(wStartTime2 != "none" && wEndTime2 != "none" && (wStartTime2 <= queriedCourses[j].StartTime && wEndTime2 >= queriedCourses[j].EndTime))))
-						{
-							courseList.splice(index, 1);
-							return;
-						}
-						break;
-					case 3:
-						if(!((rStartTime1 <= queriedCourses[j].StartTime && rEndTime1 >= queriedCourses[j].EndTime) || 
-							(rStartTime2 != "none" && rEndTime2 != "none" && (rStartTime2 <= queriedCourses[j].StartTime && rEndTime2 >= queriedCourses[j].EndTime))))
-						{
-							courseList.splice(index, 1);
-							return;
-						}
-						break;
-					case 4:
-						if(!((fStartTime1 <= queriedCourses[j].StartTime && fEndTime1 >= queriedCourses[j].EndTime) || 
-							(fStartTime2 != "none" && fEndTime2 != "none" && (fStartTime2 <= queriedCourses[j].StartTime && fEndTime2 >= queriedCourses[j].EndTime))))
-						{
-							courseList.splice(index, 1);
-							return;
-						}
-						break;
-					case 5:
-						if(!((sStartTime1 <= queriedCourses[j].StartTime && sEndTime1 >= queriedCourses[j].EndTime) || 
-							(sStartTime2 != "none" && sEndTime2 != "none" && (sStartTime2 <= queriedCourses[j].StartTime && sEndTime2 >= queriedCourses[j].EndTime))))
-						{
-							courseList.splice(index, 1);
-							return;
-						}
-						break;
+					if(week[0][j].StartTime > queriedSectionMeetings[i].StartTime ||
+						week[0][j].EndTime < queriedSectionMeetings[i].EndTime)
+					{
+						sectionList.splice(index, 1);
+						return;
+					}
 				}
-			}
+				break;
+			case 1:
+                                for(var j = 0; j < week[1].length; j++)
+                                {
+                                        if(week[1][j].StartTime > queriedSectionMeetings[i].StartTime ||
+                                                week[1][j].EndTime < queriedSectionMeetings[i].EndTime)
+                                        {
+                                                sectionList.splice(index, 1);
+                                                return;
+                                        }
+                                }
+                                break;
+			case 2:
+                                for(var j = 0; j < week[2].length; j++)
+                                {
+                                        if(week[2][j].StartTime > queriedSectionMeetings[i].StartTime ||
+                                                week[2][j].EndTime < queriedSectionMeetings[i].EndTime)
+                                        {
+                                                sectionList.splice(index, 1);
+                                                return;
+                                        }
+                                }
+                                break;
+			case 3:
+                                for(var j = 0; j < week[3].length; j++)
+                                {
+                                        if(week[3][j].StartTime > queriedSectionMeetings[i].StartTime ||
+                                                week[3][j].EndTime < queriedSectionMeetings[i].EndTime)
+                                        {
+                                                sectionList.splice(index, 1);
+                                                return;
+                                        }
+                                }
+                                break;
+			case 4:
+                                for(var j = 0; j < week[4].length; j++)
+                                {
+                                        if(week[4][j].StartTime > queriedSectionMeetings[i].StartTime ||
+                                                week[4][j].EndTime < queriedSectionMeetings[i].EndTime)
+                                        {
+                                                sectionList.splice(index, 1);
+                                                return;
+                                        }
+                                }
+                                break;
+			case 5:
+                                for(var j = 0; j < week[5].length; j++)
+                                {
+                                        if(week[5][j].StartTime > queriedSectionMeetings[i].StartTime ||
+                                                week[5][j].EndTime < queriedSectionMeetings[i].EndTime)
+                                        {
+                                                sectionList.splice(index, 1);
+                                                return;
+                                        }
+                                }
+                                break;
+
+		}
+	}
 }
 
 function treeMaker(level) {
@@ -466,70 +447,22 @@ function start(req,res){
 }
 
 function lookupCourses(req,res) {
-	//Store the data from the fields in your data store.
-    var fields = [];
-    var form = new formidable.IncomingForm();
-    form.on('field', function (field, value) {
-        fields[field] = value;
-    });
+	//resets query3 incase a page has been reloaded.
+	query3 = [];
 
-    form.on('end', function () {
-				
-		//assigns the start and end time for the four drop down boxes for Monday.
-		mStartTime1 = fields["mondayStartTimeDropDown1"];
-		mEndTime1 = fields["mondayEndTimeDropDown1"];
-		mStartTime2 = fields["mondayStartTimeDropDown2"];
-		mEndTime2 = fields["mondayEndTimeDropDown2"];
-		
-		//assigns the start and end time for the four drop down boxes for Tuesday.
-		tStartTime1 = fields["tuesdayStartTimeDropDown1"];
-		tEndTime1 = fields["tuesdayEndTimeDropDown1"];
-		tStartTime2 = fields["tuesdayStartTimeDropDown2"];
-		tEndTime2 = fields["tuesdayEndTimeDropDown2"];
-		
-		//assigns the start and end time for the four drop down boxes for Wednesday.
-		wStartTime1 = fields["wednesdayStartTimeDropDown1"];
-		wEndTime1 = fields["wednesdayEndTimeDropDown1"];
-		wStartTime2 = fields["wednesdayStartTimeDropDown2"];
-		wEndTime2 = fields["wednesdayEndTimeDropDown2"];
-		
-		//assigns the start and end time for the four drop down boxes for Thursday.
-		rStartTime1 = fields["thursdayStartTimeDropDown1"];
-		rEndTime1 = fields["thursdayEndTimeDropDown1"];
-		rStartTime2 = fields["thursdayStartTimeDropDown2"];
-		rEndTime2 = fields["thursdayEndTimeDropDown2"];
-		
-		//assigns the start and end time for the four drop down boxes for Friday.
-		fStartTime1 = fields["fridayStartTimeDropDown1"];
-		fEndTime1 = fields["fridayEndTimeDropDown1"];
-		fStartTime2 = fields["fridayStartTimeDropDown2"];
-		fEndTime2 = fields["fridayEndTimeDropDown2"];
-		
-		//assigns the start and end time for the four drop down boxes for Saturday.
-		sStartTime1 = fields["saturdayStartTimeDropDown1"];
-		sEndTime1 = fields["saturdayEndTimeDropDown1"];
-		sStartTime2 = fields["saturdayStartTimeDropDown2"];
-		sEndTime2 = fields["saturdayEndTimeDropDown2"];
-		
-		//resets query3 incase a page has been reloaded.
-		query3 = [];
-		
-		//this will build an array, query3, that will tell us which days were NOT selected
-		if(week[0].length == 0)
-			query3.push(0);
-		if(week[1].length == 0)
-			query3.push(1);
-		if(week[2].length == 0)
-			query3.push(2);
-		if(week[3].length == 0)
-			query3.push(3);
-		if(week[4].length == 0)
-			query3.push(4);
-		if(week[5].length == 0)
-			query3.push(5);
-    });
-    
-	form.parse(req);
+	//this will build an array, query3, that will tell us which days were NOT selected
+	if(week[0].length == 0)
+		query3.push(0);
+	if(week[1].length == 0)
+		query3.push(1);
+	if(week[2].length == 0)
+		query3.push(2);
+	if(week[3].length == 0)
+		query3.push(3);
+	if(week[4].length == 0)
+		query3.push(4);
+	if(week[5].length == 0)
+		query3.push(5);
 	
 	//connects to the Mongo DB
 	MongoClient.connect(url, function (err, db) {
@@ -550,8 +483,8 @@ function lookupCourses(req,res) {
 		for(var i = 0; i < tempCourses.length; i++)
 		{
 				//the subject and course names
-				query1['Subj'] = tempCourses[i].subject;
-				query2['Crse'] = tempCourses[i].course;
+				query1['Subj'] = courses[i].subject;
+				query2['Crse'] = courses[i].course;
 
 				//Querys the database based on the following parameters:
 					//the course name
