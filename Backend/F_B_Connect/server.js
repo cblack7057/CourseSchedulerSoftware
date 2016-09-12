@@ -4,10 +4,6 @@ var express = require('express'); // call express
 var port = process.env.PORT || 8080; // set the port for our app
 var app = express(); // define our app using express
 var path = require('path');
-var http = require('http');
-var fs = require('fs');
-var formidable = require("formidable");
-var util = require('util');
 
 var bodyParser = require('body-parser'); 	// get body-parser
 var morgan     = require('morgan'); 		// used to see requests
@@ -54,7 +50,7 @@ app.route('/process')
 		console.log(req.body.timesArray);
 		console.log(req.body.courseArray);
 		week = req.body.timesArray;
-		tempCourses = req.body.courseArray;
+		courses = req.body.courseArray;
 		res.json({weekArray: week});
 	});	
 
@@ -84,86 +80,87 @@ var schedules = []; //list of all possible schedules
 //Takes in the orignial query and will delete any courses that do not meet the time criteria.
 function verifyAndRemoveCoursesByTime(section, sectionList, index){
 	var queriedSectionMeetings = section.Meetings;
-	
+
 	for(var i = 0; i < queriedSectionMeetings.length; i++)
 	{
 		//check if the class has a meeting time for this day
 		if(queriedSectionMeetings[i].StartTime == null)
 			return;
-		
+
 		switch(queriedSectionMeetings[i].Day)
 		{
-			case 0:
-				for(var j = 0; j < week[0].length; j++)
+		case 0:
+			for(var j = 0; j < week[0].length; j++)
+			{
+				if(week[0][j].StartTime > queriedSectionMeetings[i].StartTime ||
+				week[0][j].EndTime < queriedSectionMeetings[i].EndTime)
 				{
-					if(week[0][j].StartTime > queriedSectionMeetings[i].StartTime ||
-						week[0][j].EndTime < queriedSectionMeetings[i].EndTime)
-					{
-						sectionList.splice(index, 1);
-						return;
-					}
+					sectionList.splice(index, 1);
+					return;
 				}
-				break;
-			case 1:
-                                for(var j = 0; j < week[1].length; j++)
-                                {
-                                        if(week[1][j].StartTime > queriedSectionMeetings[i].StartTime ||
-                                                week[1][j].EndTime < queriedSectionMeetings[i].EndTime)
-                                        {
-                                                sectionList.splice(index, 1);
-                                                return;
-                                        }
-                                }
-                                break;
-			case 2:
-                                for(var j = 0; j < week[2].length; j++)
-                                {
-                                        if(week[2][j].StartTime > queriedSectionMeetings[i].StartTime ||
-                                                week[2][j].EndTime < queriedSectionMeetings[i].EndTime)
-                                        {
-                                                sectionList.splice(index, 1);
-                                                return;
-                                        }
-                                }
-                                break;
-			case 3:
-                                for(var j = 0; j < week[3].length; j++)
-                                {
-                                        if(week[3][j].StartTime > queriedSectionMeetings[i].StartTime ||
-                                                week[3][j].EndTime < queriedSectionMeetings[i].EndTime)
-                                        {
-                                                sectionList.splice(index, 1);
-                                                return;
-                                        }
-                                }
-                                break;
-			case 4:
-                                for(var j = 0; j < week[4].length; j++)
-                                {
-                                        if(week[4][j].StartTime > queriedSectionMeetings[i].StartTime ||
-                                                week[4][j].EndTime < queriedSectionMeetings[i].EndTime)
-                                        {
-                                                sectionList.splice(index, 1);
-                                                return;
-                                        }
-                                }
-                                break;
-			case 5:
-                                for(var j = 0; j < week[5].length; j++)
-                                {
-                                        if(week[5][j].StartTime > queriedSectionMeetings[i].StartTime ||
-                                                week[5][j].EndTime < queriedSectionMeetings[i].EndTime)
-                                        {
-                                                sectionList.splice(index, 1);
-                                                return;
-                                        }
-                                }
-                                break;
+			}
+			break;
+		case 1:
+			for(var j = 0; j < week[1].length; j++)
+			{
+				if(week[1][j].StartTime > queriedSectionMeetings[i].StartTime ||
+				week[1][j].EndTime < queriedSectionMeetings[i].EndTime)
+				{
+					sectionList.splice(index, 1);
+					return;
+				}
+			}
+			break;
+		case 2:
+			for(var j = 0; j < week[2].length; j++)
+			{
+				if(week[2][j].StartTime > queriedSectionMeetings[i].StartTime ||
+				week[2][j].EndTime < queriedSectionMeetings[i].EndTime)
+				{
+					sectionList.splice(index, 1);
+					return;
+				}
+			}
+			break;
+		case 3:
+			for(var j = 0; j < week[3].length; j++)
+			{
+				if(week[3][j].StartTime > queriedSectionMeetings[i].StartTime ||
+				week[3][j].EndTime < queriedSectionMeetings[i].EndTime)
+				{
+					sectionList.splice(index, 1);
+					return;
+				}
+			}
+			break;
+		case 4:
+			for(var j = 0; j < week[4].length; j++)
+			{
+				if(week[4][j].StartTime > queriedSectionMeetings[i].StartTime ||
+				week[4][j].EndTime < queriedSectionMeetings[i].EndTime)
+				{
+					sectionList.splice(index, 1);
+					return;
+				}
+			}
+			break;
+		case 5:
+			for(var j = 0; j < week[5].length; j++)
+			{
+				if(week[5][j].StartTime > queriedSectionMeetings[i].StartTime ||
+				week[5][j].EndTime < queriedSectionMeetings[i].EndTime)
+				{
+					sectionList.splice(index, 1);
+					return;
+				}
+			}
+			break;
 
 		}
 	}
 }
 
+//creates a tree with each edge between nodes representing a pair of sections
 function treeMaker(level) {
 	//base cases
 	var row = [];
@@ -188,6 +185,7 @@ function treeMaker(level) {
 		return row;
 }
 
+//removes the branches of the tree that have edges that represent pairs found in coursePairs
 function removeBranches(tree, i, m, j, n){
 	if(i == 1)
 	{
@@ -247,6 +245,7 @@ function removeBranchesHelper2(node, j, n) {
 	}
 }
 
+//given that the branches of the tree that represent pairs of sections that do not work are removed, this generates all possible schedules that work
 function generateScheduleList(tree) {
 	schedule = [];
 	scheduleArray = [];
@@ -278,6 +277,7 @@ function generateScheduleListHelper(node) {
 	scheduleArray.splice(index, 1);
 }
 
+//removes the edges from the tree that represent a pair if it is in coursePairs
 function updateTree(){
 	if(queryArray.length == 0)
 	{
@@ -291,10 +291,11 @@ function updateTree(){
 	
 }
 
+//Creates every possible combination of class sections as pairs and stores in coursePairs
 function createPairs(){
-	for(i = 0; i < totalCourses - 1; i++)
+	for(i = 0; i < courses.length - 2; i++)
 	{
-		for(j = i + 1; j < totalCourses; j++)
+		for(j = i + 1; j < courses.length - 1; j++)
 		{
 			for(k = 0; k < queryArray[i].length; k++)
 			{
@@ -307,6 +308,7 @@ function createPairs(){
 	}
 }
 
+//Removes all of the pairs in coursePairs that conflict, guarenteeing that every pair in coursePairs DOES have a time conflict
 function generatePairs(){
 	for( i=0; i<queryArray.length-1; i++){
 		for( j = i+1; j< queryArray.length; j++){
@@ -409,6 +411,7 @@ function noTimeConflict(st1, et1, st2, et2){
 	return false;
 }
 
+//Start executes the different parts of the application
 function start(req,res){
 	//when we hit submit, we want to reinitialize our variables for a clean search
 	courseTree = [];
@@ -469,8 +472,6 @@ function lookupCourses(req,res) {
 		if (err) {
 			console.log('Unable to connect to the mongoDB server. Error:', err);
 		} else {
-			//HURRAY!! We are connected. :)
-			console.log('Connection established to', url);
 
 		// Get the documents collection
 		var collection = db.collection('Courses');
@@ -480,7 +481,7 @@ function lookupCourses(req,res) {
 		badDoc = false;
 
 		//querys the database one time for every course entered.
-		for(var i = 0; i < tempCourses.length; i++)
+		for(var i = 0; i < courses.length; i++)
 		{
 				//the subject and course names
 				query1['Subj'] = courses[i].subject;
@@ -523,8 +524,6 @@ function lookupCourses(req,res) {
 					//If there is a result found
 					} else if (result.length) 
 					{
-						//console.log('Found:', result);
-						
 						//Will check each timeslot and see if it matches the input criteria
 						//If it does NOT match, it will REMOVE from the array
 						for(i = result.length - 1; i >= 0; i--)

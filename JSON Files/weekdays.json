@@ -1,38 +1,30 @@
-"Weekdays" : [
-	[
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####}
+format of timesArray:
+[	
+	[	
+		{StartTime: (military time as an integer), EndTime: (military time as an integer)},
+		{StartTime: ..., EndTime: ...},
+		...
 	],
 	[
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####}
+		{StartTime: (military time as an integer), EndTime: (military time as an integer)},
+                {StartTime: ..., EndTime: ...},
+                ...
 	],
+	...
 	[
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####}
-	],
-	[
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####}
-	],
-	[
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####}
-	],
-	[
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####},
-		{"startTime": ####, "endTime": ####}
-	]	
+		{StartTime: (military time as an integer), EndTime: (military time as an integer)},
+                {StartTime: ..., EndTime: ...},
+                ...
+	]
+]
+
+there should only be 6 elements in the outer array representing the days monday(0) - saturday(5)
+each element of the outer array is an array
+the inner array's elements are pairs of start and end times
+each inner array *should* be sorted by time and *must* have times that overlap combined into a single start and end time
+
+format of courseArray:
+[
+	{subject: (the subject abbrev. such as 'CS'), course: (course number such as '0415U')},
+	...
 ]
