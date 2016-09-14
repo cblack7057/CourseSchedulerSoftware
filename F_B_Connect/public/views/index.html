@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My First Angular Application!</title>
+    <title>Rowan AutoScheduler</title>
 
     <!-- CSS -->
     <!-- load bootstrap and our stylesheet -->
@@ -36,20 +36,24 @@
                     </div>
                     -->
                 <h4>{{ main.message }}</h4>
+				<h4>{{ main.message2 }}</h4>
                 <div class="container">
-                    Monday: {{ main.M | date:"hh:mm a" }}
+                    Monday: {{ main.times[0] }}
                 </div>
                 <div class="container">
-                    Tuesday: {{ main.T }}
+                    Tuesday: {{ main.times[1] }}
                 </div>
                 <div class="container">
-                    Wednesday: {{ main.W }}
+                    Wednesday: {{ main.times[2] }}
                 </div>
                 <div class="container">
-                    Thursday: {{ main.R }}
+                    Thursday: {{ main.times[3] }}
                 </div>
                 <div class="container">
-                    Friday: {{ main.F }}
+                    Friday: {{ main.times[4] }}
+                </div>
+				<div class="container">
+                    Saturday: {{ main.times[5] }}
                 </div>
 
 

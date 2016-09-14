@@ -5,6 +5,7 @@ angular.module('firstApp2', ['scheduleService'])
     var vm = this;
     // Set from form
     vm.message = 'AvailableTimes array';
+	vm.message2 = 'test';
     vm.errorMessage = '';
 	
 	// entire array represents a week, each inner array represents a day,
@@ -25,18 +26,21 @@ angular.module('firstApp2', ['scheduleService'])
             var sTime = new Date(vm.timeData.startTime);
             var eTime = new Date(vm.timeData.endTime);
             if (sTime < eTime) {
-                sTime = vm.changeTimeFormat(sTime);
+				sTime = vm.changeTimeFormat(sTime);
                 eTime = vm.changeTimeFormat(eTime);
                 vm.availableTimes.push({
                     startTime: sTime,
                     endTime: eTime
                 });
+				vm.message = vm.availableTimes;
+				vm.times[vm.day] = vm.combine(vm.availableTimes);
                 vm.timeData = {}; //clears form
                 vm.errorMessage = '';
             } else {
                 vm.errorMessage = 'Please verify that the start time occurs before the end time.'
             }
         }
+		
     };
 	
     // submits week data to backend through a post request, then sets data the 'message'
@@ -60,12 +64,53 @@ angular.module('firstApp2', ['scheduleService'])
     vm.changeTimeFormat = function (time) {
         return (time.getHours() < 10 ? '0' : '') + time.getHours() + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes();
     };
-
+	
     // Changes the displayed table of times frames
     vm.newDay = function (value) {
         vm.day = value;
         vm.availableTimes = vm.times[value];
-        vm.message = vm.availableTimes;
+        //vm.message = vm.availableTimes;
     };
 
+	
+	// source http://stackoverflow.com/questions/26390938/merge-arrays-with-overlapping-values
+	vm.combine = function (frames) {
+		var result = [];
+		
+		// sort the array
+		frames.sort(function(a,b) {
+			a = a.startTime;
+			b = b.startTime;
+			
+			if(a > b){
+				return 1; 
+			}
+			if (b < a) {
+				return -1;
+			}
+			return 0;
+			});
+
+		frames.forEach(function(r) {
+			if(!result.length || r.startTime > result[result.length-1].endTime)
+				result.push(r);
+			else
+				result[result.length-1].endTime = r.endTime;
+		});
+		
+		vm.message2 = result;
+		return result;		
+	};
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 });
