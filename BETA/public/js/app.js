@@ -15,6 +15,10 @@ angular.module('firstApp2', ['scheduleService'])
     vm.timeData = {};
     vm.dayData = {};
 
+    vm.courses = [];
+
+    vm.courseData = {};
+
     // Adds start and end times to the selected day's array of available time frames.
     vm.addTimes = function () {
         if (vm.timeData.startTime !== null && vm.timeData.endTime !== null) {
@@ -62,5 +66,22 @@ angular.module('firstApp2', ['scheduleService'])
         vm.availableTimes = vm.week[value];
         vm.message = vm.availableTimes;
     };
+
+    vm.addCourses = function () {
+        if (vm.courseData.subject !== null && vm.courseData.crn !== null) {
+            var subject = vm.courseData.subject;
+            var crn = vm.courseData.crn;
+            vm.courses.push({
+                subject: subject,
+                crn: crn
+            });
+            vm.courseData = {};
+            vm.errorMessage = '';
+        } else {
+            vm.errorMessage = 'Please enter your course subject and crn.'
+        }
+    };
+
+
 
 });
