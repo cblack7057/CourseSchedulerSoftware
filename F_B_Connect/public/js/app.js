@@ -93,8 +93,8 @@ angular.module('firstApp2', ['scheduleService'])
                     endTime: eTime
                 });
 				//vm.message = vm.courses;
-				vm.times[vm.day] = vm.combine(vm.availableTimes);
-                vm.timeData = {}; //clears form
+		vm.times[vm.day] = vm.combine(vm.availableTimes);
+                //vm.timeData = {}; //clears form
                 vm.errorMessage = '';
             } else {
                 vm.errorMessage = 'Please verify that the start time occurs before the end time.'
@@ -116,14 +116,14 @@ angular.module('firstApp2', ['scheduleService'])
         } else {
             vm.errorMessage = 'Please enter your course subject and course.'
         }
-		vm.message = vm.courses;
+		//vm.message = vm.courses;
     };
 	
     // submits week data to backend through a post request, then sets data the 'message'
     vm.submitTimes = function () {
 		var weekData = {timesArray: vm.times,
 						courseArray: vm.courses};
-		vm.message = weekData;
+		// vm.message = weekData;
 		// POST request
 		$http({
 			method: 'POST',
@@ -132,11 +132,12 @@ angular.module('firstApp2', ['scheduleService'])
 			headers: {'Content-Type': 'application/json'}
 		}).success(function(data){
 			// extract "Schedule" array from the returned data and save
-			//vm.schedules = data.Schedule;
-			//vm.setCurrentSchedule(0); // sets current schedule to the first one
-			//vm.message = data; // temporary return
+			vm.schedules = data;
+			vm.setCurrentSchedule(0); // sets current schedule to the first one
+			vm.message2 = 'reached'; // temporary return
 		});
-		vm.setCurrentSchedule(0);
+		vm.message2 = 'not reached';
+		//vm.setCurrentSchedule(0);
 		
     };
 	
@@ -178,16 +179,16 @@ angular.module('firstApp2', ['scheduleService'])
 				result[result.length-1].endTime = r.endTime;
 		});
 		
-		vm.message2 = result;
 		return result;		
 	};
 	
 	vm.setCurrentSchedule = function(index){
 		//use this one when taking schedules from 
-		//var tempSchedule = vm.schedules[index]; 
+		currentSchedule = [];
+		var tempSchedule = vm.schedules[index]; 
 		
-		var tempSchedule = vm.testTimes; //to test the single schedule we created
-		
+		//var tempSchedule = vm.testTimes; //to test the single schedule we created
+		vm.message = tempSchedule;
 		// I'll deal with sorting by times later
 		// 1. loop through each class in the schedule to be set
 		// [Deleted]
@@ -196,33 +197,16 @@ angular.module('firstApp2', ['scheduleService'])
 		tempSchedule.forEach(function(c){
 			var meetings = c.Meetings;
 			var tempDay = 0;
+			 
 			meetings.forEach(function(t){
-				switch (t.Day) {
-					case 'M':
-						tempDay = 1;
-					break;
-					case 'T':
-						tempDay = 2;
-					break;
-					case 'W':
-						tempDay = 3;
-					break;
-					case 'R':
-						tempDay = 4;
-					break;
-					case 'F':
-						tempDay = 5;
-					break;
-					case 'S':
-						tempDay = 6;
-					break;
-				}
-			vm.currentSchedule[tempDay].push({
+						
+			vm.currentSchedule[t.Day].push({
 					Subject: c.Subj,
 					sTime: t.StartTime,
 					eTime: t.EndTime,
 					courseInfo: c
 				});
+			//vm.message2 = 
 			});
 		});
 	}

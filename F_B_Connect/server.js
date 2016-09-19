@@ -49,9 +49,14 @@ app.route('/process')
 		//lookupCourses(req,res);
 		//console.log(req.body.timesArray);
 		//console.log(req.body.courseArray);
-		//week = req.body.timesArray;
-		//courses = req.body.courseArray;
-		res.json('this works');
+		week = req.body.timesArray;
+		courses = req.body.courseArray;
+		start(req,res);
+		console.log(req.body);
+		setTimeout(function() {
+			console.log(schedules);
+			res.json(schedules);
+		}, 5000);
 	});	
 
 //Array used to store all the results after .find() has been ran for each course and subject.
