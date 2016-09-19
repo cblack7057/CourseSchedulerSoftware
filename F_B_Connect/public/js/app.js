@@ -19,7 +19,67 @@ angular.module('firstApp2', ['scheduleService'])
     // form data
     vm.timeData = {};
     vm.dayData = {};
-
+	
+	// returned schedule data
+	vm.schedules = [];
+	
+	// test times represents a single schedule
+	vm.testTimes = [{
+		
+	"Subj" : "BIOL",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	},
+	{
+	"Subj" : "MATH",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 110,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	},
+	{
+	"Subj" : "Arch",
+	"Crse" : "1104",
+	"Sect" : "4",
+	"Meetings" : [
+		{"Type" : "(Lecture)","Day" : "T","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lecture)","Day" : "R","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1530,"EndTime" : 1645,"BuildingRoom" : "SCIENC 234"},
+		{"Type" : "(Lab)","Day" : "W","StartTime" : 1700,"EndTime" : 1815,"BuildingRoom" : "SCIENC 234"}
+	],
+	"Session" : "Day",
+	"CRN" : 41722,
+	"Title" : "BIOL 1:DIVERS/EVOL/ADAP-RS-LC",
+	"Prof" : "Travis Matthew P",
+	"Campus" : "Main",
+	"Hrs" : 4
+	}];
+	
+	// current schedule has 
+	vm.currentSchedule = [[],[],[],[],[],[], []];
+	
     // adds start and end times to the selected day's array of available time frames
     vm.addTimes = function () {
         if (vm.timeData.startTime !== null && vm.timeData.endTime !== null) {
@@ -32,7 +92,7 @@ angular.module('firstApp2', ['scheduleService'])
                     startTime: sTime,
                     endTime: eTime
                 });
-				vm.message = vm.availableTimes;
+				//vm.message = vm.courses;
 				vm.times[vm.day] = vm.combine(vm.availableTimes);
                 vm.timeData = {}; //clears form
                 vm.errorMessage = '';
@@ -43,11 +103,27 @@ angular.module('firstApp2', ['scheduleService'])
 		
     };
 	
+	 vm.addCourses = function () {
+        if (vm.courseData.subject != null && vm.courseData.course != null) {
+            var s = vm.courseData.subject;
+            var c = vm.courseData.course;
+            vm.courses.push({
+                subject: s,
+                course: c
+            });
+            vm.courseData = {};
+            vm.errorMessage = '';
+        } else {
+            vm.errorMessage = 'Please enter your course subject and course.'
+        }
+		vm.message = vm.courses;
+    };
+	
     // submits week data to backend through a post request, then sets data the 'message'
     vm.submitTimes = function () {
 		var weekData = {timesArray: vm.times,
 						courseArray: vm.courses};
-		
+		vm.message = weekData;
 		// POST request
 		$http({
 			method: 'POST',
@@ -55,8 +131,12 @@ angular.module('firstApp2', ['scheduleService'])
 			data: weekData,
 			headers: {'Content-Type': 'application/json'}
 		}).success(function(data){
-			vm.message = data; // temporary return
+			// extract "Schedule" array from the returned data and save
+			//vm.schedules = data.Schedule;
+			//vm.setCurrentSchedule(0); // sets current schedule to the first one
+			//vm.message = data; // temporary return
 		});
+		vm.setCurrentSchedule(0);
 		
     };
 	
@@ -102,15 +182,49 @@ angular.module('firstApp2', ['scheduleService'])
 		return result;		
 	};
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	vm.setCurrentSchedule = function(index){
+		//use this one when taking schedules from 
+		//var tempSchedule = vm.schedules[index]; 
+		
+		var tempSchedule = vm.testTimes; //to test the single schedule we created
+		
+		// I'll deal with sorting by times later
+		// 1. loop through each class in the schedule to be set
+		// [Deleted]
+		// 3. loop through the meeting times of that class IF they exist, if no meeting add to index[0] of currentSchedule
+		// 4. switch/case 'M', 'T', 'W', 'R', 'F', 'S' to add to index of currentSchedules
+		tempSchedule.forEach(function(c){
+			var meetings = c.Meetings;
+			var tempDay = 0;
+			meetings.forEach(function(t){
+				switch (t.Day) {
+					case 'M':
+						tempDay = 1;
+					break;
+					case 'T':
+						tempDay = 2;
+					break;
+					case 'W':
+						tempDay = 3;
+					break;
+					case 'R':
+						tempDay = 4;
+					break;
+					case 'F':
+						tempDay = 5;
+					break;
+					case 'S':
+						tempDay = 6;
+					break;
+				}
+			vm.currentSchedule[tempDay].push({
+					Subject: c.Subj,
+					sTime: t.StartTime,
+					eTime: t.EndTime,
+					courseInfo: c
+				});
+			});
+		});
+	}
+
 });

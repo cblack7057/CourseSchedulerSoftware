@@ -45,13 +45,13 @@ app.route('/process')
 // retrieves weekData from a post request
 	
 	.post(function(req,res){
-		start(req,res);
+		//start(req,res);
 		//lookupCourses(req,res);
-		console.log(req.body.timesArray);
-		console.log(req.body.courseArray);
-		week = req.body.timesArray;
-		courses = req.body.courseArray;
-		res.json({weekArray: week});
+		//console.log(req.body.timesArray);
+		//console.log(req.body.courseArray);
+		//week = req.body.timesArray;
+		//courses = req.body.courseArray;
+		res.json('this works');
 	});	
 
 //Array used to store all the results after .find() has been ran for each course and subject.

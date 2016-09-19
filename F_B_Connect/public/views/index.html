@@ -119,42 +119,71 @@
                         <div>
                             <h3> These are the times you've chosen for the week.</h3>
                             <table class="table table-bordered" ng-repeat="day in main.times">
-                                <thead>
                                     <tr>
                                         <th>Start</th>
                                         <th>End</th>
                                     </tr>
-                                </thead>
-                                <tbody>
                                     <tr ng-repeat="time in day">
                                         <td>{{ time.startTime }}</td>
                                         <td>{{ time.endTime }}</td>
                                     </tr>
-                                </tbody>
                             </table>
                         </div>
-                    <button class="btn btn-success" ng-click="main.submitTimes()">Submit</button>
-                       
-                    <!--
-                        <script type="text/javascript">
-                            var submitButton = document.getElementById('submitButton');
-                            submitButton.onclick = function () {
-                                var latitude = 0
-                                , longitude = 0; // Set from form
+                    
+					</form>
+					
+					<form class="form-inline" ng-submit="main.addCourses()">
+                    <label> Subject (ie: 'CS'): </label>
+                    <input type="text" class="form-control" ng-model="main.courseData.subject">
+                    <label> Course: </label>
+                    <input type="text" class="form-control" ng-model="main.courseData.course">
+                    <button type="submit" class="btn btn-success">Add</button> <!--Do i need an ng-disabled here?-->
+                    <!--Getting weird functionality with the submit button, need to figure that out-->
 
-                                $.post({
-                                    url: "http://localhost:80/locations",
-                                    data: { latitude: latitude, longitude: longitude },
-                                    success: function (data) {
-                                        console.log("Success");
-                                        submitButton.hidden = true;
-                                    },
-                                    dataType: "json"
-                                });
-                            }
-                        </script>
-                        -->
-                        </form>
-    </div>
+                    <!------ Table  date:"hh:mm a" ----->
+                    <div>
+                        <h3> These are the courses you've chosen.</h3>
+                        <table class="table table-bordered" ng-repeat="course in main.courses">
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Course</th>
+                                </tr>
+                                <tr>
+                                    <td>{{ course.subject }}</td>
+                                    <td>{{ course.course }}</td>
+                                </tr>
+                        </table>
+                    </div>
+                </form>
+					
+					
+					<button class="btn btn-success" ng-click="main.submitTimes()">Submit</button>
+					
+					 <div>
+                            <h3> Schedule </h3>
+                            <table class="table table-bordered">
+                                    <tr>
+										<th>Unknown</th>
+                                        <th>Monday</th>
+                                        <th>Tuesday</th>
+										<th>Wednesday</th>
+										<th>Thursday</th>
+										<th>Friday</th>
+										<th>Saturday</th>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><button class="btn btn-success" ng-repeat="tests in main.currentSchedule[0]">Subject: {{tests.Subject}}<br>Start Time: {{tests.sTime}}<br> EndTime:{{tests.eTime}}</button></td>
+                                        <td><button class="btn btn-success" ng-repeat="tests in main.currentSchedule[1]">Subject: {{tests.Subject}}<br>Start Time: {{tests.sTime}}<br> EndTime:{{tests.eTime}}</button></td>
+                                        <td><button class="btn btn-success" ng-repeat="tests in main.currentSchedule[2]">Subject: {{tests.Subject}}<br>Start Time: {{tests.sTime}}<br> EndTime:{{tests.eTime}}</button></td>
+                                        <td><button class="btn btn-success" ng-repeat="tests in main.currentSchedule[3]">Subject: {{tests.Subject}}<br>Start Time: {{tests.sTime}}<br> EndTime:{{tests.eTime}}</button></td>
+                                        <td><button class="btn btn-success" ng-repeat="tests in main.currentSchedule[4]">Subject: {{tests.Subject}}<br>Start Time: {{tests.sTime}}<br> EndTime:{{tests.eTime}}</button></td>
+                                        <td><button class="btn btn-success" ng-repeat="tests in main.currentSchedule[5]">Subject: {{tests.Subject}}<br>Start Time: {{tests.sTime}}<br> EndTime:{{tests.eTime}}</button></td>
+                                        <td><button class="btn btn-success" ng-repeat="tests in main.currentSchedule[6]">Subject: {{tests.Subject}}<br>Start Time: {{tests.sTime}}<br> EndTime:{{tests.eTime}}</button></td>
+                                    </tr>
+                            </table>
+                        </div>
+				</div>
+				</div>
 </body>
 </html>
