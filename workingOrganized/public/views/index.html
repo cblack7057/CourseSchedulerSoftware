@@ -106,9 +106,9 @@
                     <h3> Add time frame(s) you will be available: </h3>
                     <form class="form-inline" ng-submit="main.addTimes()">
                         <label> Start time: </label>
-                        <input type="time" class="form-control" ng-model="main.timeData.startTime">
+                        <input type="time" class="form-control" ng-model="main.timeData.StartTime">
                         <label> End time: </label>
-                        <input type="time" class="form-control" ng-model="main.timeData.endTime">
+                        <input type="time" class="form-control" ng-model="main.timeData.EndTime">
                         <button type="submit" class="btn btn-success" ng-disabled="main.day == null">Add</button>
                 
                 <h6 font color="red">
@@ -132,8 +132,8 @@
                                         <th>End</th>
                                     </tr>
                                     <tr ng-repeat="time in day">
-                                        <td>{{ time.startTime }}</td>
-                                        <td>{{ time.endTime }}</td>
+                                        <td>{{ time.StartTime }}</td>
+                                        <td>{{ time.EndTime }}</td>
                                     </tr>
                             </table>
 							 

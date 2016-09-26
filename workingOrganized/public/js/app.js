@@ -32,15 +32,15 @@ angular.module('firstApp2', ['scheduleService'])
 	
     // adds start and end times to the selected day's array of available time frames
     vm.addTimes = function () {
-        if (vm.timeData.startTime !== null && vm.timeData.endTime !== null) {
-            var sTime = new Date(vm.timeData.startTime);
-            var eTime = new Date(vm.timeData.endTime);
+        if (vm.timeData.StartTime !== null && vm.timeData.EndTime !== null) {
+            var sTime = new Date(vm.timeData.StartTime);
+            var eTime = new Date(vm.timeData.EndTime);
             if (sTime < eTime) {
 				sTime = vm.changeTimeFormat(sTime);
                 eTime = vm.changeTimeFormat(eTime);
                 vm.availableTimes.push({
-                    startTime: sTime,
-                    endTime: eTime
+                    StartTime: sTime,
+                    EndTime: eTime
                 });
 				//vm.message = vm.courses;
 		vm.times[vm.day] = vm.combine(vm.availableTimes);
@@ -111,8 +111,8 @@ angular.module('firstApp2', ['scheduleService'])
 		
 		// sort the array
 		frames.sort(function(a,b) {
-			a = a.startTime;
-			b = b.startTime;
+			a = a.StartTime;
+			b = b.StartTime;
 			
 			if(a > b){
 				return 1; 
@@ -124,10 +124,10 @@ angular.module('firstApp2', ['scheduleService'])
 			});
 
 		frames.forEach(function(r) {
-			if(!result.length || r.startTime > result[result.length-1].endTime)
+			if(!result.length || r.StartTime > result[result.length-1].EndTime)
 				result.push(r);
 			else
-				result[result.length-1].endTime = r.endTime;
+				result[result.length-1].EndTime = r.EndTime;
 		});
 		
 		return result;		
