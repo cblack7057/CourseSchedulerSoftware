@@ -29,7 +29,6 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 		//Takes in the orignial query and will delete any courses that do not meet the time criteria.
 		function verifyAndRemoveCoursesByTime(section, sectionList, index){
 			var queriedSectionMeetings = section.Meetings;
-
 			for(var i = 0; i < queriedSectionMeetings.length; i++)
 			{
 				//check if the class has a meeting time for this day
@@ -39,6 +38,10 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 				switch(queriedSectionMeetings[i].Day)
 				{
 				case 0:
+					if(week[0].length == 0)
+					{
+						console.log('REMOVE ME');
+					}
 					for(var j = 0; j < week[0].length; j++)
 					{
 						if(week[0][j].StartTime > queriedSectionMeetings[i].StartTime ||
@@ -50,6 +53,10 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 					}
 					break;
 				case 1:
+					if(week[1].length == 0)
+					{
+						console.log('REMOVE ME');
+					}
 					for(var j = 0; j < week[1].length; j++)
 					{
 						if(week[1][j].StartTime > queriedSectionMeetings[i].StartTime ||
@@ -61,6 +68,10 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 					}
 					break;
 				case 2:
+					if(week[2].length == 0)
+					{
+						console.log('REMOVE ME');
+					}
 					for(var j = 0; j < week[2].length; j++)
 					{
 						if(week[2][j].StartTime > queriedSectionMeetings[i].StartTime ||
@@ -72,6 +83,10 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 					}
 					break;
 				case 3:
+					if(week[3].length == 0)
+					{
+						console.log('REMOVE ME');
+					}
 					for(var j = 0; j < week[3].length; j++)
 					{
 						if(week[3][j].StartTime > queriedSectionMeetings[i].StartTime ||
@@ -83,6 +98,10 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 					}
 					break;
 				case 4:
+					if(week[4].length == 0)
+					{
+						console.log('REMOVE ME');
+					}
 					for(var j = 0; j < week[4].length; j++)
 					{
 						if(week[4][j].StartTime > queriedSectionMeetings[i].StartTime ||
@@ -94,6 +113,10 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 					}
 					break;
 				case 5:
+					if(week[5].length == 0)
+					{
+						console.log('REMOVE ME');
+					}
 					for(var j = 0; j < week[5].length; j++)
 					{
 						if(week[5][j].StartTime > queriedSectionMeetings[i].StartTime ||
