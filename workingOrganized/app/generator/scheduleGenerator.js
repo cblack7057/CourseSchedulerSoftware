@@ -1,8 +1,6 @@
 module.exports = function(week, courses, mongodb, config, req, res) {
 	//We need to work with "MongoClient" interface in order to connect to a mongodb server.
 		var MongoClient = mongodb.MongoClient;
-		start(req,res);
-		console.log(req.body);
 		
 		var badDoc = false;
 			
@@ -21,6 +19,9 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 		var scheduleArray = []; //one temporary schedule
 		var schedules = []; //list of all possible schedules
 		
+		start(req,res);
+		console.log(req.body);
+		
 		function getSchedules(){
 			return schedules;
 		}
@@ -38,10 +39,6 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 				switch(queriedSectionMeetings[i].Day)
 				{
 				case 0:
-					if(week[0].length == 0)
-					{
-						console.log('REMOVE ME');
-					}
 					for(var j = 0; j < week[0].length; j++)
 					{
 						if(week[0][j].StartTime > queriedSectionMeetings[i].StartTime ||
@@ -53,10 +50,6 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 					}
 					break;
 				case 1:
-					if(week[1].length == 0)
-					{
-						console.log('REMOVE ME');
-					}
 					for(var j = 0; j < week[1].length; j++)
 					{
 						if(week[1][j].StartTime > queriedSectionMeetings[i].StartTime ||
@@ -68,10 +61,6 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 					}
 					break;
 				case 2:
-					if(week[2].length == 0)
-					{
-						console.log('REMOVE ME');
-					}
 					for(var j = 0; j < week[2].length; j++)
 					{
 						if(week[2][j].StartTime > queriedSectionMeetings[i].StartTime ||
@@ -83,10 +72,6 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 					}
 					break;
 				case 3:
-					if(week[3].length == 0)
-					{
-						console.log('REMOVE ME');
-					}
 					for(var j = 0; j < week[3].length; j++)
 					{
 						if(week[3][j].StartTime > queriedSectionMeetings[i].StartTime ||
@@ -98,10 +83,6 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 					}
 					break;
 				case 4:
-					if(week[4].length == 0)
-					{
-						console.log('REMOVE ME');
-					}
 					for(var j = 0; j < week[4].length; j++)
 					{
 						if(week[4][j].StartTime > queriedSectionMeetings[i].StartTime ||
@@ -113,10 +94,6 @@ module.exports = function(week, courses, mongodb, config, req, res) {
 					}
 					break;
 				case 5:
-					if(week[5].length == 0)
-					{
-						console.log('REMOVE ME');
-					}
 					for(var j = 0; j < week[5].length; j++)
 					{
 						if(week[5][j].StartTime > queriedSectionMeetings[i].StartTime ||
