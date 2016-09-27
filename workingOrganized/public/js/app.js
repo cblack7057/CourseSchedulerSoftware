@@ -163,8 +163,15 @@ angular.module('firstApp2', ['scheduleService'])
 	}
 
 	vm.showNextSchedule = function() {
-		if(!(vm.currentScheduleIndex-1 > vm.schedules.length) ){
+		if(!(vm.currentScheduleIndex-1 > vm.schedules.length) ){ //why not if(currentIndex < vm.schedules.len)?
 			vm.currentScheduleIndex++;
+			setCurrentSchedule(currentScheduleIndex);
+		};
+	};
+	//CR
+	vm.showPrevSchedule = function() {
+		if(!(vm.currentScheduleIndex - 1 < 0) ){
+			vm.currentScheduleIndex--;
 			setCurrentSchedule(currentScheduleIndex);
 		};
 	};
