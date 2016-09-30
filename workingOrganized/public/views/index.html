@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -130,10 +130,12 @@
                                     <tr>
                                         <th>Start</th>
                                         <th>End</th>
+                                        <th>Action</th>
                                     </tr>
                                     <tr ng-repeat="time in day">
                                         <td>{{ time.StartTime }}</td>
                                         <td>{{ time.EndTime }}</td>
+                                        <td><input type="button" value="Remove" class="btn btn-primary" ng-click="main.removeTimes($index,$parent.$index)" /></td>
                                     </tr>
                             </table>
 							 
@@ -156,10 +158,12 @@
                                 <tr>
                                     <th>Subject</th>
                                     <th>Course</th>
+                                    <th>Action</th>
                                 </tr>
                                 <tr>
                                     <td>{{ course.subject }}</td>
                                     <td>{{ course.course }}</td>
+                                    <td><input type="button" value="Remove" class="btn btn-primary" ng-click="main.removeCourses($index)" /></td>
                                 </tr>
                         </table>
                     </div>
