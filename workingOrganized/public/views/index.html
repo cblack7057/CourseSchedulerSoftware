@@ -173,7 +173,7 @@
 					<button class="btn btn-success" ng-click="main.submitTimes()">Submit</button>
 					
 					 <div>
-                            <h3> Schedule </h3>
+                            <h3> Schedule: {{main.schedules.length == 0 ? '' : main.currentScheduleIndex+1 + ' of ' + main.schedules.length}} </h3>
                             <table class="table table-bordered">
                                     <tr>
 										
@@ -196,7 +196,8 @@
                                         <td><button class="btn btn-success" ng-repeat="tests in main.currentSchedule[6]">Subject: {{tests.Subject}}<br>Start Time: {{tests.sTime}}<br> EndTime:{{tests.eTime}}</button></td>
                                     </tr>
                             </table>
-							<button class="btn btn-success" ng-click="main.showNextSchedule()">Next</button>
+							<button class="btn btn-success" ng-click="main.showPrevSchedule()" ng-disabled="main.currentScheduleIndex == 0">Prev</button>
+							<button class="btn btn-success" ng-click="main.showNextSchedule()" ng-disabled="main.currentScheduleIndex+1 >= main.schedules.length">Next</button>
                      </div>
 					 
 				</div>

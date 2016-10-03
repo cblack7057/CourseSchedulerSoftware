@@ -146,7 +146,7 @@ angular.module('firstApp2', ['scheduleService'])
 
     vm.setCurrentSchedule = function (scheduleIndex) { //schduleIndex = index of schedule you wish to set as current
         //use this one when taking schedules from 
-        currentSchedule = [];
+        vm.currentSchedule = [[], [], [], [], [], [], []];
         var tempSchedule = vm.schedules[scheduleIndex];
 
         //var tempSchedule = vm.testTimes; //to test the single schedule we created
@@ -174,16 +174,16 @@ angular.module('firstApp2', ['scheduleService'])
     }
 
     vm.showNextSchedule = function () {
-        if (!(vm.currentScheduleIndex - 1 > vm.schedules.length)) { //why not if(currentIndex < vm.schedules.len)?
+       // if (vm.currentScheduleIndex< vm.schedules.length) { //why not if(currentIndex < vm.schedules.len)?
             vm.currentScheduleIndex++;
-            setCurrentSchedule(currentScheduleIndex);
-        };
-    };
+            vm.setCurrentSchedule(vm.currentScheduleIndex);
+        //};
     //CR
+	};
     vm.showPrevSchedule = function () {
-        if (!(vm.currentScheduleIndex - 1 < 0)) {
+        //if (vm.currentScheduleIndex > 0)) {
             vm.currentScheduleIndex--;
-            setCurrentSchedule(currentScheduleIndex);
-        };
+            vm.setCurrentSchedule(vm.currentScheduleIndex);
+       // };
     };
 });
