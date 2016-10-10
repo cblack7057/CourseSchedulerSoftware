@@ -9,12 +9,10 @@ module.exports = function(app, express) {
 	apiRouter.post('/process', function(req,res){
 		var week = req.body.timesArray;
 		var courses = req.body.courseArray;
-		// 
-		var generatedSchedules = require('../generator/scheduleGenerator')(week, courses, mongodb, config, req, res);
-		setTimeout(function() {
-			console.log(generatedSchedules);
-			res.json(generatedSchedules);
-		}, 3000);
+		require('../generator/scheduleGenerator')(week, courses, mongodb, config, function() {
+			console.log(schedules);
+			res.json(schedules);
+		});
 	});	
 
 	return apiRouter;
