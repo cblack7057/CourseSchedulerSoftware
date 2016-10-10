@@ -313,6 +313,19 @@ module.exports = function(week, courses, mongodb, config, callback) {
 				removeBranchesHelper(node[2][k], i, m, j, n);
 	}
 
+	function removeBranchesHelper2(node, j, n) {
+		//base cases
+		if(node[1] == false)
+			return;
+		if(node[0][0] == j) {
+			if(node[0][1] == n)
+				node[1] = false;
+			return;
+		}
+		for(var k = 0; k < node[2].length; k++)
+			removeBranchesHelper2(node[2][k], j, n);
+	}
+
 	function generateSchedulesList(courseArray, courseTree) {
 		var schedules = [];
 		schedule = [];
