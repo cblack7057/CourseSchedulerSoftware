@@ -63,16 +63,16 @@ module.exports = function(week, courses, mongodb, config, callback) {
 								var courseArray = sortSectionsByCourses(sections);
 								console.log('sections sorted');
 								console.log('creating pairs');
-								var coursePairs = createPairs(courseArray);
+								var sectionPairs = createPairs(courseArray);
 								console.log('pairs created');
 								console.log('removing conflictng pairs');
-								removeNonconflictingPairs(courseArray, coursePairs);
+								removeNonconflictingPairs(courseArray, sectionPairs);
 								console.log('conflicting pairs removed');
 								console.log('create tree');
 								var courseTree = treeMaker(courseArray);
 								console.log('tree made');
 								console.log('update tree');
-								updateTree(courseArray, coursePairs, courseTree);
+								updateTree(courseArray, sectionPairs, courseTree);
 								console.log('tree updated');
 								console.log('generate schedules');
 								schedules = generateSchedulesList(courseArray, courseTree);
@@ -182,17 +182,17 @@ module.exports = function(week, courses, mongodb, config, callback) {
 
 	//creates a listing of every possible pair of courses from the course array
 	function createPairs(courseArray) {
-		var coursePairs = [];
+		var sectionPairs = [];
 		for(var i = 0; i < courseArray.length - 2; i++)
 			for(var j = i + 1; j < courseArray.length - 1; j++)
 				for(var k = 0; k < courseArray[i].length; k++)
 					for(var l = 0; l < courseArray[j].length; l++)
-						coursePairs.push([i+1,k+1,j+1,l+1]);
-		return coursePairs
+						sectionPairs.push([i+1,k+1,j+1,l+1]);
+		return sectionPairs
         }
 
-	//remove pairs from coursePairs based on the time conflicts of the courses in courseArray
-	function removeNonconflictingPairs(courseArray, coursePairs){
+	//remove pairs from sectionPairs based on the time conflicts of the courses in courseArray
+	function removeNonconflictingPairs(courseArray, sectionPairs){
 		for(var i = 0; i < courseArray.length - 1; i++) {
 			for(var j = i + 1; j < courseArray.length; j++) {
 				for(var m = 0; m < courseArray[i].length; m++) {
@@ -203,12 +203,12 @@ module.exports = function(week, courses, mongodb, config, callback) {
 						while(checking) {
 							if(courseArray[i][m].Meetings.length == 0 || courseArray[j][n].Meetings.length == 0) {
 								checking = false;
-								removePair(coursePairs, i, m, j, n)
+								removePair(sectionPairs, i, m, j, n)
 							}
 							else if(courseArray[i][m].Meetings[k].Day < courseArray[j][n].Meetings[l].Day) {
 								if(k == courseArray[i][m].Meetings.length-1) {
 									checking = false;
-									removePair(coursePairs, i, m, j, n);
+									removePair(sectionPairs, i, m, j, n);
 								}
 								else
 									k++;
@@ -218,7 +218,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 								if(checking && (l == courseArray[j][n].Meetings.length - 1)) {
 									if(k == courseArray[i][m].Meetings.length - 1) {
                                                                                 checking = false;
-                                                                                removePair(coursePairs, i, m, j, n);
+                                                                                removePair(sectionPairs, i, m, j, n);
 									}
 									else {
 										k++;
@@ -231,7 +231,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 							else {
 								if(l == courseArray[j][n].Meetings.length - 1 ) {
 									checking = false;
-									removePair(coursePairs, i, m, j, n);
+									removePair(sectionPairs, i, m, j, n);
 								}
 								else
 									l++;
@@ -243,13 +243,13 @@ module.exports = function(week, courses, mongodb, config, callback) {
 		}
 	}
 
-	function removePair(coursePairs, i, m, j, n){
- 		for(var k = 0; k < coursePairs.length; k++)
-			if(coursePairs[k][0] == i + 1)
-				if(coursePairs[k][1] == m + 1)
-					if(coursePairs[k][2] == j + 1)
-						if(coursePairs[k][3] == n + 1) {
-							coursePairs.splice(k,1);
+	function removePair(sectionPairs, i, m, j, n){
+ 		for(var k = 0; k < sectionPairs.length; k++)
+			if(sectionPairs[k][0] == i + 1)
+				if(sectionPairs[k][1] == m + 1)
+					if(sectionPairs[k][2] == j + 1)
+						if(sectionPairs[k][3] == n + 1) {
+							sectionPairs.splice(k,1);
 							return
 						}
 	}
@@ -284,14 +284,14 @@ module.exports = function(week, courses, mongodb, config, callback) {
 	}
 
 
-	function updateTree(courseArray, coursePairs, courseTree){
+	function updateTree(courseArray, sectionPairs, courseTree){
 		if(courseArray.length == 0)
 			return;
-		for(var i = 0; i < coursePairs.length; i++)
-			removeBranches(courseTree, coursePairs[i][0], coursePairs[i][1], coursePairs[i][2], coursePairs[i][3]);
+		for(var i = 0; i < sectionPairs.length; i++)
+			removeBranches(courseTree, sectionPairs[i][0], sectionPairs[i][1], sectionPairs[i][2], sectionPairs[i][3]);
 	}
 
-	//removes the branches of the tree that have edges that represent pairs found in coursePairs
+	//removes the branches of the tree that have edges that represent pairs found in sectionPairs
 
 	function removeBranches(tree, i, m, j, n) {
 		if(i == 1)
