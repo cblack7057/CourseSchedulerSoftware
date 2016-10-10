@@ -262,7 +262,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 		return false;
 	}
 
-	function treeMaker(courseArray, coursePairs) {
+	function treeMaker(courseArray) {
 		var courseTree = [];
 		courseTree.push(treeMakerHelper(courseArray, 1));
 		return courseTree;
