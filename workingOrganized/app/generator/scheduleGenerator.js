@@ -32,7 +32,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 	query = {};
 	query['$and'] = [coursesQuery, weekQuery];
 	
-	projection = {"_id": 0, "Subj": 1, "Crse": 1, "Session": 1, "Sect":1, "Meetings": 1, "Meetings.Day": 1, "Meetings.StartTime": 1, "Meetings.EndTime":1};
+	projection = {"_id": 0, "Subj": 1, "Crse": 1, "Session": 1, "Sect":1, "CRN": 1, "Title": 1, "Prof": 1, "Campus": 1, "Hrs": 1, "Meetings": 1, "Meetings.Day": 1, "Meetings.StartTime": 1, "Meetings.EndTime":1};
 
 	console.log('connecting to mongoclient');
 	getSchedules(function() {
