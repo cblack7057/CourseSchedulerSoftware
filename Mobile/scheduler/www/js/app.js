@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('scheduler', ['ionic', 'scheduler.controllers'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -54,7 +54,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       url: '/input',
       views: {
         'tab-input': {
-          templateUrl: 'templates/tab-chats.html',
+          templateUrl: 'templates/tab-input.html',
           controller: 'InputScheduleCtrl'
         }
       }

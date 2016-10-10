@@ -1,50 +1,36 @@
-angular.module('starter.services', [])
+angular.module('scheduler.services', [])
 
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
+.factory('Schedule', function($http) {
 
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'img/ben.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'img/max.png'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'img/adam.jpg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'img/perry.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'img/mike.png'
-  }];
+	// create a new object
+	var scheduleFactory = {};
 
-  return {
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
-    }
-  };
+
+
+	// create a schedule
+	scheduleFactory.create = function(weekData) {
+		return $http.post('/', weekData);
+	};
+
+// get a single user
+	scheduleFactory.get = function(id) {
+		return $http.get('/api/users/' + id);
+	};
+
+	// get all users
+	scheduleFactory.all = function() {
+		return $http.get('/api/users/');
+	};
+	// update a user
+	scheduleFactory.update = function(id, userData) {
+		return $http.put('/api/users/' + id, userData);
+	};
+	// delete a user
+	scheduleFactory.delete = function(id) {
+		return $http.delete('/api/users/' + id);
+	};
+
+	// return our entire scheduleFactory object
+	return scheduleFactory;
+
 });
