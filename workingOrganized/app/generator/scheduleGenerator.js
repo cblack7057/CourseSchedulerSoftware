@@ -203,12 +203,12 @@ module.exports = function(week, courses, mongodb, config, callback) {
 						while(checking) {
 							if(courseArray[i][m].Meetings.length == 0 || courseArray[j][n].Meetings.length == 0) {
 								checking = false;
-								removePairs(coursePairs, i, m, j, n)
+								removePair(coursePairs, i, m, j, n)
 							}
 							else if(courseArray[i][m].Meetings[k].Day < courseArray[j][n].Meetings[l].Day) {
 								if(k == courseArray[i][m].Meetings.length-1) {
 									checking = false;
-									removePairs(coursePairs, i, m, j, n);
+									removePair(coursePairs, i, m, j, n);
 								}
 								else
 									k++;
@@ -218,7 +218,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 								if(checking && (l == courseArray[j][n].Meetings.length - 1)) {
 									if(k == courseArray[i][m].Meetings.length - 1) {
                                                                                 checking = false;
-                                                                                removePairs(coursePairs, i, m, j, n);
+                                                                                removePair(coursePairs, i, m, j, n);
 									}
 									else {
 										k++;
@@ -231,7 +231,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 							else {
 								if(l == courseArray[j][n].Meetings.length - 1 ) {
 									checking = false;
-									removePairs(coursePairs, i, m, j, n);
+									removePair(coursePairs, i, m, j, n);
 								}
 								else
 									l++;
@@ -243,7 +243,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 		}
 	}
 
-	function removePairs(coursePairs, i, m, j, n){
+	function removePair(coursePairs, i, m, j, n){
  		for(var k = 0; k < coursePairs.length; k++)
 			if(coursePairs[k][0] == i + 1)
 				if(coursePairs[k][1] == m + 1)
