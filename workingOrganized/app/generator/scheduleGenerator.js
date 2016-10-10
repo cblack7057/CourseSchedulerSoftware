@@ -66,7 +66,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 								var coursePairs = createPairs(courseArray);
 								console.log('pairs created');
 								console.log('removing conflictng pairs');
-								removeConflictingPairs(courseArray, coursePairs);
+								removeNonconflictingPairs(courseArray, coursePairs);
 								console.log('conflicting pairs removed');
 								console.log('create tree');
 								var courseTree = treeMaker(courseArray);
@@ -192,7 +192,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
         }
 
 	//remove pairs from coursePairs based on the time conflicts of the courses in courseArray
-	function removeConflictingPairs(courseArray, coursePairs){
+	function removeNonconflictingPairs(courseArray, coursePairs){
 		for(var i = 0; i < courseArray.length - 1; i++) {
 			for(var j = i + 1; j < courseArray.length; j++) {
 				for(var m = 0; m < courseArray[i].length; m++) {
