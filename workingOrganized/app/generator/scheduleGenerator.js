@@ -63,7 +63,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 								var courseArray = sortSectionsByCourses(sections);
 								console.log('sections sorted');
 								console.log('create list of courses not found')
-								var notFoundCourses = coursesNotFound(courses, courseArray);
+								notFoundCourses = coursesNotFound(courses, courseArray);
 								console.log('list created');
 								console.log('creating pairs');
 								var sectionPairs = createPairs(courseArray);
@@ -91,6 +91,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 
 	function getSchedules(callback) {
 		var schedules;
+		var notFoundCourses;
 		callback();
 	}
 	
