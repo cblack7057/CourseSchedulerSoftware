@@ -136,8 +136,8 @@
                                         <th>Action</th>
                                     </tr>
                                     <tr ng-repeat="time in day">
-                                        <td>{{ time.StartTime }}</td>
-                                        <td>{{ time.EndTime }}</td>
+                                        <td>{{ time.dispStartTime | date:'shortTime' }}</td>
+                                        <td>{{ time.dispEndTime | date:'shortTime'}}</td>
                                         <td><input type="button" value="Remove" class="btn btn-primary" ng-click="main.removeTimes($index,$parent.$index)" /></td>
                                     </tr>
                             </table>

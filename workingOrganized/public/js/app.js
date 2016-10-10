@@ -31,18 +31,20 @@ angular.module('firstApp2', ['scheduleService'])
     // current schedule has 
     vm.currentSchedule = [[], [], [], [], [], [], []];
     vm.currentScheduleIndex = 0; //In the event we wish to locate a specific schedule, we need this
-
+	///////--------------CHANGES: display Time
     // adds start and end times to the selected day's array of available time frames
     vm.addTimes = function () {
         if (vm.timeData.StartTime !== null && vm.timeData.EndTime !== null) {
             var sTime = new Date(vm.timeData.StartTime);
             var eTime = new Date(vm.timeData.EndTime);
             if (sTime < eTime) {
-                sTime = vm.changeTimeFormat(sTime);
-                eTime = vm.changeTimeFormat(eTime);
+                sCTime = vm.changeTimeFormat(sTime);
+                eCTime = vm.changeTimeFormat(eTime);
                 vm.availableTimes.push({
-                    StartTime: sTime,
-                    EndTime: eTime
+					dispStartTime: sTime,
+					dispEndTime: eTime,
+                    StartTime: sCTime,
+                    EndTime: eCTime
                 });
                 //vm.message = vm.courses;
                 vm.times[vm.day] = vm.combine(vm.availableTimes);
@@ -54,8 +56,11 @@ angular.module('firstApp2', ['scheduleService'])
         }
 
     };
+	
 	vm.allDay = function() {
 		vm.availableTimes.push({
+					dispStartTime: "12:00 AM",
+					dispEndTime: "11:59 PM",
                     StartTime: 0000,
                     EndTime: 2359
                 });
