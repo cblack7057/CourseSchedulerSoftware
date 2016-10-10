@@ -62,6 +62,9 @@ module.exports = function(week, courses, mongodb, config, callback) {
 								console.log('sort sections by courses');
 								var courseArray = sortSectionsByCourses(sections);
 								console.log('sections sorted');
+								console.log('create list of courses not found')
+								var notFoundCourses = coursesNotFound(courses, courseArray);
+								console.log('list created');
 								console.log('creating pairs');
 								var sectionPairs = createPairs(courseArray);
 								console.log('pairs created');
@@ -178,6 +181,26 @@ module.exports = function(week, courses, mongodb, config, callback) {
 				courseArray.push([sections[i]]);
 		}
 		return courseArray;
+	}
+
+	function coursesNotFound(courses, courseArray) {
+		var notFoundCourses = [];
+		var found = false;
+		console.log(courses.length);
+		console.log(courseArray.length);
+		if(courses.length > courseArray.length)
+			for(var i = 0; i < courses.length; i++) {
+				for(var j = 0; j < courseArray.length; j++) {
+					if(courses[i].subject === courseArray[j][0].Subj && courses[i].course === courseArray[j][0].Crse) {
+						found = true;
+						break;
+					}
+				}
+				if(!found)
+					notFoundCourses.push(courses[i]);
+				found = false;
+			}
+		return notFoundCourses;
 	}
 
 	//creates a listing of every possible pair of courses from the course array
