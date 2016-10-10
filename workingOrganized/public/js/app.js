@@ -6,7 +6,8 @@ angular.module('firstApp2', ['scheduleService'])
     // Set from form
     vm.message = 'AvailableTimes array';
     vm.message2 = 'test';
-    vm.errorMessage = '';
+    vm.errorMessageTimes = '';
+	vm.errorMessageCourses = '';
 
     // entire array represents a week, each inner array represents a day,
     // each day will hold multiple jsons that have a start time and an end time
@@ -46,13 +47,20 @@ angular.module('firstApp2', ['scheduleService'])
                 //vm.message = vm.courses;
                 vm.times[vm.day] = vm.combine(vm.availableTimes);
                 //vm.timeData = {}; //clears form
-                vm.errorMessage = '';
+                vm.errorMessageTimes = '';
             } else {
-                vm.errorMessage = 'Please verify that the start time occurs before the end time.'
+                vm.errorMessageTimes = 'Please verify that the start time occurs before the end time.'
             }
         }
 
     };
+	vm.allDay = function() {
+		vm.availableTimes.push({
+                    StartTime: 0000,
+                    EndTime: 2359
+                });
+		vm.times[vm.day] = vm.combine(vm.availableTimes);
+	};
 
     vm.addCourses = function () {
         if (vm.courseData.subject != null && vm.courseData.course != null) {
@@ -63,9 +71,9 @@ angular.module('firstApp2', ['scheduleService'])
                 course: c
             });
             vm.courseData = {};
-            vm.errorMessage = '';
+            vm.errorMessageCourses = '';
         } else {
-            vm.errorMessage = 'Please enter your course subject and course.'
+            vm.errorMessageCourses = 'Please enter your course subject and course.'
         }
         //vm.message = vm.courses;
     };
@@ -156,16 +164,21 @@ angular.module('firstApp2', ['scheduleService'])
         // [Deleted]
         // 3. loop through the meeting times of that class IF they exist, if no meeting add to index[0] of currentSchedule
         // 4. switch/case 'M', 'T', 'W', 'R', 'F', 'S' to add to index of currentSchedules
+		var tSData;
+		var tEData;
+		var meetings;
+		var tempDay;
         tempSchedule.forEach(function (c) {
-            var meetings = c.Meetings;
-            var tempDay = 0;
-
+            meetings = c.Meetings;
+            tempDay = 0;
+			
             meetings.forEach(function (t) {
-
+				tSData = vm.getVisualTime(t.StartTime);
+				tEData = vm.getVisualTime(t.EndTime);
                 vm.currentSchedule[t.Day].push({
-                    Subject: c.Subj,
-                    sTime: t.StartTime,
-                    eTime: t.EndTime,
+                    Subject: c.Subj + ' ' + c.Crse,
+                    sTime: tSData.Hours + ':' + tSData.Minutes + ' ' + tSData.Period,
+                    eTime: tEData.Hours + ':' + tEData.Minutes + ' ' + tEData.Period,
                     courseInfo: c
                 });
                 //vm.message2 = 
@@ -186,4 +199,18 @@ angular.module('firstApp2', ['scheduleService'])
             vm.setCurrentSchedule(vm.currentScheduleIndex);
        // };
     };
+	
+	
+	// extracts hours, minutes, period from military time
+	vm.getVisualTime = function (time){
+		var hours = Math.round(time / 100) % 12;
+		var minutes = (time % 100 == 0 ? '00' : time % 100);
+		var period = (time >= 1200? 'pm' : 'am');
+		return {
+			Hours: hours,
+			Minutes: minutes,
+			Period: period
+		};
+	};
+	
 });
