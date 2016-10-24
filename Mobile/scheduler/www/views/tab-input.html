@@ -1,0 +1,266 @@
+<ion-view view-title="Input">
+  <ion-content class="padding">
+    <h2>Scheduler Input</h2>
+    <p>
+    This is the scheduling input page. All the code for inputting a schedule will be here!
+  </p>
+  <div class="jumbotron">
+      <h2>
+          Rowan Scheduler App
+      </h2>
+
+
+      <!-- for debugging time frame tables
+      <div class="form-group">
+              <label>Message</label>
+              <input type="text" class="form-control" ng-model="main.message">
+          </div>
+          -->
+      <h4>{{ main.message }}</h4>
+      <div class="container">
+          Monday: {{ main.M | date:"hh:mm a" }}
+      </div>
+      <div class="container">
+          Tuesday: {{ main.T }}
+
+      </div>
+      <div class="container">
+          Wednesday: {{ main.W }}
+      </div>
+      <div class="container">
+          Thursday: {{ main.R }}
+      </div>
+      <div class="container">
+          Friday: {{ main.F }}
+      </div>
+
+
+
+      <!-- form to add days to the list -->
+      <h3> Please select your time ranges for each day:</h3>
+<!--
+      <ion-list>
+        <ion-radio ng-model="value" ng-value="0" ng-change='main.newDay(value)'>Monday<div class="row">
+          <div class="col"><button class="button button-block button-positive">Time a</button></div>
+          <div class="col"><button class="button button-block button-positive">Time b</button></div>
+          <div class="col"><button class="button button-block button-positive">Time c</button></div>
+          <div class="col"><button class="button button-block button-positive">Time d</button></div>
+        </div></ion-radio>
+        <ion-radio ng-model="value" ng-value="1" ng-change='main.newDay(value)'>Tuesday</ion-radio>
+        <ion-radio ng-model="value" ng-value="2" ng-change='main.newDay(value)'>Wednesday</ion-radio>
+        <ion-radio ng-model="value" ng-value="3" ng-change='main.newDay(value)'>Thursday</ion-radio>
+        <ion-radio ng-model="value" ng-value="4" ng-change='main.newDay(value)'>Friday</ion-radio>
+        <ion-radio ng-model="value" ng-value="5" ng-change='main.newDay(value)'>Saturday</ion-radio>
+
+      </ion-list> -->
+      <ion-list>
+        <div class="item">
+          Monday
+          <div class="row">
+
+          </div>
+        </div>
+        <div class="item">
+          Tuesday
+          <div class="row">
+
+          </div>
+        </div>
+        <div class="item">
+          Wednesday
+          <div class="row">
+
+          </div>
+        </div>
+        <div class="item">
+          Thursday
+          <div class="row">
+
+          </div>
+        </div>
+        <div class="item">
+          Friday
+          <div class="row">
+
+          </div>
+        </div>
+        <div class="item">
+          Saturday
+          <div class="row">
+            <div class="col">
+              <div class="card">
+                <div class="item item-divider">
+                  8:00AM
+                </div>
+                <div class="item item-text-wrap">
+                  to
+                </div>
+                <div class="item item-divider">
+                  12:00PM
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card">
+                <div class="item item-divider">
+                  8:00AM
+                </div>
+                <div class="item item-text-wrap">
+                  to
+                </div>
+                <div class="item item-divider">
+                  12:00PM
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="card">
+                <div class="item item-divider">
+
+                </div>
+                <div class="item item-text-wrap">
+                  <i class="icon ion-plus"></i>
+                </div>
+                <div class="item item-divider">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-list>
+
+
+
+
+      <div class="form-inline">
+          <div class="radio">
+              <label>
+                  <input type="radio" value="0" ng-model="value" ng-change='main.newDay(value)'>
+                  Monday
+              </label>
+          </div>
+          <div class="radio">
+              <label>
+                  <input type="radio" value="1" ng-model="value" ng-change='main.newDay(value)'>
+                  Tuesday
+              </label>
+          </div>
+          <div class="radio">
+              <label>
+                  <input type="radio" value="2" ng-model="value" ng-change='main.newDay(value)'>
+                  Wednesday
+              </label>
+          </div>
+          <div class="radio">
+              <label>
+                  <input type="radio" value="3" ng-model="value" ng-change='main.newDay(value)'>
+                  Thursday
+              </label>
+          </div>
+          <div class="radio">
+              <label>
+                  <input type="radio" value="4" ng-model="value" ng-change='main.newDay(value)'>
+                  Friday
+              </label>
+          </div>
+          <div class="radio">
+              <label>
+                  <input type="radio" value="5" ng-model="value" ng-change='main.newDay(value)'>
+                  Saturday
+              </label>
+          </div>
+      </div>
+
+
+
+      <!-- form to add times to the list -->
+      <div>
+          <h3> Add time frame(s) you will be available: </h3>
+          <form class="form-inline" ng-submit="main.addTimes()">
+              <label> Start time: </label>
+              <input type="time" class="form-control" ng-model="main.timeData.startTime">
+              <label> End time: </label>
+              <input type="time" class="form-control" ng-model="main.timeData.endTime">
+              <button type="submit" class="btn btn-success" ng-disabled="main.day == null">Add</button>
+
+              <h6 font color="red">
+                  {{ main.errorMessage }}
+              </h6>
+
+
+              <!------ Table  date:"hh:mm a" ----->
+              <div>
+                  <h3> These are the times you've chosen for the week.</h3>
+                  <table class="table table-bordered" ng-repeat="day in main.week">
+                      <thead>
+                          <tr>
+                              <th>Start</th>
+                              <th>End</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr ng-repeat="time in day">
+                              <td>{{ time.startTime }}</td>
+                              <td>{{ time.endTime }}</td>
+                          </tr>
+                      </tbody>
+                  </table>
+                   <!-- figure out where the submit button should be -->
+              </div>
+          </form>
+
+          <!-- form to add courses to the list-->
+          <div>
+              <h3> Add course(s) you wish to enroll in: </h3>
+              <form class="form-inline" ng-submit="main.addCourses()">
+                  <label> Subject (ie: 'CS'): </label>
+                  <input type="text" class="form-control" ng-model="main.courseData.subject">
+                  <label> CRN: </label>
+                  <input type="text" class="form-control" ng-model="main.courseData.crn">
+                  <button type="submit" class="btn btn-success">Add</button> <!--Do i need an ng-disabled here?-->
+                  <!--Getting weird functionality with the submit button, need to figure that out-->
+
+                  <!------ Table  date:"hh:mm a" ----->
+                  <div>
+                      <h3> These are the courses you've chosen.</h3>
+                      <table class="table table-bordered" ng-repeat="course in main.courses">
+                          <thead>
+                              <tr>
+                                  <th>Subject</th>
+                                  <th>CRN</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td>{{ course.subject }}</td>
+                                  <td>{{ course.crn }}</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  <button class="btn btn-success" ng-click="main.submitTimes()">Submit</button> <!-- figure out where the submit button should be -->
+                  <!--
+                  <script type="text/javascript">
+                      var submitButton = document.getElementById('submitButton');
+                      submitButton.onclick = function () {
+                          var latitude = 0
+                          , longitude = 0; // Set from form
+
+                          $.post({
+                              url: "http://localhost:80/locations",
+                              data: { latitude: latitude, longitude: longitude },
+                              success: function (data) {
+                                  console.log("Success");
+                                  submitButton.hidden = true;
+                              },
+                              dataType: "json"
+                          });
+                      }
+                  </script>
+                  -->
+              </form>
+          </div>
+  </ion-content>
+</ion-view>

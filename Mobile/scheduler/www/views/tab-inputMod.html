@@ -1,0 +1,91 @@
+<ion-view view-title="InputMod">
+<ion-content>
+  <ion-slide-box on-slide-changed="slideHasChanged($index)">
+    <ion-slide>
+      <div class="padding">
+        <h3> Add times:</3>
+        <ion-list>
+          <div class="item">
+            <p>Monday</p>
+            <div class="row"></div>
+          </div>
+          <div class="item">
+            <p>Tuesday<p>
+            <div class="row"></div>
+          </div>
+          <div class="item">
+            <p>Wednesday</p>
+            <div class="row"></div>
+          </div>
+          <div class="item">
+            <p>Thursday</p>
+            <div class="row"></div>
+          </div>
+          <div class="item">
+            <p>Friday</p>
+            <div class="row"></div>
+          </div>
+          <div class="item">
+            <a>Saturday</a>
+            <div class="row">
+              <div class="col">
+                <div class="card">
+                  <div class="item item-divider">
+                    8:00AM
+                  </div>
+                  <div class="item item-text-wrap">
+                    to
+                  </div>
+                  <div class="item item-divider">
+                    12:00PM
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="card">
+                  <div class="item item-divider">
+                    8:00AM
+                  </div>
+                  <div class="item item-text-wrap">
+                    to
+                  </div>
+                  <div class="item item-divider">
+                    12:00PM
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="card">
+                  <div class="item item-divider">
+
+                  </div>
+                  <div class="item item-text-wrap">
+                    <i class="icon ion-plus"></i>
+                  </div>
+                  <div class="item item-divider">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ion-list>
+        </div>
+  </ion-slide>
+  <ion-slide>
+    <div class="padding">
+        <h3> Add courses: </h3>
+        <form class="form-inline" ng-submit="main.addCourses()">
+            <label> Subject (ie: 'CS'): </label>
+            <input type="text" class="form-control" ng-model="main.courseData.subject">
+            <label> CRN: </label>
+            <input type="text" class="form-control" ng-model="main.courseData.crn">
+            <button type="submit" class="btn btn-success">Add</button>
+            <button class="btn btn-success" ng-click="main.submitTimes()">Submit</button>
+        </form>
+    </div>
+  </ion-slide>
+</ion-slide-box>
+</ion-content>
+</ion-view>
