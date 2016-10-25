@@ -11,6 +11,7 @@ module.exports = function(app, express) {
 		var courses = req.body.courseArray;
 		require('../generator/scheduleGenerator')(week, courses, mongodb, config, function() {
 			console.log(schedules);
+			console.log(notFoundCourses); //the courses the user inputed that we did not find
 			res.json(schedules);
 		});
 	});	

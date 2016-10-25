@@ -1,0 +1,9 @@
+To launch the file from the command line set path to the directory of the jar.
+
+type:
+
+java -jar ParseAndUpdate.jar "Section_Tally_RAW.csv" "testJava"
+
+where "Section_Tally_RAW.csv" is the CSV you want to import
+and
+"testJava" is the DB collection you wana update

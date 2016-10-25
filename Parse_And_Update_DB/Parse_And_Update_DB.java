@@ -24,18 +24,18 @@ public class Parse_And_Update_DB
 {
 	static BufferedReader reader;
 	static BufferedWriter writer;
-	static String readerFileName = "Section_Tally_RAW.csv";
+	//static String readerFileName = "Section_Tally_RAW.csv";
 	static String writerFileName = "Section_Tally_FORMAT.json";
 	static final String TEXTURI = "mongodb://carlind0:123456@ds015334.mlab.com:15334/db_name";
 	static final int MAX_DAY_OF_WEEK = 6;
-	static final String collectionName = "testJava";
+	//static final String collectionName = "testJava";
 	static final String dbName = "db_name";
 	
 	public static void main(String[] args) throws IOException
 	{
 		List<Document> docList = new ArrayList<Document>();
 
-		reader = new BufferedReader(new FileReader(readerFileName));
+		reader = new BufferedReader(new FileReader(args[0]));
 		writer = new BufferedWriter(new FileWriter(writerFileName));
 
 		//Discard the header line in the CSV file.
@@ -51,7 +51,7 @@ public class Parse_And_Update_DB
 		MongoClientURI uri = new MongoClientURI(TEXTURI);
 		MongoClient mc = new MongoClient(uri);
 		MongoDatabase db = mc.getDatabase(dbName);
-		MongoCollection<Document> collection = db.getCollection(collectionName);
+		MongoCollection<Document> collection = db.getCollection(args[1]);
 		
 		//remove the old collection
 		collection.drop();
@@ -60,6 +60,8 @@ public class Parse_And_Update_DB
 		collection.insertMany(docList);
 		
 		mc.close();
+		
+		System.out.println("Update Complete");
 		
 	}
 
