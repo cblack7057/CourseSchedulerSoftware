@@ -1,33 +1,12 @@
-<ion-view view-title="InputMod">
+<ion-view view-title="Add Times">
 <ion-content>
   <ion-slide-box on-slide-changed="slideHasChanged($index)">
     <ion-slide>
       <div class="padding">
-        <h3> Add times:</3>
         <ion-list>
-          <div class="item">
-            <p>Monday</p>
-            <div class="row"></div>
-          </div>
-          <div class="item">
-            <p>Tuesday<p>
-            <div class="row"></div>
-          </div>
-          <div class="item">
-            <p>Wednesday</p>
-            <div class="row"></div>
-          </div>
-          <div class="item">
-            <p>Thursday</p>
-            <div class="row"></div>
-          </div>
-          <div class="item">
-            <p>Friday</p>
-            <div class="row"></div>
-          </div>
-          <div class="item">
-            <a>Saturday</a>
-            <div class="row">
+          <ion-radio ng-model="value" ng-change='newDay(value)' ng-value="0">
+            <label>Monday</label>
+            <div class="row" ng-show="day == 0">
               <div class="col">
                 <div class="card">
                   <div class="item item-divider">
@@ -38,45 +17,109 @@
                   </div>
                   <div class="item item-divider">
                     12:00PM
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card">
-                  <div class="item item-divider">
-                    8:00AM
-                  </div>
-                  <div class="item item-text-wrap">
-                    to
-                  </div>
-                  <div class="item item-divider">
-                    12:00PM
-                  </div>
-                </div>
-              </div>
-
-              <div class="col">
-                <div class="card">
-                  <div class="item item-divider">
-
-                  </div>
-                  <div class="item item-text-wrap">
-                    <i class="icon ion-plus"></i>
-                  </div>
-                  <div class="item item-divider">
-
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </ion-radio>
+          <ion-radio ng-model="value" ng-change='newDay(value)' ng-value="1">
+            <label>Tuesday</label>
+            <div class="row" ng-show="day == 1">
+              <div class="col">
+                <div class="card">
+                  <div class="item item-divider">
+                    8:00AM
+                  </div>
+                  <div class="item item-text-wrap">
+                    to
+                  </div>
+                  <div class="item item-divider">
+                    12:00PM
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ion-radio>
+          <ion-radio ng-model="value" ng-change='newDay(value)' ng-value="2">
+            <label>Wednesday</label>
+            <div class="row" ng-show="day == 2">
+              <div class="col">
+                <div class="card">
+                  <div class="item item-divider">
+                    8:00AM
+                  </div>
+                  <div class="item item-text-wrap">
+                    to
+                  </div>
+                  <div class="item item-divider">
+                    12:00PM
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ion-radio>
+          <ion-radio ng-model="value" ng-value="3" ng-change='newDay(value)'>
+            <label>Thursday</label>
+            <div class="row" ng-show="day == 3">
+              <div class="col">
+                <div class="card">
+                  <div class="item item-divider">
+                    8:00AM
+                  </div>
+                  <div class="item item-text-wrap">
+                    to
+                  </div>
+                  <div class="item item-divider">
+                    12:00PM
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ion-radio>
+          <ion-radio ng-model="value" ng-change='newDay(value)' ng-value="4">
+            <label>Friday</label>
+            <div class="row" ng-show="day == 4">
+              <div class="col">
+                <div class="card">
+                  <div class="item item-divider">
+                    8:00AM
+                  </div>
+                  <div class="item item-text-wrap">
+                    to
+                  </div>
+                  <div class="item item-divider">
+                    12:00PM
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ion-radio>
+          <ion-radio ng-model="value" ng-change='newDay(value)' ng-value="5">
+            <label>Saturday</label>
+            <div class="row" ng-show="day == 5">
+              <div class="col">
+                <div class="card">
+                  <div class="item item-divider">
+                    <p>8:00AM</p>
+                  </div>
+                  <div class="item item-text-wrap">
+                    <p>to</p>
+                  </div>
+                  <div class="item item-divider">
+                    <p>12:00AM</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ion-radio>
         </ion-list>
         </div>
+
   </ion-slide>
   <ion-slide>
     <div class="padding">
         <h3> Add courses: </h3>
-        <form class="form-inline" ng-submit="main.addCourses()">
+        <form class="form-inline" ng-submit="addCourses()">
             <label> Subject (ie: 'CS'): </label>
             <input type="text" class="form-control" ng-model="main.courseData.subject">
             <label> CRN: </label>
@@ -87,5 +130,7 @@
     </div>
   </ion-slide>
 </ion-slide-box>
+
+</div>
 </ion-content>
 </ion-view>

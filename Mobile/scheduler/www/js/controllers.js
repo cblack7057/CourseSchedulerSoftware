@@ -1,17 +1,16 @@
 angular.module('scheduler.controllers', ['scheduler.services'])
 
 .controller('DashCtrl', function($scope) {})
+.controller('InputScheduleCtrl', function ($scope) {
 
-.controller('InputScheduleCtrl', function () {
-
-    var vm = this;
+    var vm = $scope;
     //var latitude = 0, longitude = 0; // Set from form
     vm.message = 'AvailableTimes array';
     vm.errorMessage = '';
 
     vm.week = [[], [], [], [], [], []];
     vm.availableTimes = [];
-    vm.day;
+    vm.day = 5;
 
     // form data
     vm.timeData = {};
