@@ -1,0 +1,40 @@
+.courseTable{
+}
+.courseTable.timeHeader tr{
+	line-height: 5px; 
+}
+.times,.classes {
+    float: left;
+}
+.classes {
+	width:91%;
+}
+.classes tr th {
+	width:7%;
+}
+.classes tr td{
+	width:7%;
+}
+.clearfix{
+    clear:both;
+}
+.times{
+	width:8%;
+}
+.times table tr td {
+	line-height: 10px;
+}
+.times table tr td{
+	font-size: 15px;
+	color: #ff0000;
+}
+.button{
+	color:F012BE;
+}
+.no-gutter > [class*='col-'] {
+
+    padding-right:0;
+
+    padding-left:0;
+
+}
