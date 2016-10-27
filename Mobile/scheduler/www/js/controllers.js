@@ -8,6 +8,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
     vm.message = 'AvailableTimes array';
     vm.errorMessage = '';
 
+    vm.dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     vm.week = [[], [], [], [], [], []];
     vm.availableTimes = [];
     vm.day = 5;
@@ -19,6 +20,19 @@ angular.module('scheduler.controllers', ['scheduler.services'])
     vm.courses = [];
 
     vm.courseData = {};
+
+    vm.changeTimes = function(index) {
+      var sTime = new Date(vm.timeData.startTime);
+      var eTime = new Date(vm.timeData.endTime);
+      vm.availableTimes[index] = {
+        startTime: sTime,
+        endTime: eTime
+      };
+    }
+
+    vm.addNewTime = function () {
+      vm.availableTimes.push({startTime: new Date(), endTime: new Date()});
+    }
 
     // Adds start and end times to the selected day's array of available time frames.
     vm.addTimes = function () {
