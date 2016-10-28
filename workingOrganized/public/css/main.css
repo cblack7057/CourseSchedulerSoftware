@@ -8,12 +8,16 @@
 }
 .classes {
 	width:91%;
+    overflow-x: auto;
+    overflow-y:hidden;
+    height: 830px;
 }
 .classes tr th {
 	width:7%;
 }
 .classes tr td{
 	width:7%;
+    height: 79px;
 }
 .clearfix{
     clear:both;
@@ -27,6 +31,9 @@
 .times table tr td{
 	font-size: 15px;
 	color: #ff0000;
+}
+.schedule {
+    
 }
 .button{
 	color:F012BE;
