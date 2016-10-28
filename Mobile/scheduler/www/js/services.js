@@ -3,8 +3,35 @@ angular.module('scheduler.services', [])
 	.service('scheduleService', function() {
 		var scheduleStorage = {};
 
+		scheduleStorage.startListeners = [];
+		scheduleStorage.finishListeners = [];
+
+		scheduleStorage.notifyStartListeners = function(){
+			angular.forEach(scheduleStorage.startListeners, function(listenerCallback){
+			 	listenerCallback();
+				//console.log('notified');
+			});
+		};
+
+		scheduleStorage.notifyFinishListeners = function() {
+			angular.forEach(scheduleStorage.finishListeners, function(listenerCallback){
+			 	listenerCallback();
+				//console.log('notified');
+			});
+		}
+
+		scheduleStorage.addStartListener = function(callback){
+			scheduleStorage.startListeners.push(callback);
+		};
+
+		scheduleStorage.addFinishListener = function(callback){
+			scheduleStorage.finishListeners.push(callback);
+		};
+
+		//list of possible schedules, this will be filled with server response
 		scheduleStorage.scheduleArray = [];
 
+		//sample schedule list with one schedule - for testing purposes
 		scheduleStorage.sampleScheduleArray = [[ { Subj: 'CS',
 	      Crse: '01200',
 	      Sect: '1',
@@ -46,14 +73,22 @@ angular.module('scheduler.services', [])
 	      Campus: 'Main',
 	      Hrs: 3 } ]];
 
-		scheduleStorage.setSchedules = function(newSchedules){
+		//called by InputScheduleCtrl submit callback to store the matching schedules retrieved from server
+		scheduleStorage.onFinishProcessing = function(newSchedules){
 			scheduleStorage.scheduleArray = newSchedules;
+			scheduleStorage.notifyFinishListeners();
 		};
 
+		scheduleStorage.onStartProcessing = function(){
+			scheduleStorage.notifyStartListeners();
+		}
+
+		//called by SelectScheduleCtrl to retrieve store schedule list
 		scheduleStorage.getSchedules = function(){
 			return scheduleStorage.scheduleArray;
 		};
 
+		//gets the sample schedule list for testing purposes
 		scheduleStorage.getSampleSchedules = function(){
 			return scheduleStorage.sampleScheduleArray;
 		};

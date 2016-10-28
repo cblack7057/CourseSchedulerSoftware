@@ -1,8 +1,10 @@
-<ion-view view-title="Add Times">
+<ion-view view-title="{{slideName}}">
 <ion-content>
-  <ion-slide-box on-slide-changed="slideHasChanged($index)">
+  <!--Slide view with two slides, add times and add courses-->
+  <ion-slide-box show-pager="false" on-slide-changed="slideHasChanged($index)">
     <ion-slide>
       <div class="padding">
+        <!--List each day, and for each day list all of the available time slots-->
         <ion-list>
           <div ng-repeat="(index, name) in days">
             <ion-radio ng-model="value" ng-click='newDay(value)' ng-value="index">
@@ -14,12 +16,14 @@
                   <div class="col">
                     <div class="row">
                       <label>Start:</label>
+                      <!--modify the start time of this time slot-->
                       <input type="time" class="form-control" ng-model="time.startTime">
                     </div>
                   </div>
                   <div class="col">
                     <div class="row">
                       <label>End:</label>
+                      <!--modify the end time of this time slot-->
                       <input type="time" class="form-control" ng-model="time.endTime">
                     </div>
                   </div>
@@ -28,6 +32,7 @@
               <div class="row">
                 <div class="col"></div>
                 <div class="col">
+                  <!--Allow user to add a new time slot-->
                   <button class="button button-balanced" ng-click="addNewTime()">Add time slot</button>
                 </div>
               </div>
@@ -40,33 +45,41 @@
   </ion-slide>
   <ion-slide>
     <div class="padding">
-        <h3> Add courses: </h3>
-        <form class="form-inline" ng-submit="addCourses()">
-            <label> Subject (ie: 'CS'): </label>
-            <input type="text" class="form-control" ng-model="courseData.subject">
-            <label> CRN: </label>
-            <input type="text" class="form-control" ng-model="courseData.course">
-            <button type="submit" class="btn btn-success">Add</button>
-            <div>
-                <h3> These are the courses you've chosen.</h3>
-                <table class="table table-bordered" ng-repeat="course in courses">
-                    <thead>
-                        <tr>
-                            <th>Subject</th>
-                            <th>CRN</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ course.subject }}</td>
-                            <td>{{ course.crn }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+      <div class="padding-bottom">
+        <ion-list class="list list-inset">
+          <div class="item item-divider">
+            <div class="row">
+              <div class="col col-25"><h5>Subject</5></div>
+              <div class="col col-30"><h5>Course Number</5></div>
+              <div class="col col-10"></div>
+              <div class="col">
+                <button class="button button-small button-positive" ng-click="addCourse()">
+                  <icon class="icon ion-ios-plus"></icon>
+                </button>
+              </div>
+              <div class="col">
+                <button class="button button-small button-balanced" ng-click="submitTimes()">Submit</button>
+              </div>
             </div>
-            <button class="btn btn-success" ng-click="submitTimes()">Submit</button>
-        </form>
-        <!--<p>{{message2}}</p>-->
+          </div>
+          <div ng-repeat="(index, course) in courses">
+              <ion-item ng-style="{'height': '75px'}">
+                <div class="row">
+                  <div class="col col-25"><input type="text" placeholder="Subject" ng-model="course.subject"></div>
+                  <div class="col col-25"><input type="text" placeholder="CRN" ng-model="course.course"></div>
+                  <div class="col col">
+                    <div class="right">
+                      <button class="button button-small button-assertive" ng-click="removeCourses(index)">
+                        <icon class="icon ion-ios-minus"></icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </ion-item>
+
+          </div>
+        </ion-list>
+      </div>
     </div>
     <div class = "padding-vertical">
     </div>

@@ -70,6 +70,11 @@ angular.module('scheduler.controllers', ['scheduler.services'])
     vm.addNewTime = function () {
       vm.availableTimes.push({startTime: new Date(), endTime: new Date()});
     }
+  vm.slideNames = ["Add Times", "Add Courses"];
+  vm.slideName = vm.slideNames[0];
+  vm.slideHasChanged = function($index){
+    vm.slideName = vm.slideNames[$index];
+  }
 
 	vm.allDay = function() {
 		vm.availableTimes.push({
@@ -80,6 +85,9 @@ angular.module('scheduler.controllers', ['scheduler.services'])
                 });
 		vm.times[vm.day] = vm.combine(vm.availableTimes);
 	};
+    vm.addCourse = function() {
+      vm.courses.push({})
+    }
 
     vm.addCourses = function () {
         if (vm.courseData.subject != null && vm.courseData.course != null) {
@@ -112,6 +120,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
             timesArray: vm.times,
             courseArray: vm.courses
         };
+        scheduleService.onStartProcessing();
         // vm.message = weekData;
         // POST request
         $http({
@@ -123,9 +132,9 @@ angular.module('scheduler.controllers', ['scheduler.services'])
             // extract "Schedule" array from the returned data and save
             vm.schedules = data;
             vm.message2 = data;
-            scheduleService.setSchedules(data);
+            scheduleService.onFinishProcessing(data);
             vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
-            $rootScope.$broadcast('NEW_SCHEDULES', data);
+
         });
         //vm.message2 = 'not reached';
         //vm.setCurrentSchedule(0);
@@ -238,17 +247,30 @@ angular.module('scheduler.controllers', ['scheduler.services'])
 .controller('SelectScheduleCtrl', function($scope, scheduleService) {
   var sm = $scope;
   sm.schedules;
+  sm.waiting = true;
 
-  $scope.$on('NEW_SCHEDULES', function(response) {
-    sm.grabSchedules();
-  });
 
+  //grabs the list of possible schedules from the local schedule storage service
   sm.grabSchedules = function(){
     sm.schedules = scheduleService.getSchedules();
   };
 
+  sm.listeners = scheduleService.listeners;
+
+  scheduleService.addStartListener(function(){
+    sm.waiting = true;
+  });
+
+  //start listening for changes to schedules data
+  scheduleService.addFinishListener(function(){
+    sm.grabSchedules();
+    sm.waiting = false;
+  });
+
+  //grabs the a sample schedule list (with only one schedule) from the local schedule storage service
   sm.grabSampleSchedules = function(){
     sm.schedules = scheduleService.getSampleSchedules();
+    sm.waiting = false;
   };
 
 });
