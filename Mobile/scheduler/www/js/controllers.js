@@ -122,7 +122,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
         }).success(function (data) {
             // extract "Schedule" array from the returned data and save
             vm.schedules = data;
-            vm.message2 = data[0];
+            vm.message2 = data;
             scheduleStorage.setSchedules(data);
             vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
             $rootScope.$broadcast('NEW_SCHEDULES', data);
@@ -239,6 +239,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
   var sm = $scope;
   sm.count = 0;
   sm.schedules;
+
   $scope.$on('NEW_SCHEDULES', function(response) {
     sm.schedules = scheduleStorage.getSchedules();
     sm.count++;
@@ -248,5 +249,46 @@ angular.module('scheduler.controllers', ['scheduler.services'])
     sm.schedules = scheduleStorage.getSchedules();
   }
 
+//sample schedule is an example schedule array outputted from server, and contains one schedule.
+  sm.sampleSchedules = [[ { Subj: 'CS',
+      Crse: '01200',
+      Sect: '1',
+      Meetings: [Object],
+      Session: 'Day',
+      CRN: 41164,
+      Title: 'COMPUTING ENVIRONMENTS',
+      Prof: 'Hoxworth Ryan',
+      Campus: 'Main',
+      Hrs: 3 },
+    { Subj: 'CS',
+      Crse: '04114',
+      Sect: '1',
+      Meetings: [Object],
+      Session: 'Day',
+      CRN: 41093,
+      Title: 'OBJ-ORIENT PRGRM/DATA ABSTR',
+      Prof: 'Myers Jack F',
+      Campus: 'Main',
+      Hrs: 4 },
+    { Subj: 'CS',
+      Crse: '04222',
+      Sect: '1',
+      Meetings: [Object],
+      Session: 'Day',
+      CRN: 41096,
+      Title: 'DATA STRUCT/ALGORIM',
+      Prof: 'Hristescu Gabriela',
+      Campus: 'Main',
+      Hrs: 4 },
+    { Subj: 'CS',
+      Crse: '06205',
+      Sect: '1',
+      Meetings: [Object],
+      Session: 'Day',
+      CRN: 41101,
+      Title: 'COMPUTER ORGANIZATION',
+      Prof: 'Mansaray Mohamed S',
+      Campus: 'Main',
+      Hrs: 3 } ]];
 
 });
