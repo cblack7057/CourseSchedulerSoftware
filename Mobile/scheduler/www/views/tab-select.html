@@ -1,9 +1,10 @@
 <ion-view view-title="Select">
   <ion-content class="padding">
     <h2>Here is a schedule!</h2>
-    blehh
-    {{schedules[0]}}
-    {{count}}
-    <button class="button button-balanced" ng-onclick="updateSchedules()">update!</button>
+    <div>
+      {{schedules}}
+    </div>
+    <button class="button button-balanced" ng-click="grabSchedules()">Grab stored schedule!</button>
+    <button class="button button-positive" ng-click="grabSampleSchedules()">Grab sample schedule instead!</button>
   </ion-content>
 </ion-view>
