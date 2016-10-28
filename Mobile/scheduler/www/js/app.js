@@ -59,12 +59,13 @@ angular.module('scheduler', ['ionic', 'scheduler.controllers'])
         }
       }
     })
-    .state('tab.inputMod', {
-          url: '/inputMod',
+
+    .state('tab.select', {
+          url: '/select',
           views: {
-            'tab-inputMod': {
-              templateUrl: 'views/tab-inputMod.html',
-              controller: 'InputScheduleCtrl'
+            'tab-select': {
+              templateUrl: 'views/tab-select.html',
+              controller: 'SelectScheduleCtrl'
             }
           }
         });

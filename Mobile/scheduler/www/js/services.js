@@ -1,36 +1,18 @@
 angular.module('scheduler.services', [])
 
-.factory('Schedule', function($http) {
+	.factory('scheduleService', function() {
+		var scheduleStorage = {};
 
-	// create a new object
-	var scheduleFactory = {};
+		scheduleStorage.scheduleArray = [];
 
+		scheduleStorage.setSchedules = function(newSchedules){
+			scheduleStorage.scheduleArray = newSchedules;
+		};
 
+		scheduleStorage.getSchedules = function(){
+			return scheduleStorage.scheduleArray;
+		};
 
-	// create a schedule
-	scheduleFactory.create = function(weekData) {
-		return $http.post('/', weekData);
-	};
+		return scheduleStorage;
 
-// get a single user
-	scheduleFactory.get = function(id) {
-		return $http.get('/api/users/' + id);
-	};
-
-	// get all users
-	scheduleFactory.all = function() {
-		return $http.get('/api/users/');
-	};
-	// update a user
-	scheduleFactory.update = function(id, userData) {
-		return $http.put('/api/users/' + id, userData);
-	};
-	// delete a user
-	scheduleFactory.delete = function(id) {
-		return $http.delete('/api/users/' + id);
-	};
-
-	// return our entire scheduleFactory object
-	return scheduleFactory;
-
-});
+	});
