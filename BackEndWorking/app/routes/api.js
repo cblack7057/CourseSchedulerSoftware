@@ -9,10 +9,11 @@ module.exports = function(app, express) {
 	apiRouter.post('/process', function(req,res){
 		var week = req.body.timesArray;
 		var courses = req.body.courseArray;
-		require('../generator/scheduleGenerator')(week, courses, mongodb, config, function() {
-			console.log(schedules);
-			console.log(notFoundCourses); //the courses the user inputed that we did not find
-			res.json(schedules);
+		var promise = require('../generator/scheduleGenerator')(week, courses, mongodb, config);
+		promise.then(function(resolve, reject) {
+			console.log(resolve[0]);
+			console.log(resolve[1]); //the courses the user inputed that we did not find
+			res.json(resolve[0]);
 		});
 	});	
 
