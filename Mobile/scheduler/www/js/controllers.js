@@ -68,7 +68,14 @@ angular.module('scheduler.controllers', ['scheduler.services'])
 
     //add a new time slot with default values
     vm.addNewTime = function () {
-      vm.availableTimes.push({startTime: vm.changeTimeFormat(Date()), endTime: vm.changeTimeFormat(new Date())});
+      var sTime = new Date();
+      var eTime = new Date();
+      vm.availableTimes.push({
+        startTime: sTime,
+        endTime: eTime,
+        dispStartTime: vm.changeTimeFormat(sTime),
+        dispEndTime: vm.changeTimeFormat(eTime)
+      });
     }
   vm.slideNames = ["Add Times", "Add Courses"];
   vm.slideName = vm.slideNames[0];
@@ -112,6 +119,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
     vm.removeCourses = function (index) {
         vm.courses.splice(index, 1);
     }
+
 
     // submits week data to backend through a post request, then sets data the 'message'
     vm.submitTimes = function () {

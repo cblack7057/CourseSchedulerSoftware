@@ -17,14 +17,14 @@
                     <div class="row">
                       <label>Start:</label>
                       <!--modify the start time of this time slot-->
-                      <input type="time" class="form-control" ng-model="time.startTime", ng-change="time.startTime = vm.changeTimeFormat(time.startTime)">
+                      <input type="time" class="form-control" ng-model="time.displayStartTime", ng-change="time.startTime = vm.changeTimeFormat(time.dispStartTime)">
                     </div>
                   </div>
                   <div class="col">
                     <div class="row">
                       <label>End:</label>
                       <!--modify the end time of this time slot-->
-                      <input type="time" class="form-control" ng-model="time.endTime" ng-change="time.startTime = vm.changeTimeFormat(time.startTime)">
+                      <input type="time" class="form-control" ng-model="time.displayEndTime" ng-change="time.endTime = vm.changeTimeFormat(time.dispStartTime)">
                     </div>
                   </div>
                 </ion-item>
