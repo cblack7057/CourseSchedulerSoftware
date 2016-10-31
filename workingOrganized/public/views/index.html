@@ -26,8 +26,9 @@
 </head>
 <body class="container" ng-app="firstApp2" ng-controller="mainController as main">
     <div class="jumbotron">
+        <div class="title">
         <h2>
-            Rowan Scheduler App </h2>
+            Rowan Scheduler App </h2> </div>
 
 
                 <!-- for debugging time frame tables
@@ -58,7 +59,10 @@
                 </div>
 
 -->
- <h3>{{ main.modalCourseData }}</h3>
+        <div class="inputForm">
+            <div class="daysBtns">
+
+                <h3>{{ main.modalCourseData }}</h3>
 
                 <!-- form to add days to the list -->
                 <h3> Choose a day you wish to be on campus:</h3>
@@ -104,34 +108,35 @@
 
 
                 <!-- form to add times to the list -->
-                <div>
+                <div class="timeInput">
                     <h3> Add time frame(s) you will be available: </h3>
-					
+
                     <form class="form-inline" ng-submit="main.addTimes()">
                         <label> Start time: </label>
                         <input type="time" class="form-control" ng-model="main.timeData.StartTime">
                         <label> End time: </label>
                         <input type="time" class="form-control" ng-model="main.timeData.EndTime">
                         <button type="submit" class="btn btn-success" ng-disabled="main.day == null">Add</button>
-						<button type="button" class="btn btn-info" ng-click="main.allDay()">All Day</button>
-                
-                <h6 font color="red">
-                    {{ main.errorMessageTimes }}</h6>
+                        <button type="button" class="btn btn-info" ng-click="main.allDay()">All Day</button>
+
+                        <h6 font color="red">
+                            {{ main.errorMessageTimes }}
+                        </h6>
 
 
                         <!------ Table  date:"hh:mm a" ----->
-						<h3> These are the times you've chosen for the week.</h3>
-						<div class="jumbotron">
-                        <div ng-repeat="day in main.times" ng-switch on="$index"  class="col-md-4">
-						
-                            <h4 ng-switch-when="0">Monday:</h4>
-							<h4 ng-switch-when="1">Tuesday:</h4>
-							<h4 ng-switch-when="2">Wednesday:</h4>
-							<h4 ng-switch-when="3">Thursday:</h4>
-							<h4 ng-switch-when="4">Friday:</h4>
-							<h4 ng-switch-when="5">Saturday:</h4>
-							
-                            <table class="table table-bordered" ng-hide="time in day == null">
+                        <h3> These are the times you've chosen for the week.</h3>
+                        <div class="jumbotron1">
+                            <div ng-repeat="day in main.times" ng-switch on="$index" class="col-md-4">
+
+                                <h4 ng-switch-when="0">Monday:</h4>
+                                <h4 ng-switch-when="1">Tuesday:</h4>
+                                <h4 ng-switch-when="2">Wednesday:</h4>
+                                <h4 ng-switch-when="3">Thursday:</h4>
+                                <h4 ng-switch-when="4">Friday:</h4>
+                                <h4 ng-switch-when="5">Saturday:</h4>
+
+                                <table class="table table-bordered" ng-hide="time in day == null">
                                     <tr>
                                         <th>Start</th>
                                         <th>End</th>
@@ -142,93 +147,98 @@
                                         <td>{{ time.dispEndTime | date:'shortTime'}}</td>
                                         <td><input type="button" value="Remove" class="btn btn-primary" ng-click="main.removeTimes($index,$parent.$index)" /></td>
                                     </tr>
-                            </table>
-					
-                        </div>
-						</div>
-					</form>
-					<div class="clearfix"/>
-					<form class="form-inline" ng-submit="main.addCourses()">
-                    <label> Subject (ie: 'CS'): </label>
-                    <input type="text" class="form-control" ng-model="main.courseData.subject">
-                    <label> Course: </label>
-                    <input type="text" class="form-control" ng-model="main.courseData.course">
-                    <button type="submit" class="btn btn-success">Add</button>
-					
-					<h6 style="color:red;">
-                    {{ main.errorMessageCourses }}</h6>
+                                </table>
 
-                    <!------ Table  date:"hh:mm a" ----->
-                    <div>
-                        <h3> These are the courses you've chosen.</h3>
-						<div>
-                        <table class="table table-bordered" >
-			
-                                <tr>
-                                    <th>Subject</th>
-                                    <th>Course</th>
-                                    <th>Action</th>
-                                </tr>
-                                <tr ng-repeat="course in main.courses">
-                                    <td>{{ course.subject }}</td>
-                                    <td>{{ course.course }}</td>
-                                    <td><input type="button" value="Remove" class="btn btn-primary" ng-click="main.removeCourses($index)" /></td>
-                                </tr>
-                        </table>
-						</div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="clearfix" />
+                    <form class="form-inline" ng-submit="main.addCourses()">
+                        <label> Subject (ie: 'CS'): </label>
+                        <input type="text" class="form-control" ng-model="main.courseData.subject">
+                        <label> Course: </label>
+                        <input type="text" class="form-control" ng-model="main.courseData.course">
+                        <button type="submit" class="btn btn-success">Add</button>
+
+                        <h6 style="color:red;">
+                            {{ main.errorMessageCourses }}
+                        </h6>
+
+                        <!------ Table  date:"hh:mm a" ----->
+                        <div>
+                            <h3> These are the courses you've chosen.</h3>
+                            <div>
+                                <table class="table table-bordered">
+
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Course</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    <tr ng-repeat="course in main.courses">
+                                        <td>{{ course.subject }}</td>
+                                        <td>{{ course.course }}</td>
+                                        <td><input type="button" value="Remove" class="btn btn-primary" ng-click="main.removeCourses($index)" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <button class="btn btn-success" ng-click="main.submitTimes()">Submit</button>
+                    <button type="button" class="btn btn-info" ng-click="main.testCourses()">Test Submit</button>
                     </div>
-					</form>
-					
-					
-					<button class="btn btn-success" ng-click="main.submitTimes()">Submit</button>
-					<button type="button" class="btn btn-info" ng-click="main.testCourses()">Test Submit</button>
-					
-					<div id="container" style="padding:0px">
-					 <div class="row">
-                        <h3> Schedule: {{main.schedules.length == 0 ? '' : main.currentScheduleIndex+1 + ' of ' + main.schedules.length}} </h3>
-						<div class="timesLeft">
-						
-						<table class="table table-bordered" >
-							<tr><th>Time</th></tr>
-							<tr ng-repeat="time in main.timeIntervals"><td>{{ time }}</td></tr>
-                        </table>
-						</div>
-							<!-- col-sm-1-->
-						<div class="timesRight col-sm-1" >
-							<table class="table table-bordered">
+                </div>
+            </div>
+                <div class="scheduleForm">
+                    <div id="container" style="padding:0px">
+                        <div class="row">
+                            <h3> Schedule: {{main.schedules.length == 0 ? '' : main.currentScheduleIndex+1 + ' of ' + main.schedules.length}} </h3>
+                            <div class="timesLeft">
+
+                                <table class="table table-bordered">
+                                    <tr><th>Time</th></tr>
+                                    <tr ng-repeat="time in main.timeIntervals"><td>{{ time }}</td></tr>
+                                </table>
+                            </div>
+                            <!-- col-sm-1-->
+                            <div class="timesRight col-sm-1">
+                                <table class="table table-bordered">
                                     <tr>
                                         <th>Monday</th>
                                         <th>Tuesday</th>
-										<th>Wednesday</th>
-										<th>Thursday</th>
-										<th>Friday</th>
-										<th>Saturday</th>
-										<th>Unknown</th>
+                                        <th>Wednesday</th>
+                                        <th>Thursday</th>
+                                        <th>Friday</th>
+                                        <th>Saturday</th>
+                                        <th>Unknown</th>
                                     </tr>
                                     <tr ng-repeat="row in main.timeIntervals">
                                         <td ng-repeat="day in main.currentSchedule"></td>
                                     </tr>
-                            </table> 
-							<div class="coursesLayer">
-							<table class="table" style="height:100%"> 
-                                <tr ng-repeat="row in main.classIntervals" style="line-height:75px; height:75px" >
-									<td ng-repeat="day in main.currentSchedule">
-										<button ng-show="row.localeCompare(class.sTime)==0" class="btn btn-success" id="classButton" ng-repeat="class in day">
-												<p style="font-size:10px; margin:0px; padding:0px">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</p>
-										</button>
-									</td>
-								<tr>
-                            </table>
-							</div>
-						</div>
-						
-						<div class="clearfix"/>
-						<button class="btn btn-success" ng-click="main.showPrevSchedule()" ng-disabled="main.currentScheduleIndex == 0">Prev</button>
-						<button class="btn btn-success" ng-click="main.showNextSchedule()" ng-disabled="main.currentScheduleIndex+1 >= main.schedules.length">Next</button>
-					 </div>
-					 </div>
-				</div>
-			</div>
+                                </table>
+                                <div class="coursesLayer">
+                                    <table class="table" style="height:100%">
+                                        <tr ng-repeat="row in main.classIntervals" style="line-height:75px; height:75px">
+                                            <td ng-repeat="day in main.currentSchedule">
+                                                <button ng-show="row.localeCompare(class.sTime)==0" class="btn btn-success" id="classButton" ng-repeat="class in day">
+                                                    <p style="font-size:10px; margin:0px; padding:0px">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</p>
+                                                </button>
+                                            </td>
+                                        <tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="clearfix" />
+                            <button class="btn btn-success" ng-click="main.showPrevSchedule()" ng-disabled="main.currentScheduleIndex == 0">Prev</button>
+                            <button class="btn btn-success" ng-click="main.showNextSchedule()" ng-disabled="main.currentScheduleIndex+1 >= main.schedules.length">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       
 			
 		<!-- Modal Stuff -->	
 
