@@ -132,8 +132,9 @@ angular.module('scheduler.controllers', ['scheduler.services'])
             // extract "Schedule" array from the returned data and save
             vm.schedules = data;
             vm.message2 = data;
+            //scheduleService.onFinishProcessing(data);
+            //vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
             scheduleService.onFinishProcessing(data);
-            vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
 
         });
         //vm.message2 = 'not reached';
@@ -272,5 +273,50 @@ angular.module('scheduler.controllers', ['scheduler.services'])
     sm.schedules = scheduleService.getSampleSchedules();
     sm.waiting = false;
   };
+    
+  sm.setCurrentSchedule = function (scheduleIndex) { //schduleIndex = index of schedule you wish to set as current
+        //use this one when taking schedules from
+        sm.currentSchedule = [[], [], [], [], [], [], []];
+        var tempSchedule = sm.schedules[scheduleIndex];
+
+        //var tempSchedule = vm.testTimes; //to test the single schedule we created
+        vm.message = tempSchedule;
+        // I'll deal with sorting by times later
+        // 1. loop through each class in the schedule to be set
+        // [Deleted]
+        // 3. loop through the meeting times of that class IF they exist, if no meeting add to index[0] of currentSchedule
+        // 4. switch/case 'M', 'T', 'W', 'R', 'F', 'S' to add to index of currentSchedules
+		var tSData;
+		var tEData;
+		var meetings;
+		var tempDay;
+        tempSchedule.forEach(function (c) {
+            meetings = c.Meetings;
+            tempDay = 0;
+
+            meetings.forEach(function (t) {
+				tSData = sm.getVisualTime(t.StartTime);
+				tEData = sm.getVisualTime(t.EndTime);
+                sm.currentSchedule[t.Day].push({
+                    Subject: c.Subj + ' ' + c.Crse,
+                    sTime: tSData.Hours + ':' + tSData.Minutes + ' ' + tSData.Period,
+                    eTime: tEData.Hours + ':' + tEData.Minutes + ' ' + tEData.Period,
+                    courseInfo: c
+                });
+                //vm.message2 =
+            });
+        });
+    }
+  
+  sm.getVisualTime = function (time){
+		var hours = Math.round(time / 100) % 12;
+		var minutes = (time % 100 == 0 ? '00' : time % 100);
+		var period = (time >= 1200? 'pm' : 'am');
+		return {
+			Hours: hours,
+			Minutes: minutes,
+			Period: period
+		};
+	};
 
 });
