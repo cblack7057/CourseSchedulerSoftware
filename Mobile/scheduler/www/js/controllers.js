@@ -68,7 +68,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
 
     //add a new time slot with default values
     vm.addNewTime = function () {
-      vm.availableTimes.push({startTime: new Date(), endTime: new Date()});
+      vm.availableTimes.push({startTime: vm.changeTimeFormat(Date()), endTime: vm.changeTimeFormat(new Date())});
     }
   vm.slideNames = ["Add Times", "Add Courses"];
   vm.slideName = vm.slideNames[0];
@@ -273,7 +273,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
     sm.schedules = scheduleService.getSampleSchedules();
     sm.waiting = false;
   };
-    
+
   sm.setCurrentSchedule = function (scheduleIndex) { //schduleIndex = index of schedule you wish to set as current
         //use this one when taking schedules from
         sm.currentSchedule = [[], [], [], [], [], [], []];
@@ -307,7 +307,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
             });
         });
     }
-  
+
   sm.getVisualTime = function (time){
 		var hours = Math.round(time / 100) % 12;
 		var minutes = (time % 100 == 0 ? '00' : time % 100);
