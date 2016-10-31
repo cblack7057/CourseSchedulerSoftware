@@ -61,50 +61,50 @@
 -->
         <div class="inputForm">
             <div class="daysBtns">
+                <div class="radioBtns">
+                    <h3>{{ main.modalCourseData }}</h3>
 
-                <h3>{{ main.modalCourseData }}</h3>
-
-                <!-- form to add days to the list -->
-                <h3> Choose a day you wish to be on campus:</h3>
-                <div class="form-inline">
-                    <div class="radio">
-                        <label>
-                            <input type="radio" value="0" ng-model="value" ng-change='main.newDay(value)'>
-                            Monday
-                        </label>
+                    <!-- form to add days to the list -->
+                    <h3> Choose a day you wish to be on campus:</h3>
+                    <div class="form-inline">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" value="0" ng-model="value" ng-change='main.newDay(value)'>
+                                Monday
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" value="1" ng-model="value" ng-change='main.newDay(value)'>
+                                Tuesday
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" value="2" ng-model="value" ng-change='main.newDay(value)'>
+                                Wednesday
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" value="3" ng-model="value" ng-change='main.newDay(value)'>
+                                Thursday
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" value="4" ng-model="value" ng-change='main.newDay(value)'>
+                                Friday
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" value="5" ng-model="value" ng-change='main.newDay(value)'>
+                                Saturday
+                            </label>
+                        </div>
                     </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" value="1" ng-model="value" ng-change='main.newDay(value)'>
-                            Tuesday
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" value="2" ng-model="value" ng-change='main.newDay(value)'>
-                            Wednesday
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" value="3" ng-model="value" ng-change='main.newDay(value)'>
-                            Thursday
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" value="4" ng-model="value" ng-change='main.newDay(value)'>
-                            Friday
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" value="5" ng-model="value" ng-change='main.newDay(value)'>
-                            Saturday
-                        </label>
-                    </div>
-                </div>
-
+               
 
 
                 <!-- form to add times to the list -->
@@ -152,43 +152,46 @@
                             </div>
                         </div>
                     </form>
-                    <div class="clearfix" />
-                    <form class="form-inline" ng-submit="main.addCourses()">
-                        <label> Subject (ie: 'CS'): </label>
-                        <input type="text" class="form-control" ng-model="main.courseData.subject">
-                        <label> Course: </label>
-                        <input type="text" class="form-control" ng-model="main.courseData.course">
-                        <button type="submit" class="btn btn-success">Add</button>
+                    <div class="courseInfo">
+                        <div class="clearfix" />
+                        <h3>Enter Subject(s) and a Course Number(s)</h3>
+                        <form class="form-inline" ng-submit="main.addCourses()">
+                            <label> Subject (ie: 'CS'): </label>
+                            <input type="text" class="form-control" ng-model="main.courseData.subject">
+                            <label> Course: </label>
+                            <input type="text" class="form-control" ng-model="main.courseData.course">
+                            <button type="submit" class="btn btn-success">Add</button>
 
-                        <h6 style="color:red;">
-                            {{ main.errorMessageCourses }}
-                        </h6>
+                            <h6 style="color:red;">
+                                {{ main.errorMessageCourses }}
+                            </h6>
 
-                        <!------ Table  date:"hh:mm a" ----->
-                        <div>
-                            <h3> These are the courses you've chosen.</h3>
+                            <!------ Table  date:"hh:mm a" ----->
                             <div>
-                                <table class="table table-bordered">
+                                <h3> These are the courses you've chosen.</h3>
+                                <div>
+                                    <table class="table table-bordered">
 
-                                    <tr>
-                                        <th>Subject</th>
-                                        <th>Course</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    <tr ng-repeat="course in main.courses">
-                                        <td>{{ course.subject }}</td>
-                                        <td>{{ course.course }}</td>
-                                        <td><input type="button" value="Remove" class="btn btn-primary" ng-click="main.removeCourses($index)" /></td>
-                                    </tr>
-                                </table>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Course</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        <tr ng-repeat="course in main.courses">
+                                            <td>{{ course.subject }}</td>
+                                            <td>{{ course.course }}</td>
+                                            <td><input type="button" value="Remove" class="btn btn-primary" ng-click="main.removeCourses($index)" /></td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-
+                        </form>
+                    </div>
 
                     <button class="btn btn-success" ng-click="main.submitTimes()">Submit</button>
                     <button type="button" class="btn btn-info" ng-click="main.testCourses()">Test Submit</button>
-                    </div>
+                </div>
+            </div>
                 </div>
             </div>
                 <div class="scheduleForm">
