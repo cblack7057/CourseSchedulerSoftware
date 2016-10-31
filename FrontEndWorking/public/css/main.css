@@ -107,6 +107,15 @@ h2 {
 .button{
 	color:#F012BE;
 }
+@media print {
+   body * { visibility: hidden; }
+  #printarea,#printarea * { visibility: visible; }
+  #printarea {
+      position: absolute;
+      left: 40px;
+      top: 40px;
+  }
+}
 
 /*modal css http://www.w3schools.com/howto/howto_css_modals.asp*/
 /* Modal Header 
