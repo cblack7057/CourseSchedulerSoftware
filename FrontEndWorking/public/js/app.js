@@ -16,6 +16,7 @@ angular.module('firstApp2', ['scheduleService'])
     vm.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     vm.times = [[], [], [], [], [], []];
     vm.courses = [];
+    vm.semester;
 
     vm.availableTimes = []; // array that the user is currently adding time frames to 
     vm.day; // current day selected, used to determine which array to add the start and end times
@@ -24,6 +25,7 @@ angular.module('firstApp2', ['scheduleService'])
     vm.timeData = {};
     vm.dayData = {};
     vm.courseData = {};
+    vm.choices = ["Fall2016","Spring2017"];
 	vm.modalCourseData;
     // returned schedule data
     vm.schedules = [];
@@ -110,22 +112,22 @@ angular.module('firstApp2', ['scheduleService'])
 		};
 		vm.submitTimes();
 	};
-    vm.addCourses = function () {
+	vm.addCourses = function () {
 
-        if (vm.courseData.subject != null && vm.courseData.course != null) {
-            var s = vm.courseData.subject;
-            var c = vm.courseData.course;
-            vm.courses.push({
-                subject: s.toUpperCase(),
-                course: c
-            });
-            vm.courseData = {};
-            vm.errorMessageCourses = '';
-        } else {
-            vm.errorMessageCourses = 'Please enter your course subject and course.'
-        }
-        //vm.message = vm.courses;
-    };
+	    if (vm.courseData.subject != null && vm.courseData.course != null) {
+	        var s = vm.courseData.subject;
+	        var c = vm.courseData.course;
+	        vm.courses.push({
+	            subject: s.toUpperCase(),
+	            course: c
+	        });
+	        vm.courseData = {};
+	        vm.errorMessageCourses = '';
+	    } else {
+	        vm.errorMessageCourses = 'Please enter your course subject and course.'
+	    }
+	    //vm.message = vm.courses;
+	};
 
     vm.removeTimes = function (index, parentIndex) {
         vm.times[parentIndex].splice(index, 1);
@@ -139,10 +141,11 @@ angular.module('firstApp2', ['scheduleService'])
     vm.submitTimes = function () {
         vm.currentScheduleIndex = 0;
         var weekData = {
+            semesterArray: vm.semester,
             timesArray: vm.times,
             courseArray: vm.courses
         };
-         vm.message = weekData;
+         vm.message = weekData.semesterArray;
         // POST request
         $http({
             method: 'POST',
@@ -153,7 +156,7 @@ angular.module('firstApp2', ['scheduleService'])
             // extract "Schedule" array from the returned data and save
             vm.schedules = data;
             vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
-         //   vm.message2 = data; // temporary return
+            //vm.message2 = data; // temporary return
         });
         //vm.message2 = 'not reached';
         //vm.setCurrentSchedule(0);
