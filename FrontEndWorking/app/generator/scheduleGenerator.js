@@ -1,4 +1,4 @@
-module.exports = function(week, courses, mongodb, config, callback) {
+module.exports = function(week, courses, term, mongodb, config, callback) {
 	//We need to work with "MongoClient" interface in order to connect to a mongodb server.
 	var MongoClient = mongodb.MongoClient;
 	
@@ -43,6 +43,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 			else {
 				console.log('connection completed');
 				console.log('getting collection from database');
+				console.log('term: ', term);
 				db.collection('Courses', function(err, collection) {
 					if(err) {
 						console.log('error getting the collection from the database');

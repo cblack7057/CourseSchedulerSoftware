@@ -141,11 +141,11 @@ angular.module('firstApp2', ['scheduleService'])
     vm.submitTimes = function () {
         vm.currentScheduleIndex = 0;
         var weekData = {
-            semesterArray: vm.semester,
+            term: vm.semester,
             timesArray: vm.times,
             courseArray: vm.courses
         };
-         vm.message = weekData.semesterArray;
+         vm.message = weekData.term;
         // POST request
         $http({
             method: 'POST',
