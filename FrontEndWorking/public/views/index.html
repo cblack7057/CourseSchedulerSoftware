@@ -62,8 +62,13 @@
         <div class="inputForm">
             <div class="daysBtns">
                 <div class="radioBtns">
-                    <h3>{{ main.modalCourseData }}</h3>
-
+		<h3>Choose semester</h3>
+                    
+                    <select ng-model="main.semester">
+                        <option value="Fall2016">Fall2016</option>
+                        <option value="Spring2017">Spring2017</option>
+                    </select>
+			
                     <!-- form to add days to the list -->
                     <h3> Choose a day you wish to be on campus:</h3>
                     <div class="form-inline">
