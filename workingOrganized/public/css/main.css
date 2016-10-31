@@ -1,47 +1,105 @@
-.courseTable{
-}
-.courseTable.timeHeader tr{
-	line-height: 5px; 
-}
-.times,.classes {
+
+.timesLeft,.timesRight {
     float: left;
 }
-.classes {
-	width:91%;
+
+.timesLeft{
+	width:12.5%;
+	padding:0px;
+}
+.timesLeft table th {
+	text-align:center;
+}
+.timesLeft table tr td{
+	height: 20px;
+	color: #ff0000;
+	padding:2px;
+	text-align:center;
+}
+
+.timesRight {
+	width:87.5%;
     overflow-x: auto;
+    overflow-y:hidden;	
+	padding:0px;
+}
+.timesRight table tr th {
+	text-align:center;
+	width:12.5%;
+}
+.timesRight table tr td{
+	height: 25px;
+}
+.coursesLayer{
+	position: absolute;
+    left: 0px;
+    top: 37px;
+    z-index: 1;
+	width:100%;
+	height:100%;
+	overflow-x: auto;
     overflow-y:hidden;
-    height: 830px;
 }
-.classes tr th {
-	width:7%;
+.coursesLayer table tr {
+	line-height:75px; height:75px;
 }
-.classes tr td{
-	width:7%;
-    height: 79px;
+.coursesLayer table tr td{
+	width:12.5%;
+}
+#classButton{
+	left:0px;
+	top: 0px;
+	width:100%;
+	padding:0px;
+	height:100%;
 }
 .clearfix{
     clear:both;
 }
-.times{
-	width:8%;
-}
-.times table tr td {
-	line-height: 10px;
-}
-.times table tr td{
-	font-size: 15px;
-	color: #ff0000;
-}
-.schedule {
-    
-}
 .button{
 	color:F012BE;
 }
-.no-gutter > [class*='col-'] {
 
-    padding-right:0;
-
-    padding-left:0;
-
+/*modal css http://www.w3schools.com/howto/howto_css_modals.asp*/
+/* Modal Header 
+.modal-header {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
 }
+
+/* Modal Body 
+.modal-body {padding: 2px 16px;}
+
+/* Modal Footer 
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+}
+
+/* Modal Content 
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+/* Add Animation 
+@-webkit-keyframes animatetop {
+    from {top: -300px; opacity: 0} 
+    to {top: 0; opacity: 1}
+}
+
+@keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+*/

@@ -36,7 +36,7 @@
                         <input type="text" class="form-control" ng-model="main.message">
                     </div>
                     ------
-                <h4>{{ main.message }}</h4>
+               
 				<h4>{{ main.message2 }}</h4>
                 <div class="container">
                     Monday: {{ main.times[0] }}
@@ -58,6 +58,7 @@
                 </div>
 
 -->
+ <h3>{{ main.modalCourseData }}</h3>
 
                 <!-- form to add days to the list -->
                 <h3> Choose a day you wish to be on campus:</h3>
@@ -180,48 +181,21 @@
 					
 					
 					<button class="btn btn-success" ng-click="main.submitTimes()">Submit</button>
+					<button type="button" class="btn btn-info" ng-click="main.testCourses()">Test Submit</button>
 					
-					 <div>
-                            <h3> Schedule: {{main.schedules.length == 0 ? '' : main.currentScheduleIndex+1 + ' of ' + main.schedules.length}} </h3>
-							<div class="times">
-							<table class="table table-bordered">
+					<div id="container" style="padding:0px">
+					 <div class="row">
+                        <h3> Schedule: {{main.schedules.length == 0 ? '' : main.currentScheduleIndex+1 + ' of ' + main.schedules.length}} </h3>
+						<div class="timesLeft">
+						
+						<table class="table table-bordered" >
 							<tr><th>Time</th></tr>
-							<tr><td>8:00</td></tr>
-                            <tr><td>8:30</td></tr>
-                            <tr><td>9:00</td></tr>
-                            <tr><td>9:30</td></tr>
-                            <tr><td>10:00</td></tr>
-                            <tr><td>10:30</td></tr>
-                            <tr><td>11:00</td></tr>
-                            <tr><td>11:30</td></tr>
-                            <tr><td>12:00</td></tr>
-                            <tr><td>12:30</td></tr>
-                            <tr><td>1:00</td></tr>
-                            <tr><td>1:30</td></tr>
-                            <tr><td>2:00</td></tr>
-                            <tr><td>2:30</td></tr>
-                            <tr><td>3:00</td></tr>
-                            <tr><td>3:30</td></tr>
-                            <tr><td>4:00</td></tr>
-                            <tr><td>4:30</td></tr>
-                            <tr><td>5:00</td></tr>
-                            <tr><td>5:30</td></tr>
-                            <tr><td>6:00</td></tr>
-                            <tr><td>6:30</td></tr>
-                            <tr><td>7:00</td></tr>
-                            <tr><td>7:30</td></tr>
-                            <tr><td>8:00</td></tr>
-                            <tr><td>8:30</td></tr>
-                            <tr><td>9:00</td></tr>
-                            <tr><td>9:30</td></tr>
-                            <tr><td>10:00</td></tr>
-                            <tr><td>10:30</td></tr>
-							
+							<tr ng-repeat="time in main.timeIntervals"><td>{{ time }}</td></tr>
                         </table>
 						</div>
-							
-							<div class="classes">
-                            <table class="table table-bordered">
+							<!-- col-sm-1-->
+						<div class="timesRight col-sm-1" >
+							<table class="table table-bordered">
                                     <tr>
                                         <th>Monday</th>
                                         <th>Tuesday</th>
@@ -231,224 +205,56 @@
 										<th>Saturday</th>
 										<th>Unknown</th>
                                     </tr>
-                                    <tr>
-                                        <td ng-repeat="day in main.currentSchedule"><button class="btn btn-success btn-sm" style="margin:auto;" ng-repeat="class in day">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</button></td>
+                                    <tr ng-repeat="row in main.timeIntervals">
+                                        <td ng-repeat="day in main.currentSchedule"></td>
                                     </tr>
+                            </table> 
+							<div class="coursesLayer">
+							<table class="table" style="height:100%"> 
+                                <tr ng-repeat="row in main.classIntervals" style="line-height:75px; height:75px" >
+									<td ng-repeat="day in main.currentSchedule">
+										<button ng-show="row.localeCompare(class.sTime)==0" class="btn btn-success" id="classButton" ng-repeat="class in day">
+												<p style="font-size:10px; margin:0px; padding:0px">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</p>
+										</button>
+									</td>
+								<tr>
                             </table>
 							</div>
-							<div class="clearfix"/>
-							<button class="btn btn-success" ng-click="main.showPrevSchedule()" ng-disabled="main.currentScheduleIndex == 0">Prev</button>
-							<button class="btn btn-success" ng-click="main.showNextSchedule()" ng-disabled="main.currentScheduleIndex+1 >= main.schedules.length">Next</button>
-                     
+						</div>
+						
+						<div class="clearfix"/>
+						<button class="btn btn-success" ng-click="main.showPrevSchedule()" ng-disabled="main.currentScheduleIndex == 0">Prev</button>
+						<button class="btn btn-success" ng-click="main.showNextSchedule()" ng-disabled="main.currentScheduleIndex+1 >= main.schedules.length">Next</button>
 					 </div>
-					 
+					 </div>
 				</div>
 			</div>
-                       
+			
+		<!-- Modal Stuff -->	
 
-<!--
-                    <div>
-	
+		<!-- Trigger/Open The Modal 
+		<button id="myBtn" ng-click="myStyle={'display':'block'}">Open Modal</button> 
+		<span ng-style="myStyle">Sample Text</span>
 
-                        <h3> Schedule:  {{main.schedules.length == 0 ? '' : main.currentScheduleIndex+1 + ' of ' + main.schedules.length}} </h3>
-						<div class="courseTable">
-                        <table class="table table-bordered">
-                            <tr height="10">
-                                <th>Time</th>
-                                <th>Monday</th>
-                                <th>Tuesday</th>
-                                <th>Wednesday</th>
-                                <th>Thursday</th>
-                                <th>Friday</th>
-                                <th>Saturday</th>
-                                <th>Online</th>
-                            </tr>
-							<div class="timeHeader">
-                            <tr>
-                                <th>8:00</th>
-                            </tr>
-                            <tr>
-                                <th>8:15</th>
-                            </tr>
-                            <tr>
-                                <th>8:30</th>
-                            </tr>
-                            <tr>
-                                <th>8:45</th>
-                            </tr>
-                            <tr>
-                                <th>9:00</th>
-                            </tr>
-                            <tr>
-                                <th>9:15</th>
-                            </tr>
-                            <tr>
-                                <th>9:30</th>
-                            </tr>
-                            <tr>
-                                <th>9:45</th>
-                            </tr>
-                            <tr>
-                                <th>10:00</th>
-                            </tr>
-                            <tr>
-                                <th>10:15</th>
-                            </tr>
-                            <tr>
-                                <th>10:30</th>
-                            </tr>
-                            <tr>
-                                <th>10:45</th>
-                            </tr>
-                            <tr>
-                                <th>11:00</th>
-                            </tr>
-                            <tr>
-                                <th>11:15</th>
-                            </tr>
-                            <tr>
-                                <th>11:30</th>
-                            </tr>
-                            <tr>
-                                <th>11:45</th>
-                            </tr>
-                            <tr>
-                                <th>12:00</th>
-                            </tr>
-                            <tr>
-                                <th>12:15</th>
-                            </tr>
-                            <tr>
-                                <th>12:30</th>
-                            </tr>
-                            <tr>
-                                <th>12:45</th>
-                            </tr>
-                            <tr>
-                                <th>1:00</th>
-                            </tr>
-                            <tr>
-                                <th>1:15</th>
-                            </tr>
-                            <tr>
-                                <th>1:30</th>
-                            </tr>
-                            <tr>
-                                <th>1:45</th>
-                            </tr>
-                            <tr>
-                                <th>2:00</th>
-                            </tr>
-                            <tr>
-                                <th>2:15</th>
-                            </tr>
-                            <tr>
-                                <th>2:30</th>
-                            </tr>
-                            <tr>
-                                <th>2:45</th>
-                            </tr>
-                            <tr>
-                                <th>3:00</th>
-                            </tr>
-                            <tr>
-                                <th>3:15</th>
-                            </tr>
-                            <tr>
-                                <th>3:30</th>
-                            </tr>
-                            <tr>
-                                <th>3:45</th>
-                            </tr>
-                            <tr>
-                                <th>4:00</th>
-                            </tr>
-                            <tr>
-                                <th>4:15</th>
-                            </tr>
-                            <tr>
-                                <th>4:30</th>
-                            </tr>
-                            <tr>
-                                <th>4:45</th>
-                            </tr>
-                            <tr>
-                                <th>5:00</th>
-                            </tr>
-                            <tr>
-                                <th>5:15</th>
-                            </tr>
-                            <tr>
-                                <th>5:30</th>
-                            </tr>
-                            <tr>
-                                <th>5:45</th>
-                            </tr>
-                            <tr>
-                                <th>6:00</th>
-                            </tr>
-                            <tr>
-                                <th>6:15</th>
-                            </tr>
-                            <tr>
-                                <th>6:30</th>
-                            </tr>
-                            <tr>
-                                <th>6:45</th>
-                            </tr>
-                            <tr>
-                                <th>7:00</th>
-                            </tr>
-                            <tr>
-                                <th>7:15</th>
-                            </tr>
-                            <tr>
-                                <th>7:30</th>
-                            </tr>
-                            <tr>
-                                <th>7:45</th>
-                            </tr>
-                            <tr>
-                                <th>8:00</th>
-                            </tr>
-                            <tr>
-                                <th>8:15</th>
-                            </tr>
-                            <tr>
-                                <th>8:30</th>
-                            </tr>
-                            <tr>
-                                <th>8:45</th>
-                            </tr>
-                            <tr>
-                                <th>9:00</th>
-                            </tr>
-                            <tr>
-                                <th>9:15</th>
-                            </tr>
-                            <tr>
-                                <th>9:30</th>
-                            </tr>
-                            <tr>
-                                <th>9:45</th>
-                            </tr>
-                            <tr>
-                                <th>10:00</th>
-                            </tr>
-                            <tr>
-                                <th>10:15</th>
-                            </tr>
-                            <tr>
-                                <th>10:30</th>
-                            </tr>
-                            <tr>
-                                <th>10:45</th>
-                            </tr>
-							</div>
-                        </table>
+		
+		<div id="myModal" class="modal" ng-style="modalStyle">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <span class="close" >close</span>
+			  <h2>Modal Header</h2>
+			</div>
+			<div class="modal-body">
+			  <p>Some text in the Modal Body</p>
+			  <p>Some other text...</p>
+			</div>
+			<div class="modal-footer">
+			  <h3>Modal Footer</h3>
+			</div>
+		  </div>
+		</div>
+		-->
+                    <!--<td ng-repeat="day in main.currentSchedule"><button class="btn btn-success" id="classButton" ng-repeat="class in day" style="width:100%"><p style="width:100%">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</p></button></td>-->   
+<!-- button <td ng-repeat="day in main.currentSchedule"><button class="btn btn-success btn-sm" style="margin:auto;" ng-repeat="class in day">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</button></td> -->
 
-                    </div>
-
--->
-					</body>
+	</body>
 </html>

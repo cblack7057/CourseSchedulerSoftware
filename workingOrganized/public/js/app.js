@@ -8,7 +8,9 @@ angular.module('firstApp2', ['scheduleService'])
     vm.message2 = 'test';
     vm.errorMessageTimes = '';
 	vm.errorMessageCourses = '';
-
+	vm.timeIntervals = ['8:00am', '8:30am', '9:00am', '9:30am', '10:00am', '10:30am', '11:00am', '11:30am', '12:00pm', '12:30pm', '1:00pm', '1:30pm', '2:00pm', '2:30pm', '3:00pm', '3:30pm', '4:00pm', '4:30pm', '5:00pm', '5:30pm', '6:00pm', '6:30pm', '7:00pm', '7:30pm', '8:00pm', '8:30pm', '9:00pm', '9:30pm', '10:00pm', '10:30pm'];
+	vm.classIntervals = ['8:00am', '9:30am', '11:00am', '12:30pm', '2:00pm', '3:30pm', '5:00pm', '6:30pm', '8:00pm', '9:30pm']
+	
     // entire array represents a week, each inner array represents a day,
     // each day will hold multiple jsons that have a start time and an end time
     vm.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -22,10 +24,10 @@ angular.module('firstApp2', ['scheduleService'])
     vm.timeData = {};
     vm.dayData = {};
     vm.courseData = {};
-
+	vm.modalCourseData;
     // returned schedule data
     vm.schedules = [];
-
+	
     // test times represents a single schedule
 
     // current schedule has 
@@ -66,8 +68,50 @@ angular.module('firstApp2', ['scheduleService'])
                 });
 		vm.times[vm.day] = vm.combine(vm.availableTimes);
 	};
-
+	
+	vm.testCourses = function(){
+		var s = 'CS';
+		vm.courses.push({
+                subject: 'CS',
+                course: '06310'
+            });
+			vm.courses.push({
+                subject: 'CS',
+                course: '07320'
+            });
+			vm.courses.push({
+                subject: s.toUpperCase(),
+                course: '07321'
+            });
+			vm.courses.push({
+                subject: s.toUpperCase(),
+                course: '04400'
+            });
+			vm.courses.push({
+                subject: s.toUpperCase(),
+                course: '04560'
+            });
+			vm.courses.push({
+                subject: s.toUpperCase(),
+                course: '06311'
+            });
+			vm.courses.push({
+                subject: s.toUpperCase(),
+                course: '06510'
+            });
+			for(var i = 0; i < 6; i++){
+			vm.availableTimes.push({
+					dispStartTime: "12:00 AM",
+					dispEndTime: "11:59 PM",
+                    StartTime: 0000,
+                    EndTime: 2359
+                });
+		vm.times[i] = vm.combine(vm.availableTimes);
+		};
+		vm.submitTimes();
+	};
     vm.addCourses = function () {
+
         if (vm.courseData.subject != null && vm.courseData.course != null) {
             var s = vm.courseData.subject;
             var c = vm.courseData.course;
@@ -98,7 +142,7 @@ angular.module('firstApp2', ['scheduleService'])
             timesArray: vm.times,
             courseArray: vm.courses
         };
-        // vm.message = weekData;
+         vm.message = weekData;
         // POST request
         $http({
             method: 'POST',
@@ -109,9 +153,9 @@ angular.module('firstApp2', ['scheduleService'])
             // extract "Schedule" array from the returned data and save
             vm.schedules = data;
             vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
-            vm.message2 = data; // temporary return
+         //   vm.message2 = data; // temporary return
         });
-        vm.message2 = 'not reached';
+        //vm.message2 = 'not reached';
         //vm.setCurrentSchedule(0);
 
     };
@@ -127,7 +171,6 @@ angular.module('firstApp2', ['scheduleService'])
         vm.availableTimes = vm.times[value];
         //vm.message = vm.availableTimes;
     };
-
 
     // source http://stackoverflow.com/questions/26390938/merge-arrays-with-overlapping-values
     vm.combine = function (frames) {
@@ -163,7 +206,7 @@ angular.module('firstApp2', ['scheduleService'])
         var tempSchedule = vm.schedules[scheduleIndex];
 
         //var tempSchedule = vm.testTimes; //to test the single schedule we created
-        vm.message = tempSchedule;
+      //  vm.message = tempSchedule;
         // I'll deal with sorting by times later
         // 1. loop through each class in the schedule to be set
         // [Deleted]
@@ -182,13 +225,14 @@ angular.module('firstApp2', ['scheduleService'])
 				tEData = vm.getVisualTime(t.EndTime);
                 vm.currentSchedule[t.Day].push({
                     Subject: c.Subj + ' ' + c.Crse,
-                    sTime: tSData.Hours + ':' + tSData.Minutes + ' ' + tSData.Period,
-                    eTime: tEData.Hours + ':' + tEData.Minutes + ' ' + tEData.Period,
+                    sTime: tSData.Hours + ':' + tSData.Minutes+ tSData.Period,
+                    eTime: tEData.Hours + ':' + tEData.Minutes+ tEData.Period,
                     courseInfo: c
                 });
                 //vm.message2 = 
             });
         });
+		vm.message = vm.currentSchedule;
     }
 
     vm.showNextSchedule = function () {
@@ -196,7 +240,7 @@ angular.module('firstApp2', ['scheduleService'])
             vm.currentScheduleIndex++;
             vm.setCurrentSchedule(vm.currentScheduleIndex);
         //};
-    //CR
+		//CR
 	};
     vm.showPrevSchedule = function () {
         //if (vm.currentScheduleIndex > 0)) {
@@ -204,18 +248,52 @@ angular.module('firstApp2', ['scheduleService'])
             vm.setCurrentSchedule(vm.currentScheduleIndex);
        // };
     };
-	
-	
+		
 	// extracts hours, minutes, period from military time
 	vm.getVisualTime = function (time){
 		var hours = Math.round(time / 100) % 12;
 		var minutes = (time % 100 == 0 ? '00' : time % 100);
 		var period = (time >= 1200? 'pm' : 'am');
 		return {
-			Hours: hours,
+			Hours: (hours == 0? 12: hours),
 			Minutes: minutes,
 			Period: period
 		};
 	};
+
+	vm.setModal = function(courseInfo){
+		vm.modalCourseData = courseInfo;
+	};
+	// modal stuff
+/*
 	
+	// Get the modal
+	var modal = document.getElementById('myModal');
+
+	// Get the button that opens the modal
+	var btn = document.getElementById("myBtn");
+
+	// Get the <span> element that closes the modal
+	var span = document.getElementsByClassName("close")[0];
+
+	// When the user clicks on the button, open the modal 
+	btn.onclick = function() {
+		modal.style.display = "block";
+	}
+
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+		modal.style.display = "none";
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	}
+	*/
+	
+	
+
 });
