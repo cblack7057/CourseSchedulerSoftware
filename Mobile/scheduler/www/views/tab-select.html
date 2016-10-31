@@ -1,0 +1,19 @@
+<ion-view view-title="Select">
+  <ion-content class="padding">
+    <div ng-show="waiting==true">
+      <div class="row">
+
+        <p>Waiting for server..</p>
+        <icon class="ion-loop"></icon>
+      </div>
+    </div>
+    <div ng-show="waiting==false">
+      <h2>Here is a schedule!</h2>
+      <div>
+        {{schedules}}
+      </div>
+      <button class="button button-balanced" ng-click="grabSchedules()">Grab stored schedule!</button>
+      <button class="button button-positive" ng-click="grabSampleSchedules()">Grab sample schedule instead!</button>
+    </div>
+  </ion-content>
+</ion-view>

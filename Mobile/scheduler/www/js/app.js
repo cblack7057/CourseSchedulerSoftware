@@ -35,7 +35,7 @@ angular.module('scheduler', ['ionic', 'scheduler.controllers'])
     .state('tab', {
     url: '/tab',
     abstract: true,
-    templateUrl: 'templates/tabs.html'
+    templateUrl: 'views/tabs.html'
   })
 
   // Each tab has its own nav history stack:
@@ -44,7 +44,7 @@ angular.module('scheduler', ['ionic', 'scheduler.controllers'])
     url: '/dash',
     views: {
       'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
+        templateUrl: 'views/tab-dash.html',
         controller: 'DashCtrl'
       }
     }
@@ -54,11 +54,21 @@ angular.module('scheduler', ['ionic', 'scheduler.controllers'])
       url: '/input',
       views: {
         'tab-input': {
-          templateUrl: 'templates/tab-input.html',
+          templateUrl: 'views/tab-input.html',
           controller: 'InputScheduleCtrl'
         }
       }
-    });
+    })
+
+    .state('tab.select', {
+          url: '/select',
+          views: {
+            'tab-select': {
+              templateUrl: 'views/tab-select.html',
+              controller: 'SelectScheduleCtrl'
+            }
+          }
+        });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/dash');
