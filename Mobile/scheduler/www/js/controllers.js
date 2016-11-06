@@ -40,31 +40,6 @@ angular.module('scheduler.controllers', ['scheduler.services'])
     // current schedule has
     vm.currentSchedule = [[], [], [], [], [], [], []];
     vm.currentScheduleIndex = 0; //In the event we wish to locate a specific schedule, we need this
-	///////--------------CHANGES: display Time
-    // adds start and end times to the selected day's array of available time frames
-    vm.addTimes = function () {
-        if (vm.timeData.StartTime !== null && vm.timeData.EndTime !== null) {
-            var sTime = new Date(vm.timeData.StartTime);
-            var eTime = new Date(vm.timeData.EndTime);
-            if (sTime < eTime) {
-                sCTime = vm.changeTimeFormat(sTime);
-                eCTime = vm.changeTimeFormat(eTime);
-                vm.availableTimes.push({
-					dispStartTime: sTime,
-					dispEndTime: eTime,
-                    StartTime: sCTime,
-                    EndTime: eCTime
-                });
-                //vm.message = vm.courses;
-                vm.times[vm.day] = vm.combine(vm.availableTimes);
-                //vm.timeData = {}; //clears form
-                vm.errorMessageTimes = '';
-            } else {
-                vm.errorMessageTimes = 'Please verify that the start time occurs before the end time.'
-            }
-        }
-
-    };
 
     //add a new time slot with default values
     vm.addNewTime = function () {
@@ -83,7 +58,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
     vm.slideName = vm.slideNames[$index];
   }
 
-	vm.allDay = function() {
+  vm.allDay = function() {
 		vm.availableTimes.push({
 					dispStartTime: "12:00 AM",
 					dispEndTime: "11:59 PM",
@@ -143,6 +118,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
             //scheduleService.onFinishProcessing(data);
             //vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
             scheduleService.onFinishProcessing(data);
+            sm.setCurrentSchedule(sm.currentScheduleIndex);
 
         });
         //vm.message2 = 'not reached';
@@ -191,40 +167,6 @@ angular.module('scheduler.controllers', ['scheduler.services'])
         return result;
     };
 
-    vm.setCurrentSchedule = function (scheduleIndex) { //schduleIndex = index of schedule you wish to set as current
-        //use this one when taking schedules from
-        vm.currentSchedule = [[], [], [], [], [], [], []];
-        var tempSchedule = vm.schedules[scheduleIndex];
-
-        //var tempSchedule = vm.testTimes; //to test the single schedule we created
-        vm.message = tempSchedule;
-        // I'll deal with sorting by times later
-        // 1. loop through each class in the schedule to be set
-        // [Deleted]
-        // 3. loop through the meeting times of that class IF they exist, if no meeting add to index[0] of currentSchedule
-        // 4. switch/case 'M', 'T', 'W', 'R', 'F', 'S' to add to index of currentSchedules
-		var tSData;
-		var tEData;
-		var meetings;
-		var tempDay;
-        tempSchedule.forEach(function (c) {
-            meetings = c.Meetings;
-            tempDay = 0;
-
-            meetings.forEach(function (t) {
-				tSData = vm.getVisualTime(t.StartTime);
-				tEData = vm.getVisualTime(t.EndTime);
-                vm.currentSchedule[t.Day].push({
-                    Subject: c.Subj + ' ' + c.Crse,
-                    sTime: tSData.Hours + ':' + tSData.Minutes + ' ' + tSData.Period,
-                    eTime: tEData.Hours + ':' + tEData.Minutes + ' ' + tEData.Period,
-                    courseInfo: c
-                });
-                //vm.message2 =
-            });
-        });
-    }
-
     vm.showNextSchedule = function () {
        // if (vm.currentScheduleIndex< vm.schedules.length) { //why not if(currentIndex < vm.schedules.len)?
             vm.currentScheduleIndex++;
@@ -239,23 +181,11 @@ angular.module('scheduler.controllers', ['scheduler.services'])
        // };
     };
 
-
-	// extracts hours, minutes, period from military time
-	vm.getVisualTime = function (time){
-		var hours = Math.round(time / 100) % 12;
-		var minutes = (time % 100 == 0 ? '00' : time % 100);
-		var period = (time >= 1200? 'pm' : 'am');
-		return {
-			Hours: hours,
-			Minutes: minutes,
-			Period: period
-		};
-	};
-
 })
 .controller('SelectScheduleCtrl', function($scope, scheduleService) {
   var sm = $scope;
   sm.schedules;
+  sm.currentScheduleIndex = 0;
   sm.waiting = true;
 
 
@@ -273,6 +203,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
   //start listening for changes to schedules data
   scheduleService.addFinishListener(function(){
     sm.grabSchedules();
+    sm.setCurrentSchedule(sm.currentScheduleIndex);
     sm.waiting = false;
   });
 
@@ -288,7 +219,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
         var tempSchedule = sm.schedules[scheduleIndex];
 
         //var tempSchedule = vm.testTimes; //to test the single schedule we created
-        vm.message = tempSchedule;
+        sm.message = tempSchedule;
         // I'll deal with sorting by times later
         // 1. loop through each class in the schedule to be set
         // [Deleted]
@@ -314,6 +245,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
                 //vm.message2 =
             });
         });
+        sm.message = sm.currentSchedule;
     }
 
   sm.getVisualTime = function (time){
