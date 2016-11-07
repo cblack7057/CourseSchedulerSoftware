@@ -63,16 +63,18 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 								console.log('sort sections by courses');
 								var courseArray = sortSectionsByCourses(sections);
 								console.log('sections sorted');
+								//console.log('courseArray: ' + courseArray[2][3].Meetings[0].StartTime);
 								console.log('create list of courses not found')
 								notFoundCourses = coursesNotFound(courses, courseArray);
 								console.log('list created');
 								console.log('creating pairs');
 								var sectionPairs = createPairs(courseArray);
 								console.log('pairs created');
+								//console.log('created pairs length: ' + sectionPairs.length);
 								console.log('removing conflictng pairs');
 								removeNonconflictingPairs(courseArray, sectionPairs);
 								console.log('conflicting pairs removed');
-								console.log('create tree');
+								console.log('create tree');;
 								var courseTree = treeMaker(courseArray);
 								console.log('tree made');
 								console.log('update tree');
@@ -208,11 +210,11 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 	//creates a listing of every possible pair of courses from the course array
 	function createPairs(courseArray) {
 		var sectionPairs = [];
-		for(var i = 0; i < courseArray.length - 2; i++)
-			for(var j = i + 1; j < courseArray.length - 1; j++)
-				for(var k = 0; k < courseArray[i].length; k++)
-					for(var l = 0; l < courseArray[j].length; l++)
-						sectionPairs.push([i+1,k+1,j+1,l+1]);
+		for(var i = 0; i < courseArray.length - 1; i++)
+			for(var j = 0; j < courseArray[i].length; j++)
+				for(var k = i + 1; k < courseArray.length; k++)
+					for(var l = 0; l < courseArray[k].length; l++)
+						sectionPairs.push([i+1,j+1,k+1,l+1]);
 		return sectionPairs
         }
 
@@ -242,8 +244,8 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 								checking = noTimeConflict(courseArray[i][m].Meetings[k].StartTime, courseArray[i][m].Meetings[k].EndTime, courseArray[j][n].Meetings[l].StartTime, courseArray[j][n].Meetings[l].EndTime);
 								if(checking && (l == courseArray[j][n].Meetings.length - 1)) {
 									if(k == courseArray[i][m].Meetings.length - 1) {
-                                                                                checking = false;
-                                                                                removePair(sectionPairs, i, m, j, n);
+                                        checking = false;
+                                        removePair(sectionPairs, i, m, j, n);
 									}
 									else {
 										k++;
@@ -288,10 +290,9 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 	}
 
 	function treeMaker(courseArray) {
-		var courseTree = [];
-		courseTree.push(treeMakerHelper(courseArray, 1));
-		return courseTree;
+		return (treeMakerHelper(courseArray, 1));
 	}
+	
 	//creates a tree with each edge between nodes representing a pair of section
 	function treeMakerHelper(courseArray, level) {
 		//base cases
@@ -313,38 +314,37 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 		if(courseArray.length == 0)
 			return;
 		for(var i = 0; i < sectionPairs.length; i++)
+		{
+			//console.log('' + sectionPairs[i][0] + sectionPairs[i][1] + ", " + sectionPairs[i][2] + sectionPairs[i][3] );
 			removeBranches(courseTree, sectionPairs[i][0], sectionPairs[i][1], sectionPairs[i][2], sectionPairs[i][3]);
+		}
 	}
 
 	//removes the branches of the tree that have edges that represent pairs found in sectionPairs
 
 	function removeBranches(tree, i, m, j, n) {
 		if(i == 1)
-			removeBranchesHelper2(tree[0][m-1], j, n);
+			removeBranchesHelper2(tree[m-1], j, n);
 		else
-			for(var k = 0; k < tree[0].length; k++)
-				removeBranchesHelper(tree[0][k], i, m, j, n);
+			for(var k = 0; k < tree.length; k++)
+				removeBranchesHelper(tree[k], i, m, j, n);
 	}
 
 	function removeBranchesHelper(node, i, m, j, n) {
 		if(node[1] == false)
 			return;
-		if(node[0][0] == i)
-			if(node[0][1] == m)
-				for(var k = 0; k < node[2].length; k++)
-					removeBranchesHelper2(node[2][k], j, n);
+		if(node[2][0][0][0] == i)
+			removeBranchesHelper2(node[2][m-1], j, n);
 		else
 			for(var k = 0; k < node[2].length; k++)
 				removeBranchesHelper(node[2][k], i, m, j, n);
 	}
 
 	function removeBranchesHelper2(node, j, n) {
-		//base cases
 		if(node[1] == false)
 			return;
-		if(node[0][0] == j) {
-			if(node[0][1] == n)
-				node[1] = false;
+		if(node[2][0][0][0] == j){
+			node[2][n-1][1] = false;
 			return;
 		}
 		for(var k = 0; k < node[2].length; k++)
@@ -353,24 +353,26 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 
 	function generateSchedulesList(courseArray, courseTree) {
 		var schedules = [];
-		schedule = [];
-		for(var i = 0; i < courseTree[0].length; i++)
-			generateScheduleListHelper(schedules, schedule, courseArray,  courseTree[0][i]);
+		var schedule = [];
+		for(var i = 0; i < courseTree.length; i++) {
+			schedule.push(courseArray[0][i]);
+			generateScheduleListHelper(courseTree[i], schedule, schedules,courseArray);
+			schedule.splice(-1);
+		}
 		return schedules;
-
 	}
 
-	function generateScheduleListHelper(schedules, schedule, courseArray, node) {
-		if(node[1] == false)
-			return;
-		schedule.push(courseArray[node[0][0] - 1][node[0][1] - 1]);
-		var index = schedule.indexOf(courseArray[node[0][0] - 1][node[0][1] - 1]);
-		if(node[0][0] == courseArray.length)
-			schedules.push(schedule.slice(0)); //pass the array of class sections by value
-		else
-			for(var i = 0; i < node[2].length; i++)
-				generateScheduleListHelper(schedules, schedule, courseArray, node[2][i]);
-		schedule.splice(index, 1);
+	function generateScheduleListHelper(node, schedule, schedules, courseArray) {
+		for(var i = 0; i < node[2].length; i++) {
+			if(node[2][i][1]) {
+				schedule.push(courseArray[node[2][i][0][0] - 1][node[2][i][0][1] - 1]);
+				if(node[2][i].length == 2)
+					schedules.push(schedule.slice());
+				else
+					generateScheduleListHelper(node[2][i], schedule, schedules, courseArray);
+				schedule.splice(-1);
+			}
+		}
 	}
 }
 
