@@ -202,6 +202,7 @@
 	     <div id="printarea">
                 <div class="scheduleForm">
                     <div id="container" style="padding:0px">
+					<h3>{{main.modalCourseData}}</h3>
                         <div class="row">
                             <h3> Schedule: {{main.schedules.length == 0 ? '' : main.currentScheduleIndex+1 + ' of ' + main.schedules.length}} </h3>
                             <div class="timesLeft">
@@ -211,10 +212,11 @@
                                     <tr ng-repeat="time in main.timeIntervals"><td>{{ time }}</td></tr>
                                 </table>
                             </div>
+							
                             <!-- col-sm-1-->
                             <div class="timesRight col-sm-1">
                                 <table class="table table-bordered">
-                                    <tr>
+                                    <tr style="font-size:1em">
                                         <th>Monday</th>
                                         <th>Tuesday</th>
                                         <th>Wednesday</th>
@@ -231,8 +233,8 @@
                                     <table class="table" style="height:100%">
                                         <tr ng-repeat="row in main.classIntervals" style="line-height:75px; height:75px">
                                             <td ng-repeat="day in main.currentSchedule">
-                                                <button ng-show="row.localeCompare(class.sTime)==0" class="btn btn-success" id="classButton" ng-repeat="class in day">
-                                                    <p style="font-size:10px; margin:0px; padding:0px">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</p>
+                                                <button ng-show="row.localeCompare(class.sTime)==0" class="btn btn-success" style="font-size:10px"id="classButton" ng-repeat="class in day" ng-click="main.modalCourseData = class.courseInfo">
+                                                    <p style="font-size:.9em; margin:0px; padding:0px">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</p>
                                                 </button>
                                             </td>
                                         <tr>
@@ -252,27 +254,25 @@
 			
 		<!-- Modal Stuff -->	
 
-		<!-- Trigger/Open The Modal 
-		<button id="myBtn" ng-click="myStyle={'display':'block'}">Open Modal</button> 
-		<span ng-style="myStyle">Sample Text</span>
+		<!-- Trigger/Open The Modal : http://www.w3schools.com/howto/howto_css_modals.asp -->
+		<button id="myBtn">Open Modal</button> 
 
 		
-		<div id="myModal" class="modal" ng-style="modalStyle">
+		<div id="myModal" class="modal" ng-class="{modalOn : main.modalCourseData != null, modalOff : main.modalCourseData == null}" ng-click="main.modalCourseData == null">
 		  <div class="modal-content">
 			<div class="modal-header">
-			  <span class="close" >close</span>
-			  <h2>Modal Header</h2>
+			  <span class="close" ng-click="main.modalCourseData = null">close</span>
+			  <h2>{{main.modalCourseData.Title}}</h2>
 			</div>
 			<div class="modal-body">
-			  <p>Some text in the Modal Body</p>
-			  <p>Some other text...</p>
+			  <p>{{main.modalCourseData}}</p
 			</div>
 			<div class="modal-footer">
 			  <h3>Modal Footer</h3>
 			</div>
 		  </div>
 		</div>
-		-->
+		
                     <!--<td ng-repeat="day in main.currentSchedule"><button class="btn btn-success" id="classButton" ng-repeat="class in day" style="width:100%"><p style="width:100%">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</p></button></td>-->   
 <!-- button <td ng-repeat="day in main.currentSchedule"><button class="btn btn-success btn-sm" style="margin:auto;" ng-repeat="class in day">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</button></td> -->
 
