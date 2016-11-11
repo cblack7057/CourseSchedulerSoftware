@@ -26,7 +26,9 @@
 </head>
 <body class="container" ng-app="firstApp2" ng-controller="mainController as main">
     <div class="jumbotron">
-        <div class="center"> <h2 class="center"> Scheduler App </h2> </div>
+        <div class="center"> 
+            <h2 class="center"> Scheduler App </h2> 
+        </div>
 
 
                 <!-- for debugging time frame tables
@@ -269,7 +271,7 @@
 			  <h1 id="modalClassTitle">{{main.modalCourseData.Title + " - " + main.modalCourseData.Subj + " " + main.modalCourseData.Crse + " - " + main.modalCourseData.Sect}}</h1>
 			</div>
 			<div class="modal-body">
-				<div style="border:3px solid black;" >
+				<div style="border:3px dashed rgba(237,213,28,1); border-radius: 10px; margin: 10px 0px;F" >
 				<div class="moreInfoLeft">
 					<h3>CRN: </h3>
 					<h3>Assigned Instructor: </h3>
@@ -285,7 +287,10 @@
 					<h3>{{main.modalCourseData.Hrs}}</h3>
 				</div>
 				<div class="clearfix"/>
-					<h3>Meeting Times:</h3>
+                    <div class="hTitle">
+                        <h3>Meeting Times:</h3>
+                    </div>
+
 					<div ng-repeat="day in main.modalCourseData.Meetings" ng-switch on="day.Day" id="meetingsFormat">
 						<h4 ng-switch-when="0">Monday:</h4>
 						<h4 ng-switch-when="1">Tuesday:</h4>
