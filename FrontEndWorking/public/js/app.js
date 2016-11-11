@@ -1,11 +1,12 @@
 angular.module('firstApp2', ['scheduleService'])
 
 .controller('mainController', function ($http) {
-
+////////////////////////////////////////////////////////////////////// NEED TO GET REROLL WORKING, SO DO THAT, CURRENTLY IT AINT DOIN SHET
     var vm = this;
     // Set from form
     vm.message = 'AvailableTimes array';
     vm.message2 = 'test';
+	vm.message3 = 0;
     vm.errorMessageTimes = '';
 	vm.errorMessageCourses = '';
 	vm.timeIntervals = ['8:00am', '8:30am', '9:00am', '9:30am', '10:00am', '10:30am', '11:00am', '11:30am', '12:00pm', '12:30pm', '1:00pm', '1:30pm', '2:00pm', '2:30pm', '3:00pm', '3:30pm', '4:00pm', '4:30pm', '5:00pm', '5:30pm', '6:00pm', '6:30pm', '7:00pm', '7:30pm', '8:00pm', '8:30pm', '9:00pm', '9:30pm', '10:00pm', '10:30pm'];
@@ -27,6 +28,7 @@ angular.module('firstApp2', ['scheduleService'])
     vm.courseData = {};
     vm.choices = ["Fall2016","Spring2017"];
 	vm.modalCourseData = null;
+	
     // returned schedule data
     vm.schedules = [];
 	
@@ -35,6 +37,11 @@ angular.module('firstApp2', ['scheduleService'])
     // current schedule has 
     vm.currentSchedule = [[], [], [], [], [], [], []];
     vm.currentScheduleIndex = 0; //In the event we wish to locate a specific schedule, we need this
+	
+	vm.selectedCourses = [];
+	vm.notSelectedCourses = [];
+
+	
 	///////--------------CHANGES: display Time
     // adds start and end times to the selected day's array of available time frames
     vm.addTimes = function () {
@@ -70,8 +77,9 @@ angular.module('firstApp2', ['scheduleService'])
                 });
 		vm.times[vm.day] = vm.combine(vm.availableTimes);
 	};
-	
+	// for testing purposes only
 	vm.testCourses = function(){
+		vm.courses = [];
 		var s = 'CS';
 		vm.courses.push({
                 subject: 'CS',
@@ -114,7 +122,6 @@ angular.module('firstApp2', ['scheduleService'])
 		vm.submitTimes();
 	};
 	vm.addCourses = function () {
-
 	    if (vm.courseData.subject != null && vm.courseData.course != null) {
 	        var s = vm.courseData.subject;
 	        var c = vm.courseData.course;
@@ -127,7 +134,6 @@ angular.module('firstApp2', ['scheduleService'])
 	    } else {
 	        vm.errorMessageCourses = 'Please enter your course subject and course.'
 	    }
-	    //vm.message = vm.courses;
 	};
 
     vm.removeTimes = function (index, parentIndex) {
@@ -157,11 +163,7 @@ angular.module('firstApp2', ['scheduleService'])
             // extract "Schedule" array from the returned data and save
             vm.schedules = data;
             vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
-            //vm.message2 = data; // temporary return
         });
-        //vm.message2 = 'not reached';
-        //vm.setCurrentSchedule(0);
-
     };
 
     // changes time format to hhmm to be stored in respective arrays
@@ -173,7 +175,6 @@ angular.module('firstApp2', ['scheduleService'])
     vm.newDay = function (value) {
         vm.day = value;
         vm.availableTimes = vm.times[value];
-        //vm.message = vm.availableTimes;
     };
 
     // source http://stackoverflow.com/questions/26390938/merge-arrays-with-overlapping-values
@@ -207,21 +208,17 @@ angular.module('firstApp2', ['scheduleService'])
     vm.setCurrentSchedule = function (scheduleIndex) { //schduleIndex = index of schedule you wish to set as current
         //use this one when taking schedules from 
         vm.currentSchedule = [[], [], [], [], [], [], []];
+		vm.selectedCourses = [];
+		vm.notSelectedCourses = [];
         var tempSchedule = vm.schedules[scheduleIndex];
-
-        //var tempSchedule = vm.testTimes; //to test the single schedule we created
-      //  vm.message = tempSchedule;
-        // I'll deal with sorting by times later
-        // 1. loop through each class in the schedule to be set
-        // [Deleted]
-        // 3. loop through the meeting times of that class IF they exist, if no meeting add to index[0] of currentSchedule
-        // 4. switch/case 'M', 'T', 'W', 'R', 'F', 'S' to add to index of currentSchedules
 		var tSData;
 		var tEData;
 		var meetings;
 		var tempDay;
+		
         tempSchedule.forEach(function (c) {
             meetings = c.Meetings;
+			c.Selected = false;
             tempDay = 0;
 			
             meetings.forEach(function (t) {
@@ -233,24 +230,17 @@ angular.module('firstApp2', ['scheduleService'])
                     eTime: tEData.Hours + ':' + tEData.Minutes+ tEData.Period,
                     courseInfo: c
                 });
-                //vm.message2 = 
             });
         });
-		//vm.message = vm.currentSchedule;
     }
 
     vm.showNextSchedule = function () {
-       // if (vm.currentScheduleIndex< vm.schedules.length) { //why not if(currentIndex < vm.schedules.len)?
-            vm.currentScheduleIndex++;
-            vm.setCurrentSchedule(vm.currentScheduleIndex);
-        //};
-		//CR
+        vm.currentScheduleIndex++;
+        vm.setCurrentSchedule(vm.currentScheduleIndex);
 	};
     vm.showPrevSchedule = function () {
-        //if (vm.currentScheduleIndex > 0)) {
-            vm.currentScheduleIndex--;
-            vm.setCurrentSchedule(vm.currentScheduleIndex);
-       // };
+        vm.currentScheduleIndex--;
+        vm.setCurrentSchedule(vm.currentScheduleIndex);
     };
 		
 	// extracts hours, minutes, period from military time
@@ -264,5 +254,125 @@ angular.module('firstApp2', ['scheduleService'])
 			Period: period
 		};
 	};
+	
+	//I'm sorry, this name is terrible but it made me chuckle
+	//@returns String of time in hh:mm (period) format
+	vm.getVisualTime2 = function(time){
+		var temp = vm.getVisualTime(time);
+		return temp.Hours + ":" + temp.Minutes + " " + temp.Period;
+	};
 
+	// reroll stuffs
+	//vm.restrictions;
+	vm.reroll;
+	
+	//Preconditions: must be a reroll variable declared with other global fields, restrictions is an associative array described above,
+	//schedules have already been generated before calling.
+	//Creates a new array of schedules that satisfy the restrictions given by the user and stores in reroll.
+	//The schdule the user had up before rolling will be the last schedule in the reroll.
+	vm.createReroll = function(restrictions) {	
+		vm.reroll = [];
+		var origFound = false;
+		for(var i = 0; i < vm.schedules.length; i++)
+		{
+			if(vm.createRerollHelper(restrictions.selected, vm.schedules[i]))
+			{
+				if(!origFound)
+				{
+					if(vm.createRerollHelper(restrictions.notSelected, vm.schedules[i]))
+					{
+						var orig = vm.schedules[i];
+						origFound = true;
+					}
+					else vm.reroll.push(vm.schedules[i]);
+				}
+				else vm.reroll.push(vm.schedules[i]);
+			}
+		}
+		vm.reroll.push(orig);
+	};
+
+	//does this schedule contain the selected or not selected stuff
+	vm.createRerollHelper = function(selected, schedule) {
+		
+		var found = false;
+		for(var i = 0; i < selected.length; i++) {
+			var j = 0;
+			while(j < schedule.length && !found)
+			{
+				if((schedule[j]["Subj"] === selected[i]["Subj"]) && (schedule[j]["Crse"] === selected[i]["Crse"]))
+				{
+					if(schedule[j]["CRN"] !== selected[i]["CRN"])
+						return false;
+					found = true;
+				}
+				j++;
+			}
+		}
+		return true;
+	};
+	
+	//what I need to do
+	// on setCurrentSchedule call, clear selected and not selected
+	// then add all currect courses to not selected
+	// when a class is selected, remove it from the not selected list, then add it to the selected list
+	// when reroll called, do reroll
+	vm.rerollSched = function(){
+		if(vm.selectedCourses.length > 0){
+			vm.message2 += " reached1";
+			var restrictions = {
+				selected : vm.selectedCourses,
+				notSelected : vm.notSelectedCourses
+			};
+			vm.message2 += " reached2";
+			vm.createReroll(restrictions);
+			vm.schedules = vm.reroll;
+			vm.currentScheduleIndex = 0;
+			vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
+		}
+	};
+	
+	vm.updateSelected = function(){
+		vm.message3 = 0;
+		var tempSelected = [];
+		var tempNotSelected = [];
+		//for each day
+		vm.currentSchedule.forEach(function(c){
+			//for each meeting
+			c.forEach(function(d){
+				//check that the course is selected, and the course isn't already in the selectedCourse list
+				var tempCInfo = d.courseInfo;
+				if(tempCInfo.Selected == true )
+				{	
+					//course is in the list
+					vm.message3 += " " +  vm.containsCourse(tempCInfo, tempSelected);
+					if(!vm.containsCourse(tempCInfo, tempSelected)) 
+						tempSelected.push(tempCInfo);
+				}
+				else {
+					if(!vm.containsCourse(tempCInfo, tempNotSelected)) 
+						tempNotSelected.push(tempCInfo);
+				}
+			});
+		});
+		vm.selectedCourses = tempSelected;
+		vm.notSelectedCourses = tempNotSelected;
+	};
+	
+	vm.containsCourse = function(courseInfo, list){
+		var temp = false;
+		//compare the course with every course in the selectedCourses array all. of. them.
+		list.forEach(function(c){
+			if(courseInfo.CRN == c.CRN)
+			{
+				vm.message3 += "Comparing Courses: "+ courseInfo.CRN + " and "+ c.CRN + (courseInfo.CRN == c.CRN) + "\n";
+				temp = true;
+				return; // THE FIRST TIME I HAD RETURN TRUE, IT WOULD JUST LEAVE THE FREAKING FOREACH LOOP THEN JUST RETURN FALSE wtf WTF JAVASCRIPT WTF
+			}
+			vm.message3 +="Comparing Courses: "+ courseInfo.CRN + " and "+ c.CRN + (courseInfo.CRN == c.CRN) + "\n";
+		})
+		
+		return temp;
+	};
+	
 });

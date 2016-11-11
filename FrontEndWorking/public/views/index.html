@@ -26,9 +26,7 @@
 </head>
 <body class="container" ng-app="firstApp2" ng-controller="mainController as main">
     <div class="jumbotron">
-        <div class="title">
-        <h2>
-            Rowan Scheduler App </h2> </div>
+        <div class="center"> <h2 class="center"> Scheduler App </h2> </div>
 
 
                 <!-- for debugging time frame tables
@@ -62,13 +60,13 @@
         <div class="inputForm">
             <div class="daysBtns">
                 <div class="radioBtns">
-		<h3>Choose semester</h3>
+					<h3>Choose semester</h3>
                     
                     <select ng-model="main.semester">
                         <option value="Fall2016">Fall2016</option>
                         <option value="Spring2017">Spring2017</option>
                     </select>
-			
+					<br/>
                     <!-- form to add days to the list -->
                     <h3> Choose a day you wish to be on campus:</h3>
                     <div class="form-inline">
@@ -110,7 +108,7 @@
                         </div>
                     </div>
                
-
+				<br/>
 
                 <!-- form to add times to the list -->
                 <div class="timeInput">
@@ -127,7 +125,7 @@
                         <h6 font color="red">
                             {{ main.errorMessageTimes }}
                         </h6>
-
+					<br/>
 
                         <!------ Table  date:"hh:mm a" ----->
                         <h3> These are the times you've chosen for the week.</h3>
@@ -202,7 +200,7 @@
 	     <div id="printarea">
                 <div class="scheduleForm">
                     <div id="container" style="padding:0px">
-					<h3>{{main.modalCourseData}}</h3>
+					<!--<h3>{{main.modalCourseData}}</h3>-->
                         <div class="row">
                             <h3> Schedule: {{main.schedules.length == 0 ? '' : main.currentScheduleIndex+1 + ' of ' + main.schedules.length}} </h3>
                             <div class="timesLeft">
@@ -243,8 +241,15 @@
                             </div>
 
                             <div class="clearfix" />
+							<h3>{{main.message2}}</h3>
                             <button class="btn btn-success" ng-click="main.showPrevSchedule()" ng-disabled="main.currentScheduleIndex == 0">Prev</button>
                             <button class="btn btn-success" ng-click="main.showNextSchedule()" ng-disabled="main.currentScheduleIndex+1 >= main.schedules.length">Next</button>
+							<!--<button class="btn btn-success" ng-click="main.addSelected()">Selected Courses</button>-->
+							<button class="btn btn-success" ng-click="main.rerollSched()">Do the thing</button>
+							<h6>Debugging {{main.message3}}</h6>
+							<h5>Selected: {{main.selectedCourses}}</h5>
+							<h5>Not selected: {{main.notSelectedCourses}}</h5>
+							
                         </div>
                     </div>
                 </div>
@@ -255,20 +260,52 @@
 		<!-- Modal Stuff -->	
 
 		<!-- Trigger/Open The Modal : http://www.w3schools.com/howto/howto_css_modals.asp -->
-		<button id="myBtn">Open Modal</button> 
 
 		
 		<div id="myModal" class="modal" ng-class="{modalOn : main.modalCourseData != null, modalOff : main.modalCourseData == null}" ng-click="main.modalCourseData == null">
 		  <div class="modal-content">
 			<div class="modal-header">
 			  <span class="close" ng-click="main.modalCourseData = null">close</span>
-			  <h2>{{main.modalCourseData.Title}}</h2>
+			  <h1 id="modalClassTitle">{{main.modalCourseData.Title + " - " + main.modalCourseData.Subj + " " + main.modalCourseData.Crse + " - " + main.modalCourseData.Sect}}</h1>
 			</div>
 			<div class="modal-body">
-			  <p>{{main.modalCourseData}}</p
+				<div style="border:3px solid black;" >
+				<div class="moreInfoLeft">
+					<h3>CRN: </h3>
+					<h3>Assigned Instructor: </h3>
+					<h3>Session: </h3>
+					<h3>Campus: </h3>
+					<h3>Total Hours: </h3>
+				</div>
+				<div class="moreInfoRight">
+					<h3>{{main.modalCourseData.CRN}}</h3>
+					<h3>{{main.modalCourseData.Prof}}</h3>
+					<h3>{{main.modalCourseData.Session}}</h3>
+					<h3>{{main.modalCourseData.Campus}}</h3>
+					<h3>{{main.modalCourseData.Hrs}}</h3>
+				</div>
+				<div class="clearfix"/>
+					<h3>Meeting Times:</h3>
+					<div ng-repeat="day in main.modalCourseData.Meetings" ng-switch on="day.Day" id="meetingsFormat">
+						<h4 ng-switch-when="0">Monday:</h4>
+						<h4 ng-switch-when="1">Tuesday:</h4>
+						<h4 ng-switch-when="2">Wednesday:</h4>
+						<h4 ng-switch-when="3">Thursday:</h4>
+						<h4 ng-switch-when="4">Friday:</h4>
+						<h4 ng-switch-when="5">Saturday:</h4>
+						<p> Start: {{main.getVisualTime2(day.StartTime)}} - End: {{main.getVisualTime2(day.EndTime)}}</p>
+						<p> Room: {{day.BuildingRoom}}</p>
+					</div>
+				</div>
+				
+				
 			</div>
 			<div class="modal-footer">
-			  <h3>Modal Footer</h3>
+				<div class="form-inline">
+                    <div class="checkbox">
+                        <label style="font-size:30px;">Reroll <input ng-click="main.updateSelected()" type="checkbox" style="width: 30px; height: 30px;" ng-model="main.modalCourseData.Selected" ng-checked="main.modalCourseData.Selected"></label>
+                    </div>
+				</div>
 			</div>
 		  </div>
 		</div>
