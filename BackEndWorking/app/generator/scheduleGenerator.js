@@ -1,4 +1,4 @@
-module.exports = function(week, courses, mongodb, config, callback) {
+module.exports = function(week, courses, term, mongodb, config, callback) {
 	//We need to work with "MongoClient" interface in order to connect to a mongodb server.
 	var MongoClient = mongodb.MongoClient;
 	
@@ -30,76 +30,93 @@ module.exports = function(week, courses, mongodb, config, callback) {
 	weekQuery['$or'] = [{'Meetings.Day': {'$nin': badDaysQuery}}, {'Session': 'Online'}];
 	
 	query = {};
-	
 	query['$and'] = [coursesQuery, weekQuery];
 	
 	projection = {"_id": 0, "Subj": 1, "Crse": 1, "Session": 1, "Sect":1, "CRN": 1, "Title": 1, "Prof": 1, "Campus": 1, "Hrs": 1, "Meetings": 1, "Meetings.Day": 1, "Meetings.StartTime": 1, "Meetings.EndTime":1};
-	
 	var timesNotSelected = true;
 	for(var i = 0; i < week.length && timesNotSelected; i++) {
 		timesNotSelected = (week[i].length == 0) && timesNotSelected;
 	}
-
-	return new Promise(function(resolve, reject) {
+	getSchedules(function() {
 		if(timesNotSelected) {
 			console.log('no times entered');
+			schedules = [];
+			notFoundCourses = [];
 			if(courses.length == 0) {
 				console.log('no courses selected');
 			}
-			resolve([[],[]]);
+			callback();
 		}
 		else if(courses.length == 0){
 			console.log('no courses selected');
-			resolve([[],[]]);
+			schedules = [];
+			notFoundCourses = [];
+			callback();
 		}
 		else {
-			var schedules;
-			var notFoundCourses;
 			console.log('connecting to mongoclient');
-			MongoClient.connect(config.database)
-			.then(function(db) {
-				console.log('connection completed');
-				console.log('retrieving collection Courses from database');
-				return db.collection('Courses').find(query,projection)
-			})
-			.then(function(cursor) {
-				console.log('query completed');
-				console.log('changing cursor to array');
-				return cursor.toArray()
-			})
-			.then(function(arr) {
-				console.log('successfully converted result to an array');
-				console.log('removing sections by time');
-				var sections = removeSectionsByTime(arr);
-				console.log('sections removed');
-				console.log('sort sections by courses');
-				var courseArray = sortSectionsByCourses(sections);
-				console.log('sections sorted');
-				console.log('create list of courses not found')
-				notFoundCourses = coursesNotFound(courses, courseArray);
-				console.log('list created');
-				console.log('creating pairs');
-				var sectionPairs = createPairs(courseArray);
-				console.log('pairs created');
-				console.log('removing conflictng pairs');
-				removeNonconflictingPairs(courseArray, sectionPairs);
-				console.log('conflicting pairs removed');
-				console.log('create tree');
-				var courseTree = treeMaker(courseArray);
-				console.log('tree made');
-				console.log('update tree');
-				updateTree(courseArray, sectionPairs, courseTree);
-				console.log('tree updated');
-				console.log('generate schedules');
-				schedules = generateSchedulesList(courseArray, courseTree);
-				console.log('schedules generated');
-				console.log(schedules);
-				resolve([schedules, coursesNotFound]);
-			}).catch(function(err) {
-				reject(err);
+			MongoClient.connect(config.database, function (err, db) {
+ 			if (err) {
+ 				console.log('Unable to connect to the mongoDB server. Error:', err);
+ 			}
+			else {
+ 				console.log('connection completed');
+ 				console.log('getting collection from database');
+ 				console.log('term: ', term);
+ 				db.collection(term, function(err, collection) {
+ 					if(err) {
+ 						console.log('error getting the collection from the database');
+ 					}
+ 					else {
+ 						console.log('got collection from database');
+ 						console.log('finding courses based on queries');
+ 						collection.find(query, projection).toArray(function(err, result) {
+ 							if(err) {
+ 								console.log('error in finding stuff');
+ 							}
+ 							else {
+ 								console.log('collection.find worked correctly');
+ 								console.log('removing sections by time');
+ 								var sections = removeSectionsByTime(result);
+ 								console.log('sections removed');
+ 								console.log('sort sections by courses');
+ 								var courseArray = sortSectionsByCourses(sections);
+ 								console.log('sections sorted');
+ 								//console.log('courseArray: ' + courseArray[2][3].Meetings[0].StartTime);
+ 								console.log('create list of courses not found')
+ 								notFoundCourses = coursesNotFound(courses, courseArray);
+								console.log('list created');
+ 								console.log('creating pairs');
+ 								var sectionPairs = createPairs(courseArray);
+ 								console.log('pairs created');
+ 								//console.log('created pairs length: ' + sectionPairs.length);
+ 								console.log('removing conflictng pairs');
+ 								removeNonconflictingPairs(courseArray, sectionPairs);
+ 								console.log('conflicting pairs removed');
+ 								console.log('create tree');;
+ 								var courseTree = treeMaker(courseArray);
+ 								console.log('tree made');
+ 								console.log('update tree');
+ 								updateTree(courseArray, sectionPairs, courseTree);
+ 								console.log('tree updated');
+ 								console.log('generate schedules');
+ 								schedules = generateSchedulesList(courseArray, courseTree);
+ 								callback();
+								}
+							});
+						}
+					});
+				}		
 			});
 		}
 	});
+	
+
+	function getSchedules(callback) {
+		var schedules;
+		var notFoundCourses;
+		callback();
+	}
 	
 	function removeSectionsByTime(sections) {
 		//loop through each section in the resultant array and remove if it is not at a good time
@@ -352,7 +369,7 @@ module.exports = function(week, courses, mongodb, config, callback) {
 			removeBranchesHelper2(node[2][k], j, n);
 	}
 
-	ffunction generateSchedulesList(courseArray, courseTree) {
+	function generateSchedulesList(courseArray, courseTree) {
 		var schedules = [];
 		var schedule = [];
 		if(courseTree[0].length == 2) {
@@ -372,7 +389,6 @@ module.exports = function(week, courses, mongodb, config, callback) {
 		return schedules;
 	}
 
-
 	function generateScheduleListHelper(node, schedule, schedules, courseArray) {
 		for(var i = 0; i < node[2].length; i++) {
 			if(node[2][i][1]) {
@@ -386,4 +402,3 @@ module.exports = function(week, courses, mongodb, config, callback) {
 		}
 	}
 }
-
