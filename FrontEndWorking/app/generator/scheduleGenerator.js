@@ -1,4 +1,4 @@
-module.exports = function(week, courses, mongodb, config, callback) {
+module.exports = function(week, courses, term, mongodb, config, callback) {
 	//We need to work with "MongoClient" interface in order to connect to a mongodb server.
 	var MongoClient = mongodb.MongoClient;
 	
@@ -56,49 +56,52 @@ module.exports = function(week, courses, mongodb, config, callback) {
 		else {
 			console.log('connecting to mongoclient');
 			MongoClient.connect(config.database, function (err, db) {
-				if (err) {
-					console.log('Unable to connect to the mongoDB server. Error:', err);
-				}
-				else {
-					console.log('connection completed');
-					console.log('getting collection from database');
-					db.collection('Courses', function(err, collection) {
-						if(err) {
-							console.log('error getting the collection from the database');
-						}
-						else {
-							console.log('got collection from database');
-							console.log('finding courses based on queries');
-							collection.find(query, projection).toArray(function(err, result) {
-								if(err) {
-									console.log('error in finding stuff');
-								}
-								else {
-									console.log('collection.find worked correctly');
-									console.log('removing sections by time');
-									var sections = removeSectionsByTime(result);
-									console.log('sections removed');
-									console.log('sort sections by courses');
-									var courseArray = sortSectionsByCourses(sections);
-									console.log('sections sorted');
-									console.log('create list of courses not found')
-									notFoundCourses = coursesNotFound(courses, courseArray);
-									console.log('list created');
-									console.log('creating pairs');
-									var sectionPairs = createPairs(courseArray);
-									console.log('pairs created');
-									console.log('removing conflictng pairs');
-									removeNonconflictingPairs(courseArray, sectionPairs);
-									console.log('conflicting pairs removed');
-									console.log('create tree');
-									var courseTree = treeMaker(courseArray);
-									console.log('tree made');
-									console.log('update tree');
-									updateTree(courseArray, sectionPairs, courseTree);
-									console.log('tree updated');
-									console.log('generate schedules');
-									schedules = generateSchedulesList(courseArray, courseTree);
-									callback();
+ -			if (err) {
+ -				console.log('Unable to connect to the mongoDB server. Error:', err);
+ 			}
+			else {
+ 				console.log('connection completed');
+ 				console.log('getting collection from database');
+ 				console.log('term: ', term);
+ 				db.collection(term, function(err, collection) {
+ 					if(err) {
+ 						console.log('error getting the collection from the database');
+ 					}
+ 					else {
+ 						console.log('got collection from database');
+ 						console.log('finding courses based on queries');
+ 						collection.find(query, projection).toArray(function(err, result) {
+ 							if(err) {
+ 								console.log('error in finding stuff');
+ 							}
+ 							else {
+ 								console.log('collection.find worked correctly');
+ 								console.log('removing sections by time');
+ 								var sections = removeSectionsByTime(result);
+ 								console.log('sections removed');
+ 								console.log('sort sections by courses');
+ 								var courseArray = sortSectionsByCourses(sections);
+ 								console.log('sections sorted');
+ 								//console.log('courseArray: ' + courseArray[2][3].Meetings[0].StartTime);
+ 								console.log('create list of courses not found')
+ 								notFoundCourses = coursesNotFound(courses, courseArray);
+								console.log('list created');
+ 								console.log('creating pairs');
+ 								var sectionPairs = createPairs(courseArray);
+ 								console.log('pairs created');
+ 								//console.log('created pairs length: ' + sectionPairs.length);
+ 								console.log('removing conflictng pairs');
+ 								removeNonconflictingPairs(courseArray, sectionPairs);
+ 								console.log('conflicting pairs removed');
+ 								console.log('create tree');;
+ 								var courseTree = treeMaker(courseArray);
+ 								console.log('tree made');
+ 								console.log('update tree');
+ 								updateTree(courseArray, sectionPairs, courseTree);
+ 								console.log('tree updated');
+ 								console.log('generate schedules');
+ 								schedules = generateSchedulesList(courseArray, courseTree);
+ 								callback();
 								}
 							});
 						}
