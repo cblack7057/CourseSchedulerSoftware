@@ -56,8 +56,8 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 		else {
 			console.log('connecting to mongoclient');
 			MongoClient.connect(config.database, function (err, db) {
- -			if (err) {
- -				console.log('Unable to connect to the mongoDB server. Error:', err);
+ 			if (err) {
+ 				console.log('Unable to connect to the mongoDB server. Error:', err);
  			}
 			else {
  				console.log('connection completed');
