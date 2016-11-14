@@ -14,14 +14,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
     // each day will hold multiple jsons that have a start time and an end time
     vm.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     vm.times = [[], [], [], [], [], []];
-    for (i = 0; i < vm.times.length; i++) {
-      vm.times[i].push({
-  					dispStartTime: "12:00 AM",
-  					dispEndTime: "11:59 PM",
-                      StartTime: 0000,
-                      EndTime: 2359
-                  });
-    }
+
     vm.courses = [];
 
     vm.availableTimes = []; // array that the user is currently adding time frames to
@@ -41,23 +34,57 @@ angular.module('scheduler.controllers', ['scheduler.services'])
     vm.currentSchedule = [[], [], [], [], [], [], []];
     vm.currentScheduleIndex = 0; //In the event we wish to locate a specific schedule, we need this
 
+    vm.getVisualTime = function (time){
+  		var hours = Math.round(time / 100) % 12;
+  		var minutes = (time % 100 == 0 ? '00' : time % 100);
+  		var period = (time >= 1200? 'pm' : 'am');
+  		return {
+  			Hours: hours,
+  			Minutes: minutes,
+  			Period: period
+  		};
+  	};
     //add a new time slot with default values
     vm.addNewTime = function () {
-      var sTime = new Date();
-      var eTime = new Date();
+      var sDate = new Date();
+      sDate.setHours(0);
+      sDate.setMinutes(0);
+      var eDate = new Date();
+      eDate.setHours(23);
+      eDate.setMinutes(59);
       vm.availableTimes.push({
-        startTime: sTime,
-        endTime: eTime,
-        dispStartTime: vm.changeTimeFormat(sTime),
-        dispEndTime: vm.changeTimeFormat(eTime)
+        startTime: 0000,
+        endTime: 2359,
+        dispStartTime: sDate,
+        dispEndTime: eDate
       });
     }
   vm.slideNames = ["Add Times", "Add Courses"];
   vm.slideName = vm.slideNames[0];
-  vm.slideHasChanged = function($index){
+  vm.slideHasChanged = function($index) {
     vm.slideName = vm.slideNames[$index];
   }
 
+  //sets the time range for the day at the given index to all day
+  vm.allDay = function(timesIndex) {
+    var sDate = new Date();
+    sDate.setHours(0);
+    sDate.setMinutes(0);
+    var eDate = new Date();
+    eDate.setHours(23);
+    eDate.setMinutes(59);
+    vm.times[timesIndex] = [{
+        startTime: 0000,
+        endTime: 2359,
+        dispStartTime: sDate,
+        dispEndTime: eDate
+                }];
+  }
+
+  for (i = 0; i < vm.times.length; i++) {
+    vm.allDay(i);
+  }
+  /*Don't use, mobile app uses direct access as opposed to set day, then set local array reference
   vm.allDay = function() {
 		vm.availableTimes.push({
 					dispStartTime: "12:00 AM",
@@ -66,7 +93,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
                     EndTime: 2359
                 });
 		vm.times[vm.day] = vm.combine(vm.availableTimes);
-	};
+	};*/
     vm.addCourse = function() {
       vm.courses.push({})
     }
@@ -103,6 +130,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
             timesArray: vm.times,
             courseArray: vm.courses
         };
+        vm.message = weekData;
         scheduleService.onStartProcessing();
         // vm.message = weekData;
         // POST request
