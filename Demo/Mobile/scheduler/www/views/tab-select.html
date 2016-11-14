@@ -1,0 +1,36 @@
+<ion-view view-title="Select">
+  <ion-content class="padding">
+    <div ng-show="waiting==true">
+      <div class="row">
+
+        <p>Waiting for server..</p>
+        <icon class="ion-loop"></icon>
+      </div>
+    </div>
+    <div ng-show="waiting==false">
+      <h2>Here is a schedule!</h2>
+      <div>
+          <div class="row">
+              <div class="col">Monday</div>
+              <div class="col">Tuesday</div>
+              <div class="col">Wednesday</div>
+              <div class="col">Thursday</div>
+              <div class="col">Friday</div>
+              <div class="col">Saturday</div>
+              <div class="col">Sunday</div>
+          </div>
+          <div class="row">
+              <div class="col" ng-repeat="day in currentSchedule">
+                  <div class="col" ng-repeat="class in day">
+                  Subject: {{class.Subject}}<br>
+                  Start Time: {{class.sTime}}<br>
+                  End Time: {{class.eTime}}
+                  </div>
+              </div>
+          </div>
+      </div>
+      <button class="button button-balanced" ng-click="grabSchedules()">Grab stored schedule!</button>
+      <button class="button button-positive" ng-click="grabSampleSchedules()">Grab sample schedule instead!</button>
+    </div>
+  </ion-content>
+</ion-view>
