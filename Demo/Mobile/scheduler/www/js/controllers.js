@@ -224,6 +224,20 @@ angular.module('scheduler.controllers', ['scheduler.services'])
 
   sm.listeners = scheduleService.listeners;
 
+  sm.showNextSchedule = function () {
+       // if (vm.currentScheduleIndex< vm.schedules.length) { //why not if(currentIndex < vm.schedules.len)?
+            sm.currentScheduleIndex++;
+            sm.setCurrentSchedule(sm.currentScheduleIndex);
+        //};
+    //CR
+	};
+    sm.showPrevSchedule = function () {
+        //if (vm.currentScheduleIndex > 0)) {
+            sm.currentScheduleIndex--;
+            sm.setCurrentSchedule(sm.currentScheduleIndex);
+       // };
+    };
+
   scheduleService.addStartListener(function(){
     sm.waiting = true;
   });

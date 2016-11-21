@@ -21,14 +21,18 @@
           </div>
           <div class="row">
               <div class="col" ng-repeat="day in currentSchedule">
-                  <div class="col" ng-repeat="class in day">
-                  Subject: {{class.Subject}}<br>
-                  Start Time: {{class.sTime}}<br>
-                  End Time: {{class.eTime}}
-                  </div>
+                <div class="card" ng-repeat="class in day">
+                    <div class="item item-text-wrap">
+                      Subject: {{class.Subject}}<br>
+                      Start Time: {{class.sTime}}<br>
+                      End Time: {{class.eTime}}
+                    </div>
+                </div>
               </div>
           </div>
       </div>
+      <button class="button button-balanced" ng-click="showPrevSchedule()" ng-disabled="currentScheduleIndex == 0">Prev</button>
+      <button class="button button-balanced" ng-click="showNextSchedule()" ng-disabled="currentScheduleIndex+1 >= schedules.length">Next</button>
       <button class="button button-balanced" ng-click="grabSchedules()">Grab stored schedule!</button>
       <button class="button button-positive" ng-click="grabSampleSchedules()">Grab sample schedule instead!</button>
     </div>
