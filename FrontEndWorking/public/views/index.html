@@ -30,7 +30,6 @@
             <h2 class="center"> Scheduler App </h2> 
         </div>
 
-
                 <!-- for debugging time frame tables
                 <div class="form-group">
                         <label>Message</label>
@@ -57,8 +56,8 @@
 				<div class="container">
                     Saturday: {{ main.times[5] }}
                 </div>
-
 -->
+
         <div class="inputForm">
             <div class="daysBtns">
                 <div class="radioBtns">
@@ -69,6 +68,7 @@
                         <option value="Spring2017">Spring2017</option>
                     </select>
 					<br/>
+
                     <!-- form to add days to the list -->
                     <h3> Choose a day you wish to be on campus:</h3>
                     <div class="form-inline">
@@ -157,6 +157,8 @@
                             </div>
                         </div>
                     </form>
+
+                    <!-- Form to enter course subject and number -->
                     <div class="courseInfo">
                         <div class="clearfix" />
                         <h3>Enter Subject(s) and a Course Number(s)</h3>
@@ -171,7 +173,7 @@
                                 {{ main.errorMessageCourses }}
                             </h6>
 
-                            <!------ Table  date:"hh:mm a" ----->
+                            <!------ Table  subject: course: action ----->
                             <div>
                                 <h3> These are the courses you've chosen.</h3>
                                 <div>
@@ -199,6 +201,8 @@
             </div>
                 </div>
             </div>
+
+        <!-- Defines what is printed -->
 	     <div id="printarea">
                 <div class="scheduleForm">
                     <div id="container" style="padding:0px">
@@ -206,7 +210,6 @@
                         <div class="row">
                             <h3> Schedule: {{main.schedules.length == 0 ? '' : main.currentScheduleIndex+1 + ' of ' + main.schedules.length}} </h3>
                             <div class="timesLeft">
-
                                 <table class="table table-bordered">
                                     <tr><th>Time</th></tr>
                                     <tr ng-repeat="time in main.timeIntervals"><td>{{ time }}</td></tr>
@@ -243,14 +246,13 @@
                             </div>
 
                             <div class="clearfix" />
-							<h3>{{main.message2}}</h3>
+							<!--<h3>{{main.message2}}</h3>-->
                             <button class="btn btn-success" ng-click="main.showPrevSchedule()" ng-disabled="main.currentScheduleIndex == 0">Prev</button>
                             <button class="btn btn-success" ng-click="main.showNextSchedule()" ng-disabled="main.currentScheduleIndex+1 >= main.schedules.length">Next</button>
-							<!--<button class="btn btn-success" ng-click="main.addSelected()">Selected Courses</button>-->
-							<button class="btn btn-success" ng-click="main.rerollSched()">Do the thing</button>
-							<h6>Debugging {{main.message3}}</h6>
+							<button class="btn btn-success" ng-click="main.rerollSched()">Reroll</button>
+							<!--<h6>Debugging {{main.message3}}</h6>
 							<h5>Selected: {{main.selectedCourses}}</h5>
-							<h5>Not selected: {{main.notSelectedCourses}}</h5>
+							<h5>Not selected: {{main.notSelectedCourses}}</h5>-->
 							
                         </div>
                     </div>
@@ -260,9 +262,7 @@
        
 			
 		<!-- Modal Stuff -->	
-
 		<!-- Trigger/Open The Modal : http://www.w3schools.com/howto/howto_css_modals.asp -->
-
 		
 		<div id="myModal" class="modal" ng-class="{modalOn : main.modalCourseData != null, modalOff : main.modalCourseData == null}" ng-click="main.modalCourseData == null">
 		  <div class="modal-content">
@@ -302,8 +302,7 @@
 						<p> Room: {{day.BuildingRoom}}</p>
 					</div>
 				</div>
-				
-				
+					
 			</div>
 			<div class="modal-footer">
 				<div class="form-inline">
@@ -314,9 +313,5 @@
 			</div>
 		  </div>
 		</div>
-		
-                    <!--<td ng-repeat="day in main.currentSchedule"><button class="btn btn-success" id="classButton" ng-repeat="class in day" style="width:100%"><p style="width:100%">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</p></button></td>-->   
-<!-- button <td ng-repeat="day in main.currentSchedule"><button class="btn btn-success btn-sm" style="margin:auto;" ng-repeat="class in day">Subject: {{class.Subject}}<br>Start Time: {{class.sTime}}<br> End Time: {{class.eTime}}</button></td> -->
-
 	</body>
 </html>
