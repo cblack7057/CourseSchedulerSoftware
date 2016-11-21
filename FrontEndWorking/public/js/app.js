@@ -1,7 +1,6 @@
 angular.module('firstApp2', ['scheduleService'])
 
 .controller('mainController', function ($http) {
-////////////////////////////////////////////////////////////////////// NEED TO GET REROLL WORKING, SO DO THAT, CURRENTLY IT AINT DOIN SHET
     var vm = this;
     // Set from form
     vm.message = 'AvailableTimes array';
@@ -57,9 +56,7 @@ angular.module('firstApp2', ['scheduleService'])
                     StartTime: sCTime,
                     EndTime: eCTime
                 });
-                //vm.message = vm.courses;
                 vm.times[vm.day] = vm.combine(vm.availableTimes);
-                //vm.timeData = {}; //clears form
                 vm.errorMessageTimes = '';
             } else {
                 vm.errorMessageTimes = 'Please verify that the start time occurs before the end time.'
@@ -77,6 +74,7 @@ angular.module('firstApp2', ['scheduleService'])
                 });
 		vm.times[vm.day] = vm.combine(vm.availableTimes);
 	};
+
 	// for testing purposes only
 	vm.testCourses = function(){
 		vm.courses = [];
@@ -121,6 +119,8 @@ angular.module('firstApp2', ['scheduleService'])
 		vm.semester = 'Fall2016';
 		vm.submitTimes();
 	};
+
+    //Adds courses to json and posts to backend
 	vm.addCourses = function () {
 	    if (vm.courseData.subject != null && vm.courseData.course != null) {
 	        var s = vm.courseData.subject;
@@ -164,7 +164,6 @@ angular.module('firstApp2', ['scheduleService'])
             timesArray: vm.times,
             courseArray: vm.courses
         };
-         //vm.message = weekData.term;
         // POST request
         $http({
             method: 'POST',
@@ -274,8 +273,7 @@ angular.module('firstApp2', ['scheduleService'])
 		return temp.Hours + ":" + temp.Minutes + " " + temp.Period;
 	};
 
-	// reroll stuffs
-	//vm.restrictions;
+	// reroll schedules
 	vm.reroll;
 	
 	//Preconditions: must be a reroll variable declared with other global fields, restrictions is an associative array described above,
@@ -304,7 +302,7 @@ angular.module('firstApp2', ['scheduleService'])
 		vm.reroll.push(orig);
 	};
 
-	//does this schedule contain the selected or not selected stuff
+	//does this schedule contain the selected or not selected course
 	vm.createRerollHelper = function(selected, schedule) {
 		
 		var found = false;
@@ -324,11 +322,7 @@ angular.module('firstApp2', ['scheduleService'])
 		return true;
 	};
 	
-	//what I need to do
-	// on setCurrentSchedule call, clear selected and not selected
-	// then add all currect courses to not selected
-	// when a class is selected, remove it from the not selected list, then add it to the selected list
-	// when reroll called, do reroll
+    //rerolls the schedule keeping the courses that the user wants to keep when getting a new schedule
 	vm.rerollSched = function(){
 		if(vm.selectedCourses.length > 0){
 			vm.message2 += " reached1";
@@ -373,13 +367,13 @@ angular.module('firstApp2', ['scheduleService'])
 	
 	vm.containsCourse = function(courseInfo, list){
 		var temp = false;
-		//compare the course with every course in the selectedCourses array all. of. them.
+		//compare the course with every course in the selectedCourses array
 		list.forEach(function(c){
 			if(courseInfo.CRN == c.CRN)
 			{
 				vm.message3 += "Comparing Courses: "+ courseInfo.CRN + " and "+ c.CRN + (courseInfo.CRN == c.CRN) + "\n";
 				temp = true;
-				return; // THE FIRST TIME I HAD RETURN TRUE, IT WOULD JUST LEAVE THE FREAKING FOREACH LOOP THEN JUST RETURN FALSE wtf WTF JAVASCRIPT WTF
+				return;
 			}
 			vm.message3 +="Comparing Courses: "+ courseInfo.CRN + " and "+ c.CRN + (courseInfo.CRN == c.CRN) + "\n";
 		})
