@@ -1,0 +1,14 @@
+"Subj" : "ENGL",
+"Crse" : "02101",
+	
+"Subj" : "ENGR",
+"Crse" : "01301",
+	
+"Subj" : "GEOG",
+"Crse" : "16370",
+	
+"Subj" : "MUS",
+"Crse" : "40221",
+	
+"Subj" : "SPED",
+"Crse" : "08415",
