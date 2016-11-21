@@ -270,10 +270,19 @@ angular.module('scheduler.controllers', ['scheduler.services'])
 		var tSData;
 		var tEData;
 		var meetings;
-		var tempDay;
         tempSchedule.forEach(function (c) {
             meetings = c.Meetings;
-            tempDay = 0;
+            //checks to see if there is an online course in the user's input, and adds it if there is
+            if(meetings.length == 0){
+                meetings = [{
+                    Type: "Online",
+                    Day: 6,
+                    StartTime: 0000,
+                    EndTime: 0000,
+                    BuildingRoom: "Online"
+                }];
+               
+            }
 
             meetings.forEach(function (t) {
 				tSData = sm.getVisualTime(t.StartTime);
