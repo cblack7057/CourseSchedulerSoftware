@@ -219,7 +219,15 @@ angular.module('firstApp2', ['scheduleService'])
         tempSchedule.forEach(function (c) {
             meetings = c.Meetings;
             tempDay = 0;
-			
+	    if(meetings.length == 0){
+				meetings = [{
+					Type: "(Online)",
+					Day: 6,
+					StartTime: 800,
+					EndTime: 2115,
+					BuildingRoom: "Online"
+				}];
+			}	
             meetings.forEach(function (t) {
 				tSData = vm.getVisualTime(t.StartTime);
 				tEData = vm.getVisualTime(t.EndTime);
