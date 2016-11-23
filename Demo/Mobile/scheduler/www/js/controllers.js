@@ -44,6 +44,11 @@ angular.module('scheduler.controllers', ['scheduler.services'])
   			Period: period
   		};
   	};
+
+    vm.removeTime = function(index) {
+      vm.availableTimes.splice(index, 1);
+    }
+
     //add a new time slot with default values
     vm.addNewTime = function () {
       var sDate = new Date();
@@ -114,6 +119,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
         //vm.message = vm.courses;
     };
 
+
     vm.removeTimes = function (index, parentIndex) {
         vm.times[parentIndex].splice(index, 1);
     }
@@ -146,7 +152,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
             //scheduleService.onFinishProcessing(data);
             //vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
             scheduleService.onFinishProcessing(data);
-            sm.setCurrentSchedule(sm.currentScheduleIndex);
+
 
         });
         //vm.message2 = 'not reached';
@@ -212,48 +218,42 @@ angular.module('scheduler.controllers', ['scheduler.services'])
 })
 .controller('SelectScheduleCtrl', function($scope, scheduleService) {
   var sm = $scope;
+  sm.setupSlider = function() {
+    //some options to pass to our slider
+    sm.data = {};
+    sm.data.currentPage = 0;
+    sm.data.sliderOptions = {
+      initialSlide: 0,
+      direction: 'horizontal', //or vertical
+      speed: 300 //0.3s transition
+    };
+
+    //create delegate reference to link with slider
+    sm.data.sliderDelegate = null;
+
+
+    //watch our sliderDelegate reference, and use it when it becomes available
+    sm.$watch('data.sliderDelegate', function(newVal, oldVal) {
+      if (newVal != null) {
+        sm.data.sliderDelegate.on('slideChangeEnd', function() {
+          sm.data.currentPage = sm.data.sliderDelegate.activeIndex;
+          //use $scope.$apply() to refresh any content external to the slider
+          sm.$apply();
+        });
+      }
+    });
+  };
+
+  sm.setupSlider();
+
   sm.schedules;
   sm.currentScheduleIndex = 0;
   sm.waiting = true;
+  sm.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Any Time'];
 
+  sm.daySchedules = [];
 
-  //grabs the list of possible schedules from the local schedule storage service
-  sm.grabSchedules = function(){
-    sm.schedules = scheduleService.getSchedules();
-  };
-
-  sm.listeners = scheduleService.listeners;
-
-  sm.showNextSchedule = function () {
-       // if (vm.currentScheduleIndex< vm.schedules.length) { //why not if(currentIndex < vm.schedules.len)?
-            sm.currentScheduleIndex++;
-            sm.setCurrentSchedule(sm.currentScheduleIndex);
-        //};
-    //CR
-	};
-    sm.showPrevSchedule = function () {
-        //if (vm.currentScheduleIndex > 0)) {
-            sm.currentScheduleIndex--;
-            sm.setCurrentSchedule(sm.currentScheduleIndex);
-       // };
-    };
-
-  scheduleService.addStartListener(function(){
-    sm.waiting = true;
-  });
-
-  //start listening for changes to schedules data
-  scheduleService.addFinishListener(function(){
-    sm.grabSchedules();
-    sm.setCurrentSchedule(sm.currentScheduleIndex);
-    sm.waiting = false;
-  });
-
-  //grabs the a sample schedule list (with only one schedule) from the local schedule storage service
-  sm.grabSampleSchedules = function(){
-    sm.schedules = scheduleService.getSampleSchedules();
-    sm.waiting = false;
-  };
+  sm.crnLists = [];
 
   sm.setCurrentSchedule = function (scheduleIndex) { //schduleIndex = index of schedule you wish to set as current
         //use this one when taking schedules from
@@ -281,7 +281,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
                     EndTime: 0000,
                     BuildingRoom: "Online"
                 }];
-               
+
             }
 
             meetings.forEach(function (t) {
@@ -297,10 +297,13 @@ angular.module('scheduler.controllers', ['scheduler.services'])
             });
         });
         sm.message = sm.currentSchedule;
-    }
+    };
 
   sm.getVisualTime = function (time){
 		var hours = Math.round(time / 100) % 12;
+    if(hours == 0) {
+      hours = 12;
+    }
 		var minutes = (time % 100 == 0 ? '00' : time % 100);
 		var period = (time >= 1200? 'pm' : 'am');
 		return {
@@ -309,5 +312,89 @@ angular.module('scheduler.controllers', ['scheduler.services'])
 			Period: period
 		};
 	};
+
+
+
+  sm.formatDaySchedules = function (){
+    sm.daySchedules = [];
+    for(i = 0; i < sm.schedules.length; i++){
+      //format this schedule and store it in current schedule
+      sm.setCurrentSchedule(i);
+      sm.daySchedules[i] = sm.currentSchedule;
+    }
+
+  };
+
+  sm.formatCRNLists = function(){
+    for(i = 0; i < sm.schedules.length; i++){
+      sm.crnLists[i] = [];
+      sm.schedules[i].forEach(function(c){
+        sm.crnLists[i].push(c.CRN);
+      });
+    }
+  }
+
+  //grabs the list of possible schedules from the local schedule storage service
+  sm.grabSchedules = function(){
+    sm.schedules = scheduleService.getSchedules();
+    sm.formatDaySchedules();
+    sm.formatCRNLists();
+    //recalibrate slider page index if this is a new schedule set grab
+    if(sm.data.sliderDelegate != null){
+      sm.data.sliderDelegate.update();
+      if(sm.data.currentPage > sm.schedules.length - 1) {
+        sm.data.currentPage = sm.schedules.length - 1;
+      }
+    }
+    sm.waiting = false;
+  };
+  console.log("Loading this controller")
+  /* If there are already schedules ready when we load this controller, grab them!*/
+  if(scheduleService.isWaiting == false){
+    sm.grabSchedules();
+    console.log("There were def schedules waiting in there")
+  }
+
+  sm.slideHasChanged = function(index) {
+    sm.currentScheduleIndex = index;
+    sm.setCurrentSchedule(sm.currentScheduleIndex);
+  };
+
+  sm.showNextSchedule = function () {
+       // if (vm.currentScheduleIndex< vm.schedules.length) { //why not if(currentIndex < vm.schedules.len)?
+            sm.currentScheduleIndex++;
+            sm.setCurrentSchedule(sm.currentScheduleIndex);
+        //};
+    //CR
+	};
+    sm.showPrevSchedule = function () {
+        //if (vm.currentScheduleIndex > 0)) {
+            sm.currentScheduleIndex--;
+            sm.setCurrentSchedule(sm.currentScheduleIndex);
+       // };
+    };
+
+  scheduleService.addStartListener(function(){
+    console.log("Not waiting any more!");
+    sm.waiting = true;
+  });
+
+  //start listening for changes to schedules data
+  scheduleService.addFinishListener(function(){
+    console.log("Not waiting any more!");
+    sm.grabSchedules();
+    sm.setCurrentSchedule(sm.currentScheduleIndex);
+    sm.waiting = false;
+  });
+
+  //grabs the a sample schedule list (with only one schedule) from the local schedule storage service
+  sm.grabSampleSchedules = function(){
+    sm.schedules = scheduleService.getSampleSchedules();
+    sm.waiting = false;
+  };
+
+
+
+
 
 });

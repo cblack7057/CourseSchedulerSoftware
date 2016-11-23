@@ -3,3 +3,13 @@
     float: right;
     padding: 10px;
   }
+  ion-slides{
+    height: 300vh !important;
+  }
+
+  .spinner svg {
+  width: 112px;
+  height: 112px;
+  stroke: #444;
+  fill: #444;
+}
