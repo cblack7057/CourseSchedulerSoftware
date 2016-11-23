@@ -117,8 +117,9 @@ module.exports = function(week, courses, mongodb, config, callback) {
 	
 	function removeSectionsByTime(sections) {
 		//loop through each section in the resultant array and remove if it is not at a good time
+		console.log(week);
 		for(var i = sections.length - 1; i >= 0; i--) {
-			meetings = sections[i].Meetings;
+			var meetings = sections[i].Meetings;
 			for(var j = 0; j < meetings.length; j++) {
 				//check if the class has a meeting time for this day
 				if(meetings[j].StartTime == null)
@@ -128,56 +129,62 @@ module.exports = function(week, courses, mongodb, config, callback) {
 					for(var k = 0; k < week[0].length; k++)
 						if(week[0][k].StartTime > meetings[j].StartTime ||
 						week[0][k].EndTime < meetings[j].EndTime) {
+							//console.log('splicing in 0, i is ' + i);
 							sections.splice(i, 1);
 							j = meetings.length; //this will break us out of the j loop
 							break;
 						}
 					break;
 				case 1:
-                                        for(var k = 0; k < week[1].length; k++)
-                                                if(week[1][k].StartTime > meetings[j].StartTime ||
-                                                week[1][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
+                    for(var k = 0; k < week[1].length; k++)
+                        if(week[1][k].StartTime > meetings[j].StartTime ||
+                            week[1][k].EndTime < meetings[j].EndTime) {
+								//console.log('splicing in 1, i is ' + i);
+                                sections.splice(i, 1);
+                                j = meetings.length; //this will break us out of the j loop
+                                break;
+                            }
+                        break;
 				case 2:
-                                        for(var k = 0; k < week[2].length; k++)
-                                                if(week[2][k].StartTime > meetings[j].StartTime ||
-                                                week[2][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
+					for(var k = 0; k < week[2].length; k++)
+							if(week[2][k].StartTime > meetings[j].StartTime ||
+							week[2][k].EndTime < meetings[j].EndTime) {
+								//console.log('splicing in 2, i is ' + i);
+								sections.splice(i, 1);
+								j = meetings.length; //this will break us out of the j loop
+								break;
+							}
+					break;
 				case 3:
-                                        for(var k = 0; k < week[3].length; k++)
-                                                if(week[3][k].StartTime > meetings[j].StartTime ||
-                                                week[3][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
+					for(var k = 0; k < week[3].length; k++)
+							if(week[3][k].StartTime > meetings[j].StartTime ||
+							week[3][k].EndTime < meetings[j].EndTime) {
+								//console.log('splicing in 0, i is ' + i);
+								sections.splice(i, 1);
+								j = meetings.length; //this will break us out of the j loop
+								break;
+							}
+					break;
 				case 4:
-                                        for(var k = 0; k < week[4].length; k++)
-                                                if(week[4][k].StartTime > meetings[j].StartTime ||
-                                                week[4][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
+					for(var k = 0; k < week[4].length; k++)
+							if(week[4][k].StartTime > meetings[j].StartTime ||
+							week[4][k].EndTime < meetings[j].EndTime) {
+								//console.log('splicing in 0, i is ' + i);
+								sections.splice(i, 1);
+								j = meetings.length; //this will break us out of the j loop
+								break;
+							}
+					break;
 				case 5:
-                                        for(var k = 0; k < week[5].length; k++)
-                                                if(week[5][k].StartTime > meetings[j].StartTime ||
-                                                week[5][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;				
+					for(var k = 0; k < week[5].length; k++)
+							if(week[5][k].StartTime > meetings[j].StartTime ||
+							week[5][k].EndTime < meetings[j].EndTime) {
+								//console.log('splicing in 0, i is ' + i);
+								sections.splice(i, 1);
+								j = meetings.length; //this will break us out of the j loop
+								break;
+							}
+					break;				
 				}
 			}
 		}
