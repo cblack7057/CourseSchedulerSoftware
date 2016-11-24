@@ -12,3 +12,6 @@
 	
 "Subj" : "SPED",
 "Crse" : "08415",
+
+“Subj” : “ACC”,
+“Crse” : “03211”
