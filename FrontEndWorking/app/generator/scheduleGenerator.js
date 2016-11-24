@@ -82,14 +82,12 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
  								console.log('sort sections by courses');
  								var courseArray = sortSectionsByCourses(sections);
  								console.log('sections sorted');
- 								//console.log('courseArray: ' + courseArray[2][3].Meetings[0].StartTime);
  								console.log('create list of courses not found')
  								notFoundCourses = coursesNotFound(courses, courseArray);
 								console.log('list created');
  								console.log('creating pairs');
  								var sectionPairs = createPairs(courseArray);
  								console.log('pairs created');
- 								//console.log('created pairs length: ' + sectionPairs.length);
  								console.log('removing conflictng pairs');
  								removeNonconflictingPairs(courseArray, sectionPairs);
  								console.log('conflicting pairs removed');
@@ -101,7 +99,8 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
  								console.log('tree updated');
  								console.log('generate schedules');
  								schedules = generateSchedulesList(courseArray, courseTree);
- 								callback();
+ 								console.log(schedules);
+								callback();
 								}
 							});
 						}
@@ -119,72 +118,41 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 	}
 	
 	function removeSectionsByTime(sections) {
-		//loop through each section in the resultant array and remove if it is not at a good time
-		for(var i = sections.length - 1; i >= 0; i--) {
-			meetings = sections[i].Meetings;
-			for(var j = 0; j < meetings.length; j++) {
-				//check if the class has a meeting time for this day
-				if(meetings[j].StartTime == null)
-					break;
-				switch(meetings[j].Day) {
-				case 0:
-					for(var k = 0; k < week[0].length; k++)
-						if(week[0][k].StartTime > meetings[j].StartTime ||
-						week[0][k].EndTime < meetings[j].EndTime) {
-							sections.splice(i, 1);
-							j = meetings.length; //this will break us out of the j loop
-							break;
-						}
-					break;
-				case 1:
-                                        for(var k = 0; k < week[1].length; k++)
-                                                if(week[1][k].StartTime > meetings[j].StartTime ||
-                                                week[1][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
-				case 2:
-                                        for(var k = 0; k < week[2].length; k++)
-                                                if(week[2][k].StartTime > meetings[j].StartTime ||
-                                                week[2][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
-				case 3:
-                                        for(var k = 0; k < week[3].length; k++)
-                                                if(week[3][k].StartTime > meetings[j].StartTime ||
-                                                week[3][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
-				case 4:
-                                        for(var k = 0; k < week[4].length; k++)
-                                                if(week[4][k].StartTime > meetings[j].StartTime ||
-                                                week[4][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
-				case 5:
-                                        for(var k = 0; k < week[5].length; k++)
-                                                if(week[5][k].StartTime > meetings[j].StartTime ||
-                                                week[5][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;				
+		for(var i = 0; i < sections.length; i++) {
+			for(var j = 0; j < week.length; j++) {
+				var sectionDayMatching = [];
+				for(var k = 0; k < sections[i].Meetings.length; k++) {
+					if(sections[i].Meetings[k].Day == j) {
+						sectionDayMatching.push(sections[i].Meetings[k]);
+					}
+				}
+				if(removeSectionHelper(week[j], sectionDayMatching)) {
+					sections.splice(i, 1);
 				}
 			}
 		}
 		return sections;
+	}
+
+	//availableInDay = all start and end time for a particular day
+	//sectionMeetingsInDay = all meetings of section on the same day
+	//returns true if conflict, false if no conflict
+	function removeSectionHelper(availableInDay, sectionMeetingsInDay) {
+		if(sectionMeetingsInDay.length == 0)
+			return false; //no conflict if not meetings for the course
+		if(availableInDay.length == 0)
+			return true; //conflict if there are no user time slots for the class meetings
+		for(var i = 0; i < sectionMeetingsInDay.length; i++) {
+			var fits = false;	//does this meeting for the class fit in any user time slot
+			for(var j = 0; j < availableInDay.length; j++) {
+				if((sectionMeetingsInDay[i].StartTime >= availableInDay[j].StartTime) && (sectionMeetingsInDay[i].EndTime <= availableInDay[j].EndTime)) {
+					fits = true;
+					break;
+				}
+			}
+			if(!fits) return true; //conflict, there is no fit for class meeting
+		}
+		return false; //no conflict, all the class meetings fit into a user time slot
 	}
 	
 	function sortSectionsByCourses(sections) {
@@ -333,7 +301,6 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 			return;
 		for(var i = 0; i < sectionPairs.length; i++)
 		{
-			//console.log('' + sectionPairs[i][0] + sectionPairs[i][1] + ", " + sectionPairs[i][2] + sectionPairs[i][3] );
 			removeBranches(courseTree, sectionPairs[i][0], sectionPairs[i][1], sectionPairs[i][2], sectionPairs[i][3]);
 		}
 	}

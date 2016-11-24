@@ -162,7 +162,7 @@ angular.module('firstApp2', ['scheduleService'])
 
     // changes time format to hhmm to be stored in respective arrays
     vm.changeTimeFormat = function (time) {
-        return (time.getHours() < 10 ? '0' : '') + time.getHours() + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes();
+        return parseInt(time.getHours() + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes());
     };
 
     // Changes the displayed table of times frames

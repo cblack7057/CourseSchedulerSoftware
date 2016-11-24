@@ -37,154 +37,107 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 	for(var i = 0; i < week.length && timesNotSelected; i++) {
 		timesNotSelected = (week[i].length == 0) && timesNotSelected;
 	}
-	getSchedules(function() {
+	
+	
+	return new Promise(function(resolve, reject) {
 		if(timesNotSelected) {
 			console.log('no times entered');
-			schedules = [];
-			notFoundCourses = [];
 			if(courses.length == 0) {
 				console.log('no courses selected');
 			}
-			callback();
+			resolve([[],[]]);
 		}
 		else if(courses.length == 0){
 			console.log('no courses selected');
-			schedules = [];
-			notFoundCourses = [];
-			callback();
+			resolve([[],[]]);
 		}
 		else {
+			var schedules;
+			var notFoundCourses;
 			console.log('connecting to mongoclient');
-			MongoClient.connect(config.database, function (err, db) {
- 			if (err) {
- 				console.log('Unable to connect to the mongoDB server. Error:', err);
- 			}
-			else {
+			MongoClient.connect(config.database)
+ 			.then(function(db) {
  				console.log('connection completed');
- 				console.log('getting collection from database');
- 				console.log('term: ', term);
- 				db.collection(term, function(err, collection) {
- 					if(err) {
- 						console.log('error getting the collection from the database');
- 					}
- 					else {
- 						console.log('got collection from database');
- 						console.log('finding courses based on queries');
- 						collection.find(query, projection).toArray(function(err, result) {
- 							if(err) {
- 								console.log('error in finding stuff');
- 							}
- 							else {
- 								console.log('collection.find worked correctly');
- 								console.log('removing sections by time');
- 								var sections = removeSectionsByTime(result);
- 								console.log('sections removed');
- 								console.log('sort sections by courses');
- 								var courseArray = sortSectionsByCourses(sections);
- 								console.log('sections sorted');
- 								//console.log('courseArray: ' + courseArray[2][3].Meetings[0].StartTime);
- 								console.log('create list of courses not found')
- 								notFoundCourses = coursesNotFound(courses, courseArray);
-								console.log('list created');
- 								console.log('creating pairs');
- 								var sectionPairs = createPairs(courseArray);
- 								console.log('pairs created');
- 								//console.log('created pairs length: ' + sectionPairs.length);
- 								console.log('removing conflictng pairs');
- 								removeNonconflictingPairs(courseArray, sectionPairs);
- 								console.log('conflicting pairs removed');
- 								console.log('create tree');;
- 								var courseTree = treeMaker(courseArray);
- 								console.log('tree made');
- 								console.log('update tree');
- 								updateTree(courseArray, sectionPairs, courseTree);
- 								console.log('tree updated');
- 								console.log('generate schedules');
- 								schedules = generateSchedulesList(courseArray, courseTree);
- 								callback();
-								}
-							});
-						}
-					});
-				}		
+				console.log('retrieving collection Courses from database');
+				return db.collection('Courses').find(query,projection)
+			})
+			.then(function(cursor) {
+				console.log('query completed');
+				console.log('changing cursor to array');
+				return cursor.toArray()
+			})
+			.then(function(arr) {
+				console.log('successfully converted result to an array');
+				console.log('removing sections by time');
+				var sections = removeSectionsByTime(arr);
+				console.log('sections removed');
+				console.log('sort sections by courses');
+				var courseArray = sortSectionsByCourses(sections);
+				console.log('sections sorted');
+				console.log('create list of courses not found')
+				notFoundCourses = coursesNotFound(courses, courseArray);
+				console.log('list created');
+				console.log('creating pairs');
+				var sectionPairs = createPairs(courseArray);
+				console.log('pairs created');
+				console.log('removing conflictng pairs');
+				removeNonconflictingPairs(courseArray, sectionPairs);
+				console.log('conflicting pairs removed');
+				console.log('create tree');
+				var courseTree = treeMaker(courseArray);
+				console.log('tree made');
+				console.log('update tree');
+				updateTree(courseArray, sectionPairs, courseTree);
+				console.log('tree updated');
+				console.log('generate schedules');
+				schedules = generateSchedulesList(courseArray, courseTree);
+				console.log('schedules generated');
+				resolve([schedules, coursesNotFound]);
+			}).catch(function(err) {
+				reject(err);		
 			});
 		}
 	});
 	
-
-	function getSchedules(callback) {
-		var schedules;
-		var notFoundCourses;
-		callback();
-	}
-	
 	function removeSectionsByTime(sections) {
-		//loop through each section in the resultant array and remove if it is not at a good time
-		for(var i = sections.length - 1; i >= 0; i--) {
-			meetings = sections[i].Meetings;
-			for(var j = 0; j < meetings.length; j++) {
-				//check if the class has a meeting time for this day
-				if(meetings[j].StartTime == null)
-					break;
-				switch(meetings[j].Day) {
-				case 0:
-					for(var k = 0; k < week[0].length; k++)
-						if(week[0][k].StartTime > meetings[j].StartTime ||
-						week[0][k].EndTime < meetings[j].EndTime) {
-							sections.splice(i, 1);
-							j = meetings.length; //this will break us out of the j loop
-							break;
-						}
-					break;
-				case 1:
-                                        for(var k = 0; k < week[1].length; k++)
-                                                if(week[1][k].StartTime > meetings[j].StartTime ||
-                                                week[1][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
-				case 2:
-                                        for(var k = 0; k < week[2].length; k++)
-                                                if(week[2][k].StartTime > meetings[j].StartTime ||
-                                                week[2][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
-				case 3:
-                                        for(var k = 0; k < week[3].length; k++)
-                                                if(week[3][k].StartTime > meetings[j].StartTime ||
-                                                week[3][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
-				case 4:
-                                        for(var k = 0; k < week[4].length; k++)
-                                                if(week[4][k].StartTime > meetings[j].StartTime ||
-                                                week[4][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;
-				case 5:
-                                        for(var k = 0; k < week[5].length; k++)
-                                                if(week[5][k].StartTime > meetings[j].StartTime ||
-                                                week[5][k].EndTime < meetings[j].EndTime) {
-                                                        sections.splice(i, 1);
-                                                        j = meetings.length; //this will break us out of the j loop
-                                                        break;
-                                                }
-                                        break;				
+		for(var i = 0; i < sections.length; i++) {
+			for(var j = 0; j < week.length; j++) {
+				var sectionDayMatching = [];
+				console.log(sections[i]);
+				for(var k = 0; k < sections[i].Meetings.length; k++) {
+					if(sections[i].Meetings[k].Day == j) {
+						sectionDayMatching.push(sections[i].Meetings[k]);
+						console.log('here');
+					}
+				}
+				if(removeSectionHelper(week[j], sectionDayMatching)) {
+					console.log(sectionDayMatching);
+					sections.splice(i, 1);
 				}
 			}
 		}
 		return sections;
+	}
+
+	//availableInDay = all start and end time for a particular day
+	//sectionMeetingsInDay = all meetings of section on the same day
+	//returns true if conflict, false if no conflict
+	function removeSectionHelper(availableInDay, sectionMeetingsInDay) {
+		if(sectionMeetingsInDay.length == 0)
+			return false; //no conflict if not meetings for the course
+		if(availableInDay.length == 0)
+			return true; //conflict if there are no user time slots for the class meetings
+		for(var i = 0; i < sectionMeetingsInDay.length; i++) {
+			var fits = false;	//does this meeting for the class fit in any user time slot
+			for(var j = 0; j < availableInDay.length; j++) {
+				if((sectionMeetingsInDay[i].StartTime >= availableInDay[j].StartTime) && (sectionMeetingsInDay[i].EndTime <= availableInDay[j].EndTime)) {
+					fits = true;
+					break;
+				}
+			}
+			if(!fits) return true; //conflict, there is no fit for class meeting
+		}
+		return false; //no conflict, all the class meetings fit into a user time slot
 	}
 	
 	function sortSectionsByCourses(sections) {
