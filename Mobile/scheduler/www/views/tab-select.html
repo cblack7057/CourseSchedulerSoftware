@@ -1,36 +1,51 @@
-<ion-view view-title="Select">
-  <ion-content class="padding">
-    <div ng-show="waiting==true">
-      <div class="row">
+<ion-view view-title="{{(waiting) ? 'Waiting for server response' : '(Schedule ' + (data.currentPage + 1) + ' of ' + schedules.length + ')'}}">
 
-        <p>Waiting for server..</p>
-        <icon class="ion-loop"></icon>
-      </div>
+  <ion-content>
+    <div ng-show="waiting==true">
+          <center><ion-spinner icon="lines"></ion-spinner><center>
     </div>
-    <div ng-show="waiting==false">
-      <h2>Here is a schedule!</h2>
-      <div>
-          <div class="row">
-              <div class="col">Monday</div>
-              <div class="col">Tuesday</div>
-              <div class="col">Wednesday</div>
-              <div class="col">Thursday</div>
-              <div class="col">Friday</div>
-              <div class="col">Saturday</div>
-              <div class="col">Sunday</div>
-          </div>
-          <div class="row">
-              <div class="col" ng-repeat="day in currentSchedule">
-                  <div class="col" ng-repeat="class in day">
-                  Subject: {{class.Subject}}<br>
-                  Start Time: {{class.sTime}}<br>
-                  End Time: {{class.eTime}}
-                  </div>
+
+      <ion-slides options="data.sliderOptions" slider="data.sliderDelegate">
+        <!--whaddupYo-->
+        <ion-slide-page ng-repeat="schedule in daySchedules">
+          <ion-list class="list">
+            <div class="item item-divider" ng-repeat="day in schedule" ng-show="!($index == (days.length - 1) && day.length == 0)">
+              <!-- Column for displaying this day's summary information-->
+              <div class="row">
+                <div class="col col-33">
+                  {{days[$index]}}
+                </div>
+                <!-- Column for displaying the course times on this day-->
+                <div class="col">
+                  <!-- if there are no classes, say so! -->
+                  <ion-list class="list">
+                    <ion-item ng-show="day.length == 0">
+                      No classes!
+                    </ion-item>
+                    <!-- display each class entry on this day -->
+                    <ion-item class="item item-text-wrap" ng-repeat="class in day">
+                      {{class.Subject}} from {{class.sTime}} to {{class.eTime}}
+                    </ion-item>
+                  </ion-list>
+                </div>
               </div>
-          </div>
-      </div>
-      <button class="button button-balanced" ng-click="grabSchedules()">Grab stored schedule!</button>
-      <button class="button button-positive" ng-click="grabSampleSchedules()">Grab sample schedule instead!</button>
-    </div>
+            </div>
+            <div class="item item-divider">
+              <div class="row">
+                <div class="col">
+                  CRNs:
+                </div>
+                <div class="col" ng-repeat="CRN in crnLists[$index]">
+                  {{CRN}}
+                </div>
+              </div>
+            </div>
+          </ion-list>
+
+        </ion-slide-page>
+
+      </ion-slides>
+
   </ion-content>
+
 </ion-view>

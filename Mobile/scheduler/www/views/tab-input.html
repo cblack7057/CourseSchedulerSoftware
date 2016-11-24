@@ -1,55 +1,57 @@
 <ion-view view-title="{{slideName}}">
-<ion-content>
-  <!--Slide view with two slides, add times and add courses-->
-  <ion-slide-box show-pager="false" on-slide-changed="slideHasChanged($index)">
-    <ion-slide>
-      <div class="padding">
-        <!--List each day, and for each day list all of the available time slots-->
-        <ion-list>
-          <div ng-repeat="(index, name) in days">
-            <ion-radio ng-model="value" ng-click='newDay(value)' ng-value="index">
-              <label>{{name}}</label>
-            </ion-radio>
-            <ion-list class="list" ng-show="day == index">
-              <div ng-repeat="(num, time) in times[index]">
-                <ion-item class="row">
-                  <div class="col">
-                    <div class="row">
-                      <label>Start:</label>
-                      <!--modify the start time of this time slot-->
-                      <input type="time" class="form-control" ng-model="time.displayStartTime", ng-change="time.startTime = vm.changeTimeFormat(time.dispStartTime)">
+  <ion-content>
+    <!--Slide view with two slides, add times and add courses-->
+    <ion-slide-box show-pager="false" on-slide-changed="slideHasChanged($index)">
+      <ion-slide>
+        <div class="padding">
+          <!--List each day, and for each day list all of the available time slots-->
+          <ion-list>
+            <div ng-repeat="(index, name) in days">
+              <ion-radio ng-model="value" ng-click='newDay(value)' ng-value="index">
+                <label>{{name}}</label>
+              </ion-radio>
+              <ion-list class="list" ng-show="day == index">
+                <div ng-repeat="(num, time) in times[index]">
+                  <ion-item class="row">
+                    <div class="col">
+                      <div class="row">
+                        <!--modify the start time of this time slot-->
+                        <input type="time" class="form-control" ng-model="time.dispStartTime" , ng-change="time.StartTime = changeTimeFormat(time.dispStartTime)">
+                        <div class = "col">
+                          <label> to </label>
+                        </div>
+                        <input type="time" class="form-control" ng-model="time.dispEndTime" ng-change="time.EndTime = changeTimeFormat(time.dispEndTime)">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col">
-                    <div class="row">
-                      <label>End:</label>
-                      <!--modify the end time of this time slot-->
-                      <input type="time" class="form-control" ng-model="time.displayEndTime" ng-change="time.endTime = vm.changeTimeFormat(time.dispStartTime)">
+                    <div class="col col-25">
+                      <div class="right">
+                        <button class="button button-small button-assertive" ng-click="removeTime($index)">
+                          <icon class="icon ion-ios-minus"></icon>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </ion-item>
-              </div>
-              <div class="row">
-                <div class="col"></div>
-                <div class="col">
-                  <!--Allow user to add a new time slot-->
-                  <button class="button button-balanced" ng-click="addNewTime()">Add time slot</button>
+                  </ion-item>
                 </div>
-              </div>
-            </ion-list>
-          </div>
-        </ion-list>
+
+                <!--Allow user to add a new time slot-->
+                <button class="button button-block button-balanced" ng-click="addNewTime()">Add time slot</button>
+
+              </ion-list>
+            </div>
+          </ion-list>
         </div>
-<div class = "padding-vertical">
-</div>
-  </ion-slide>
-  <ion-slide>
-    <div class="padding">
-      <div class="padding-bottom">
-        <ion-list class="list list-inset">
-          <div class="item item-divider">
-            <div class="row">
-              <div class="col col-25"><h5>Subject</5></div>
+        <div class="padding-vertical">
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div class="padding">
+          <div class="padding-bottom">
+            <ion-list class="list list-inset">
+              <div class="item item-divider">
+                <div class="row">
+                  <div class="col col-25">
+                    <h5>Subject</5>
+                  </div>
               <div class="col col-30"><h5>Course Number</5></div>
               <div class="col col-10"></div>
               <div class="col">

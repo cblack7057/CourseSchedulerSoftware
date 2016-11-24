@@ -6,6 +6,8 @@ angular.module('scheduler.services', [])
 		scheduleStorage.startListeners = [];
 		scheduleStorage.finishListeners = [];
 
+		scheduleStorage.isWaiting = true;
+
 		scheduleStorage.notifyStartListeners = function(){
 			angular.forEach(scheduleStorage.startListeners, function(listenerCallback){
 			 	listenerCallback();
@@ -77,10 +79,12 @@ angular.module('scheduler.services', [])
 		scheduleStorage.onFinishProcessing = function(newSchedules){
 			scheduleStorage.scheduleArray = newSchedules;
 			scheduleStorage.notifyFinishListeners();
+			scheduleStorage.isWaiting = false;
 		};
 
 		scheduleStorage.onStartProcessing = function(){
 			scheduleStorage.notifyStartListeners();
+			scheduleStorage.isWaiting = true;
 		}
 
 		//called by SelectScheduleCtrl to retrieve store schedule list
