@@ -147,8 +147,8 @@ angular.module('scheduler.controllers', ['scheduler.services'])
             headers: { 'Content-Type': 'application/json' }
         }).success(function (data) {
             // extract "Schedule" array from the returned data and save
-            vm.schedules = data;
-            vm.message2 = data;
+            //vm.schedules = data;
+            //vm.message2 = data;
             //scheduleService.onFinishProcessing(data);
             //vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
             scheduleService.onFinishProcessing(data);
@@ -237,6 +237,12 @@ angular.module('scheduler.controllers', ['scheduler.services'])
       if (newVal != null) {
         sm.data.sliderDelegate.on('slideChangeEnd', function() {
           sm.data.currentPage = sm.data.sliderDelegate.activeIndex;
+          bufferLength = 3;
+          if(sm.data.currentPage >= sm.daySchedules.length - bufferLength - 1) {
+            for(i = sm.data.currentPage; i < sm.data.currentPage + bufferLength && i < sm.schedules.length; i++) {
+              sm.formatScheduleData(i);
+            }
+          }
           //use $scope.$apply() to refresh any content external to the slider
           sm.$apply();
         });
@@ -313,7 +319,14 @@ angular.module('scheduler.controllers', ['scheduler.services'])
 		};
 	};
 
-
+sm.formatScheduleData = function (index){
+    sm.setCurrentSchedule(index);
+    sm.daySchedules[index] = sm.currentSchedule;
+    sm.crnLists[i] = [];
+    sm.schedules[i].forEach(function(c){
+      sm.crnLists[i].push(c.CRN);
+    });
+}
 
   sm.formatDaySchedules = function (){
     sm.daySchedules = [];
@@ -337,8 +350,12 @@ angular.module('scheduler.controllers', ['scheduler.services'])
   //grabs the list of possible schedules from the local schedule storage service
   sm.grabSchedules = function(){
     sm.schedules = scheduleService.getSchedules();
-    sm.formatDaySchedules();
-    sm.formatCRNLists();
+    sm.daySchedules = [];
+    for(i = 0; i < 5 && i < sm.schedules.length; i++) {
+      sm.formatScheduleData(i);
+    }
+    sm.waiting = false;
+
     //recalibrate slider page index if this is a new schedule set grab
     if(sm.data.sliderDelegate != null){
       sm.data.sliderDelegate.update();
@@ -346,7 +363,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
         sm.data.currentPage = sm.schedules.length - 1;
       }
     }
-    sm.waiting = false;
+
   };
   console.log("Loading this controller")
   /* If there are already schedules ready when we load this controller, grab them!*/
@@ -376,6 +393,7 @@ angular.module('scheduler.controllers', ['scheduler.services'])
 
   scheduleService.addStartListener(function(){
     console.log("Not waiting any more!");
+    sm.daySchedules = [];
     sm.waiting = true;
   });
 
