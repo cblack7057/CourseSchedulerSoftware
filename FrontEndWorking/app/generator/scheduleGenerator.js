@@ -82,14 +82,12 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
  								console.log('sort sections by courses');
  								var courseArray = sortSectionsByCourses(sections);
  								console.log('sections sorted');
- 								//console.log('courseArray: ' + courseArray[2][3].Meetings[0].StartTime);
  								console.log('create list of courses not found')
  								notFoundCourses = coursesNotFound(courses, courseArray);
 								console.log('list created');
  								console.log('creating pairs');
  								var sectionPairs = createPairs(courseArray);
  								console.log('pairs created');
- 								//console.log('created pairs length: ' + sectionPairs.length);
  								console.log('removing conflictng pairs');
  								removeNonconflictingPairs(courseArray, sectionPairs);
  								console.log('conflicting pairs removed');
@@ -101,7 +99,8 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
  								console.log('tree updated');
  								console.log('generate schedules');
  								schedules = generateSchedulesList(courseArray, courseTree);
- 								callback();
+ 								console.log(schedules);
+								callback();
 								}
 							});
 						}
@@ -122,15 +121,12 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 		for(var i = 0; i < sections.length; i++) {
 			for(var j = 0; j < week.length; j++) {
 				var sectionDayMatching = [];
-				console.log(sections[i]);
 				for(var k = 0; k < sections[i].Meetings.length; k++) {
 					if(sections[i].Meetings[k].Day == j) {
 						sectionDayMatching.push(sections[i].Meetings[k]);
-						console.log('here');
 					}
 				}
 				if(removeSectionHelper(week[j], sectionDayMatching)) {
-					console.log(sectionDayMatching);
 					sections.splice(i, 1);
 				}
 			}
@@ -305,7 +301,6 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 			return;
 		for(var i = 0; i < sectionPairs.length; i++)
 		{
-			//console.log('' + sectionPairs[i][0] + sectionPairs[i][1] + ", " + sectionPairs[i][2] + sectionPairs[i][3] );
 			removeBranches(courseTree, sectionPairs[i][0], sectionPairs[i][1], sectionPairs[i][2], sectionPairs[i][3]);
 		}
 	}

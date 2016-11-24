@@ -37,86 +37,67 @@ module.exports = function(week, courses, term, mongodb, config, callback) {
 	for(var i = 0; i < week.length && timesNotSelected; i++) {
 		timesNotSelected = (week[i].length == 0) && timesNotSelected;
 	}
-	getSchedules(function() {
+	
+	
+	return new Promise(function(resolve, reject) {
 		if(timesNotSelected) {
 			console.log('no times entered');
-			schedules = [];
-			notFoundCourses = [];
 			if(courses.length == 0) {
 				console.log('no courses selected');
 			}
-			callback();
+			resolve([[],[]]);
 		}
 		else if(courses.length == 0){
 			console.log('no courses selected');
-			schedules = [];
-			notFoundCourses = [];
-			callback();
+			resolve([[],[]]);
 		}
 		else {
+			var schedules;
+			var notFoundCourses;
 			console.log('connecting to mongoclient');
-			MongoClient.connect(config.database, function (err, db) {
- 			if (err) {
- 				console.log('Unable to connect to the mongoDB server. Error:', err);
- 			}
-			else {
+			MongoClient.connect(config.database)
+ 			.then(function(db) {
  				console.log('connection completed');
- 				console.log('getting collection from database');
- 				console.log('term: ', term);
- 				db.collection(term, function(err, collection) {
- 					if(err) {
- 						console.log('error getting the collection from the database');
- 					}
- 					else {
- 						console.log('got collection from database');
- 						console.log('finding courses based on queries');
- 						collection.find(query, projection).toArray(function(err, result) {
- 							if(err) {
- 								console.log('error in finding stuff');
- 							}
- 							else {
- 								console.log('collection.find worked correctly');
- 								console.log('removing sections by time');
- 								var sections = removeSectionsByTime(result);
- 								console.log('sections removed');
- 								console.log('sort sections by courses');
- 								var courseArray = sortSectionsByCourses(sections);
- 								console.log('sections sorted');
- 								//console.log('courseArray: ' + courseArray[2][3].Meetings[0].StartTime);
- 								console.log('create list of courses not found')
- 								notFoundCourses = coursesNotFound(courses, courseArray);
-								console.log('list created');
- 								console.log('creating pairs');
- 								var sectionPairs = createPairs(courseArray);
- 								console.log('pairs created');
- 								//console.log('created pairs length: ' + sectionPairs.length);
- 								console.log('removing conflictng pairs');
- 								removeNonconflictingPairs(courseArray, sectionPairs);
- 								console.log('conflicting pairs removed');
- 								console.log('create tree');;
- 								var courseTree = treeMaker(courseArray);
- 								console.log('tree made');
- 								console.log('update tree');
- 								updateTree(courseArray, sectionPairs, courseTree);
- 								console.log('tree updated');
- 								console.log('generate schedules');
- 								schedules = generateSchedulesList(courseArray, courseTree);
- 								callback();
-								}
-							});
-						}
-					});
-				}		
+				console.log('retrieving collection Courses from database');
+				return db.collection('Courses').find(query,projection)
+			})
+			.then(function(cursor) {
+				console.log('query completed');
+				console.log('changing cursor to array');
+				return cursor.toArray()
+			})
+			.then(function(arr) {
+				console.log('successfully converted result to an array');
+				console.log('removing sections by time');
+				var sections = removeSectionsByTime(arr);
+				console.log('sections removed');
+				console.log('sort sections by courses');
+				var courseArray = sortSectionsByCourses(sections);
+				console.log('sections sorted');
+				console.log('create list of courses not found')
+				notFoundCourses = coursesNotFound(courses, courseArray);
+				console.log('list created');
+				console.log('creating pairs');
+				var sectionPairs = createPairs(courseArray);
+				console.log('pairs created');
+				console.log('removing conflictng pairs');
+				removeNonconflictingPairs(courseArray, sectionPairs);
+				console.log('conflicting pairs removed');
+				console.log('create tree');
+				var courseTree = treeMaker(courseArray);
+				console.log('tree made');
+				console.log('update tree');
+				updateTree(courseArray, sectionPairs, courseTree);
+				console.log('tree updated');
+				console.log('generate schedules');
+				schedules = generateSchedulesList(courseArray, courseTree);
+				console.log('schedules generated');
+				resolve([schedules, coursesNotFound]);
+			}).catch(function(err) {
+				reject(err);		
 			});
 		}
 	});
-	
-
-	function getSchedules(callback) {
-		var schedules;
-		var notFoundCourses;
-		callback();
-	}
 	
 	function removeSectionsByTime(sections) {
 		for(var i = 0; i < sections.length; i++) {
