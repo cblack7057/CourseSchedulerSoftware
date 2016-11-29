@@ -18,7 +18,7 @@ angular.module('firstApp2', ['scheduleService'])
     vm.courses = [];
     vm.semester;
 
-    vm.availableTimes = []; // array that the user is currently adding time frames to 
+
     vm.day; // current day selected, used to determine which array to add the start and end times
 
     // form data
@@ -45,18 +45,18 @@ angular.module('firstApp2', ['scheduleService'])
     // adds start and end times to the selected day's array of available time frames
     vm.addTimes = function () {
         if (vm.timeData.StartTime !== null && vm.timeData.EndTime !== null) {
-            var sTime = new Date(vm.timeData.StartTime);
-            var eTime = new Date(vm.timeData.EndTime);
+            var sTime = vm.changeTimeFormat(vm.timeData.StartTime);
+            var eTime = vm.changeTimeFormat(vm.timeData.EndTime);
             if (sTime < eTime) {
-                sCTime = vm.changeTimeFormat(sTime);
-                eCTime = vm.changeTimeFormat(eTime);
-                vm.availableTimes.push({
-					dispStartTime: sTime,
-					dispEndTime: eTime,
-                    StartTime: sCTime,
-                    EndTime: eCTime
+                dsTime = vm.getVisualTime(sTime);
+                deTime = vm.getVisualTime(eTime);
+                vm.times[vm.day].push({
+					dispStartTime: dsTime.Hours + ":" + dsTime.Minutes + " " + dsTime.Period,
+					dispEndTime: deTime.Hours + ":" + deTime.Minutes + " " + deTime.Period,
+                    StartTime: sTime,
+                    EndTime: eTime
                 });
-                vm.times[vm.day] = vm.combine(vm.availableTimes);
+                vm.times[vm.day] = vm.combine(vm.times[vm.day]);
                 vm.errorMessageTimes = '';
             } else {
                 vm.errorMessageTimes = 'Please verify that the start time occurs before the end time.'
@@ -65,14 +65,14 @@ angular.module('firstApp2', ['scheduleService'])
 
     };
 	
-	vm.allDay = function() {
-		vm.availableTimes.push({
-					dispStartTime: "12:00 AM",
-					dispEndTime: "11:59 PM",
+	vm.allDay = function(day) {
+		var temp = [{
+					dispStartTime: "12:00 am",
+					dispEndTime: "11:59 pm",
                     StartTime: 0000,
                     EndTime: 2359
-                });
-		vm.times[vm.day] = vm.combine(vm.availableTimes);
+                }];
+		vm.times[day] = temp;
 	};
 
 	// for testing purposes only
@@ -83,38 +83,32 @@ angular.module('firstApp2', ['scheduleService'])
                 subject: 'CS',
                 course: '06310'
             });
-			vm.courses.push({
+		vm.courses.push({
                 subject: 'CS',
                 course: '07320'
             });
-			vm.courses.push({
+		vm.courses.push({
                 subject: s.toUpperCase(),
                 course: '07321'
             });
-			vm.courses.push({
+		vm.courses.push({
                 subject: s.toUpperCase(),
                 course: '04400'
             });
-			vm.courses.push({
+		vm.courses.push({
                 subject: s.toUpperCase(),
                 course: '04560'
             });
-			vm.courses.push({
+		vm.courses.push({
                 subject: s.toUpperCase(),
                 course: '06311'
             });
-			vm.courses.push({
-                subject: s.toUpperCase(),
+		vm.courses.push({
+				subject: s.toUpperCase(),
                 course: '06510'
             });
-			for(var i = 0; i < 6; i++){
-			vm.availableTimes.push({
-					dispStartTime: "12:00 AM",
-					dispEndTime: "11:59 PM",
-                    StartTime: 0000,
-                    EndTime: 2359
-                });
-		vm.times[i] = vm.combine(vm.availableTimes);
+		for(var i = 0; i < 6; i++){
+			vm.allDay(i);
 		};
 		vm.semester = 'Fall2016';
 		vm.submitTimes();
@@ -144,7 +138,7 @@ angular.module('firstApp2', ['scheduleService'])
 	        vm.courseData = {};
 	        vm.errorMessageCourses = '';
 	    } else {
-	        vm.errorMessageCourses = 'Please enter your course subject and course.'
+	        vm.errorMessageCourses = 'Please enter your course subject and number.'
 	    }
 	};
 
@@ -181,12 +175,24 @@ angular.module('firstApp2', ['scheduleService'])
     vm.changeTimeFormat = function (time) {
         return parseInt(time.getHours() + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes());
     };
-
-    // Changes the displayed table of times frames
-    vm.newDay = function (value) {
-        vm.day = value;
-        vm.availableTimes = vm.times[value];
-    };
+	// extracts hours, minutes, period from military time
+	vm.getVisualTime = function (time){
+		var hours = Math.floor(time / 100) % 12;
+		var minutes = (time % 100 == 0 ? '00' : time % 100);
+		var period = (time >= 1200? 'pm' : 'am');
+		return {
+			Hours: (hours == 0? 12: hours),
+			Minutes: minutes,
+			Period: period
+		};
+	};
+	
+	//I'm sorry, this name is terrible but it made me chuckle
+	//@returns String of time in hh:mm (period) format
+	vm.getVisualTime2 = function(time){
+		var temp = vm.getVisualTime(time);
+		return temp.Hours + ":" + temp.Minutes + " " + temp.Period;
+	};
 
     // source http://stackoverflow.com/questions/26390938/merge-arrays-with-overlapping-values
     vm.combine = function (frames) {
@@ -209,8 +215,11 @@ angular.module('firstApp2', ['scheduleService'])
         frames.forEach(function (r) {
             if (!result.length || r.StartTime > result[result.length - 1].EndTime)
                 result.push(r);
-            else
+            else{
+				deTime = vm.getVisualTime(r.EndTime);
                 result[result.length - 1].EndTime = r.EndTime;
+				result[result.length - 1].dispEndTime = deTime.Hours + ":" + deTime.Minutes + " " + deTime.Period;
+			}
         });
 
         return result;
@@ -266,28 +275,7 @@ angular.module('firstApp2', ['scheduleService'])
         vm.setCurrentSchedule(vm.currentScheduleIndex);
     };
 		
-	// extracts hours, minutes, period from military time
-	vm.getVisualTime = function (time){
-		var hours = Math.round(time / 100) % 12;
-		var minutes = (time % 100 == 0 ? '00' : time % 100);
-		var period = (time >= 1200? 'pm' : 'am');
-		return {
-			Hours: (hours == 0? 12: hours),
-			Minutes: minutes,
-			Period: period
-		};
-	};
-	
-	//I'm sorry, this name is terrible but it made me chuckle
-	//@returns String of time in hh:mm (period) format
-	vm.getVisualTime2 = function(time){
-		var temp = vm.getVisualTime(time);
-		return temp.Hours + ":" + temp.Minutes + " " + temp.Period;
-	};
 
-	// reroll schedules
-	vm.reroll;
-	
 	//Preconditions: must be a reroll variable declared with other global fields, restrictions is an associative array described above,
 	//schedules have already been generated before calling.
 	//Creates a new array of schedules that satisfy the restrictions given by the user and stores in reroll.
