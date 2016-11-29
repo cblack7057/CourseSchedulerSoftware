@@ -68,43 +68,42 @@
                         <option value="Spring2017">Spring2017</option>
                     </select>
 					<br/>
-
                     <!-- form to add days to the list -->
                     <h3> Choose a day you wish to be on campus:</h3>
                     <div class="form-inline">
                         <div class="radio">
                             <label>
-                                <input type="radio" value="0" ng-model="value" ng-change='main.newDay(value)'>
+                                <input type="radio" value="0" ng-model="main.day">
                                 Monday
                             </label>
                         </div>
                         <div class="radio">
                             <label>
-                                <input type="radio" value="1" ng-model="value" ng-change='main.newDay(value)'>
+                                <input type="radio" value="1" ng-model="main.day">
                                 Tuesday
                             </label>
                         </div>
                         <div class="radio">
                             <label>
-                                <input type="radio" value="2" ng-model="value" ng-change='main.newDay(value)'>
+                                <input type="radio" value="2" ng-model="main.day">
                                 Wednesday
                             </label>
                         </div>
                         <div class="radio">
                             <label>
-                                <input type="radio" value="3" ng-model="value" ng-change='main.newDay(value)'>
+                                <input type="radio" value="3" ng-model="main.day">
                                 Thursday
                             </label>
                         </div>
                         <div class="radio">
                             <label>
-                                <input type="radio" value="4" ng-model="value" ng-change='main.newDay(value)'>
+                                <input type="radio" value="4" ng-model="main.day">
                                 Friday
                             </label>
                         </div>
                         <div class="radio">
                             <label>
-                                <input type="radio" value="5" ng-model="value" ng-change='main.newDay(value)'>
+                                <input type="radio" value="5" ng-model="main.day">
                                 Saturday
                             </label>
                         </div>
@@ -122,7 +121,7 @@
                         <label> End time: </label>
                         <input type="time" class="form-control" ng-model="main.timeData.EndTime">
                         <button type="submit" class="btn btn-success" ng-disabled="main.day == null">Add</button>
-                        <button type="button" class="btn btn-info" ng-click="main.allDay()">All Day</button>
+                        <button type="button" class="btn btn-info" ng-click="main.allDay(main.day)">All Day</button>
 
                         <h6 font color="red">
                             {{ main.errorMessageTimes }}
@@ -148,8 +147,8 @@
                                         <th>Action</th>
                                     </tr>
                                     <tr ng-repeat="time in day">
-                                        <td>{{ time.dispStartTime | date:'shortTime' }}</td>
-                                        <td>{{ time.dispEndTime | date:'shortTime'}}</td>
+                                        <td>{{ time.dispStartTime}}</td>
+                                        <td>{{ time.dispEndTime}}</td>
                                         <td><input type="button" value="Remove" class="btn btn-primary" ng-click="main.removeTimes($index,$parent.$index)" /></td>
                                     </tr>
                                 </table>
