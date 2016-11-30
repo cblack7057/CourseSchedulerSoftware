@@ -119,22 +119,22 @@ angular.module('firstApp2', ['scheduleService'])
 	    if (vm.courseData.subject != null && vm.courseData.course != null) {
 	        var s = vm.courseData.subject;
 	        var c = vm.courseData.course;
-	        //var includesC = false; // I COMMENTED THIS OUT CAUSE IT DOES BREAK IT. No longer submits to backend?
-	        /*for (var i = 0; i < vm.courses.length; i++)
+	        var includesC = false; 
+	        for (var i = 0; i < vm.courses.length; i++)
 	        {
 	            if(vm.courses[i].course.includes(c))
 	            {
 	                includesC = true;
 	            }
-	        }*/
+	        }
            
-	        //if (!includesC) {
+	        if (!includesC) {
 	            vm.courses.push({
 	                subject: s.toUpperCase(),
 	                course: c
 	            });
-	        //}
-	        //includesC = false;
+	        }
+	        includesC = false;
 	        vm.courseData = {};
 	        vm.errorMessageCourses = '';
 	    } else {
