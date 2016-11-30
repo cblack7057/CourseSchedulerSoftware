@@ -30,6 +30,7 @@ angular.module('firstApp2', ['scheduleService'])
 	
     // returned schedule data
     vm.schedules = [];
+	vm.notFound = [];
 	
     // test times represents a single schedule
 
@@ -166,7 +167,8 @@ angular.module('firstApp2', ['scheduleService'])
             headers: { 'Content-Type': 'application/json' }
         }).success(function (data) {
             // extract "Schedule" array from the returned data and save
-            vm.schedules = data;
+            vm.schedules = data.schedules;
+			vm.notFound = data.notFoundCourses;
             vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
         });
     };

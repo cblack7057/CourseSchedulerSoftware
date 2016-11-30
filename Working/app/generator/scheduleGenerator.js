@@ -93,7 +93,11 @@ module.exports = function(week, courses, term, mongodb, config) {
 				console.log('generate schedules');
 				schedules = generateSchedulesList(courseArray, courseTree);
 				console.log('schedules generated');
-				resolve([schedules, notFoundCourses]);
+				var result = {
+					schedules: schedules,
+					coursesNotFound: notFoundCourses
+				};
+				resolve(result);
 			}).catch(function(err) {
 				reject(err);		
 			});

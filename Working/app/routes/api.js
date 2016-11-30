@@ -12,9 +12,9 @@ module.exports = function(app, express) {
 		var term = req.body.term;
 		var promise = require('../generator/scheduleGenerator')(week, courses, term, mongodb, config);
 		promise.then(function(resolve, reject) {
-			console.log(resolve[0]);
-			console.log(resolve[1]); //the courses the user inputed that we did not find
-			res.json(resolve[0]);
+			console.log(resolve.schedules);
+			console.log(resolve.notFoundCourses); //the courses the user inputed that we did not find
+			res.json(resolve);
 		});
 	});	
 
