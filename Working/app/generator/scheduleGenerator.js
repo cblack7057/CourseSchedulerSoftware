@@ -95,7 +95,7 @@ module.exports = function(week, courses, term, mongodb, config) {
 				console.log('schedules generated');
 				var result = {
 					schedules: schedules,
-					coursesNotFound: notFoundCourses
+					notFound: notFoundCourses
 				};
 				resolve(result);
 			}).catch(function(err) {

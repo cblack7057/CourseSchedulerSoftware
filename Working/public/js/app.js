@@ -168,7 +168,7 @@ angular.module('firstApp2', ['scheduleService'])
         }).success(function (data) {
             // extract "Schedule" array from the returned data and save
             vm.schedules = data.schedules;
-			vm.notFound = data.notFoundCourses;
+			vm.notFound = data.notFound;
             vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
         });
     };

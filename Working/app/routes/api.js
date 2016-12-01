@@ -13,7 +13,7 @@ module.exports = function(app, express) {
 		var promise = require('../generator/scheduleGenerator')(week, courses, term, mongodb, config);
 		promise.then(function(resolve, reject) {
 			console.log(resolve.schedules);
-			console.log(resolve.notFoundCourses); //the courses the user inputed that we did not find
+			console.log(resolve.notFound); //the courses the user inputed that we did not find
 			res.json(resolve);
 		});
 	});	
