@@ -29,15 +29,17 @@ angular.module('firstApp2', ['scheduleService'])
     vm.modalCourseData = null;
 
     // returned schedule data
+    vm.origSchedules = [];
     vm.schedules = [];
     vm.notFound = [];
 
     // test times represents a single schedule
 
-    // current schedule has 
+    // current schedule has
     vm.currentSchedule = [[], [], [], [], [], [], []];
     vm.currentScheduleIndex = 0; //In the event we wish to locate a specific schedule, we need this
 
+    vm.currentScheduleCourses = []; //conatins a list of all courses currently being displayed
     vm.selectedCourses = [];
     vm.notSelectedCourses = [];
 
@@ -165,13 +167,17 @@ angular.module('firstApp2', ['scheduleService'])
             headers: { 'Content-Type': 'application/json' }
         }).success(function (data) {
             // extract "Schedule" array from the returned data and save
+
             vm.schedules = data.schedules;
+            vm.origSchedules = vm.schedules;
             vm.notFound = data.notFound;
             vm.displayNotFound();
-            //document.write(vm.notFound.length < 0);
-            //console.log(vm.notFound);
-            //console.log(vm.notFound[0]);
-            //console.log(vm.schedules[5][0]);
+            //for each course set it to not selected
+            vm.schedules[0].forEach(function(c){
+              c.Selected = false;
+              vm.currentScheduleCourses.push(c);
+            });
+            vm.updateSelected();
             vm.setCurrentSchedule(vm.currentScheduleIndex); // sets current schedule to the first one
         });
     };
@@ -203,10 +209,10 @@ angular.module('firstApp2', ['scheduleService'])
             for (i = 0; i < schedule.length; i++) {
                 text += schedule[i].CRN + "   ";
             }
-            
+
             document.getElementById("CRNinfo").innerHTML = text;
         }
-    
+
 
     // changes time format to hhmm to be stored in respective arrays
     vm.changeTimeFormat = function (time) {
@@ -263,11 +269,15 @@ angular.module('firstApp2', ['scheduleService'])
     };
 
     vm.setCurrentSchedule = function (scheduleIndex) { //schduleIndex = index of schedule you wish to set as current
-        //use this one when taking schedules from 
+        //use this one when taking schedules from
         vm.currentSchedule = [[], [], [], [], [], [], []];
-        vm.selectedCourses = [];
-        vm.notSelectedCourses = [];
+        vm.currentScheduleCourses = [];
+      //  vm.selectedCourses = [];
+      //  vm.notSelectedCourses = [];
         var tempSchedule = vm.schedules[scheduleIndex];
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // the problem is that each schedule has their own "course" even if the course exists in a different schedule
+        // everytime I display the schedule, I need to check to see if the course is in the selected list, if so, do c.Selected == true
         var tSData;
         var tEData;
         var meetings;
@@ -278,9 +288,11 @@ angular.module('firstApp2', ['scheduleService'])
 
         tempSchedule.forEach(function (c) {
             meetings = c.Meetings;
-            c.Selected = false;
+          //  c.Selected = false;
             tempDay = 0;
-
+            vm.currentScheduleCourses.push(c);
+            vm.containsCourse(c, vm.selectedCourses)? c.Selected = true: c.Selected = false;
+          //  vm.updateSelected();
             if (meetings.length == 0) {
                 meetings = [{
                     Type: "(Online)",
@@ -339,10 +351,11 @@ angular.module('firstApp2', ['scheduleService'])
     //does this schedule contain the selected or not selected course
     vm.createRerollHelper = function (selected, schedule) {
 
-        var found = false;
+        var found;
         for (var i = 0; i < selected.length; i++) {
+            var found = false;
             var j = 0;
-            while (j < schedule.length && !found) {
+            while (j < schedule.length && !found) { //while the schedule w
                 if ((schedule[j]["Subj"] === selected[i]["Subj"]) && (schedule[j]["Crse"] === selected[i]["Crse"])) {
                     if (schedule[j]["CRN"] !== selected[i]["CRN"])
                         return false;
@@ -362,6 +375,8 @@ angular.module('firstApp2', ['scheduleService'])
                 selected: vm.selectedCourses,
                 notSelected: vm.notSelectedCourses
             };
+            //reroll from the original schedules list, and not the current schedules list
+            vm.schedules = vm.origSchedules; //I know this isn't the most effiient way to do it, and I can think of a better way, but I just want to get something working
             vm.message2 += " reached2";
             vm.createReroll(restrictions);
             vm.schedules = vm.reroll;
@@ -371,6 +386,20 @@ angular.module('firstApp2', ['scheduleService'])
     };
 
     vm.updateSelected = function () {
+      //clear selected list, then push
+      vm.selectedCourses = [];
+      vm.notSelectedCourses = [];
+      vm.currentScheduleCourses.forEach(function(c){
+        if(c.Selected == true) {
+          vm.selectedCourses.push(c);
+        }
+        else {
+          vm.notSelectedCourses.push(c);
+        }
+      });
+
+
+      /*
         vm.message3 = 0;
         var tempSelected = [];
         var tempNotSelected = [];
@@ -394,6 +423,7 @@ angular.module('firstApp2', ['scheduleService'])
         });
         vm.selectedCourses = tempSelected;
         vm.notSelectedCourses = tempNotSelected;
+        */
     };
 
     vm.containsCourse = function (courseInfo, list) {
